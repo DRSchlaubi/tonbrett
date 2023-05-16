@@ -1,3 +1,4 @@
+@file:JvmName("SnowflakeJvm")
 package dev.schlaubi.tonbrett.common
 
 import dev.kord.common.entity.Snowflake
