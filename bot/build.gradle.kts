@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.jvm)
@@ -18,7 +20,7 @@ mikbotPlugin {
 
 tasks {
     installBot {
-        botVersion = "3.17.0"
+        botVersion = "3.17.5"
     }
 
     assembleBot {
@@ -26,5 +28,11 @@ tasks {
             "ktor@${libs.versions.mikbot.get()}",
             "music@${libs.mikbot.music.get().version}"
         )
+    }
+
+    withType<KotlinCompile> {
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-receivers")
+        }
     }
 }
