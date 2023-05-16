@@ -17,9 +17,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import org.litote.kmongo.newId
 import java.nio.file.StandardOpenOption
-import kotlin.io.path.absolutePathString
-import kotlin.io.path.div
-import kotlin.io.path.writeBytes
+import kotlin.io.path.*
 
 class AddSoundCommandArgs : Arguments() {
     val sound by attachment {
@@ -58,6 +56,10 @@ suspend fun Extension.addSoundCommand() = ephemeralSlashCommand(::AddSoundComman
         }
         val sound = Sound(id, arguments.name, user.id, arguments.description, null)
         val file = Config.SOUNDS_FOLDER / sound.fileName
+        val soundsFolder = file.parent
+        if(!soundsFolder.exists()) {
+            soundsFolder.createDirectories()
+        }
         file.writeBytes(cdnResponse.body(), StandardOpenOption.CREATE)
         SoundBoardDatabase.sounds.save(sound)
 

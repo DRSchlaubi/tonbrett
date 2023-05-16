@@ -15,14 +15,14 @@ kotlin {
         commonMain {
             dependencies {
                 api(libs.kotlinx.serialization)
-                api(libs.ktor.resources)
+                compileOnly(libs.ktor.resources)
             }
         }
 
         named("jvmMain") {
             dependencies {
-                implementation(libs.kmongo.id.serialization)
-                implementation(libs.kord.common)
+                compileOnly(libs.kmongo.id.serialization)
+                compileOnly(libs.kord.common)
             }
         }
     }
