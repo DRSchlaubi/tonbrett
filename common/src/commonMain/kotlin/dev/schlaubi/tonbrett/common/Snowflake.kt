@@ -1,6 +1,6 @@
 package dev.schlaubi.tonbrett.common
 
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.Contextual
 
 /**
  * Multiplatform snowflake.
@@ -10,3 +10,8 @@ import kotlinx.serialization.Serializable
 public expect class Snowflake(value: ULong) {
     public val value: ULong
 }
+
+/**
+ * Serializable version of [Snowflake].
+ */
+public typealias SerializableSnowflake = @Contextual Snowflake

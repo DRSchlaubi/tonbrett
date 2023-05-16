@@ -9,10 +9,13 @@ import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.bson.types.ObjectId
+import org.litote.kmongo.toId
 import kotlin.io.path.div
 
 fun Route.files() {
     get<Sounds.Sound.Audio> { (id) ->
+
+        "".toId<>()
         val sound = SoundBoardDatabase.sounds.findOneById(ObjectId(id))
             ?: soundNotFound()
 
