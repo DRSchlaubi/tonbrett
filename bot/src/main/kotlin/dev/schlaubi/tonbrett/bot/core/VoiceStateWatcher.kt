@@ -33,7 +33,7 @@ class VoiceStateWatcher : Extension() {
                     sendEvent(voiceState.userId, InterfaceAvailabilityChangeEvent(false, !botOnline))
                 } else {
                     voiceStateCache[voiceState.userId] =
-                        User.VoiceState(voiceState.guildId, voiceState.channelId!!)
+                        User.VoiceState(!botOnline, botChannelId != voiceState.channelId, voiceState.channelId!!)
                     sendEvent(
                         voiceState.userId,
                         InterfaceAvailabilityChangeEvent(botChannelId == voiceState.channelId, !botOnline)

@@ -21,4 +21,6 @@ class Tonbrett {
         client.get(Route.Sounds(onlyMine, query)).body()
 
     suspend fun getMe(): User = client.get(Route.Me()).body()
+
+    suspend fun play(soundId: String): Unit = client.post(Route.Sounds.Sound.Play(soundId)).body()
 }
