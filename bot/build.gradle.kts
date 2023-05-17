@@ -8,6 +8,10 @@ plugins {
 
 dependencies {
     implementation(projects.common)
+    implementation(libs.ktor.server.auth) {
+        exclude(module = "ktor-server-core")
+    }
+    implementation(libs.kmongo.id.serialization)
     plugin(libs.mikbot.ktor)
     plugin(libs.mikbot.music)
     ksp(libs.kordex.processor)

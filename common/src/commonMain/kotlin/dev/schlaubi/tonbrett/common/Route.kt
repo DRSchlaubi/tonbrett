@@ -38,4 +38,16 @@ public class Route {
             }
         }
     }
+
+    /**
+     * /soundboard/auth - initiate Discord OAuth authorization
+     */
+    @Resource("auth")
+    public data class Auth(val parent: Route = Route()) {
+        /**
+         * /soundboard/auth/callback - oauth callback
+         */
+        @Resource("callback")
+        public data class Callback(val parent: Auth = Auth())
+    }
 }
