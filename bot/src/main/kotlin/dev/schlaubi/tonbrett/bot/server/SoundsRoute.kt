@@ -1,18 +1,31 @@
 package dev.schlaubi.tonbrett.bot.server
 
+import com.kotlindiscord.kord.extensions.koin.KordExContext
+import dev.kord.common.annotation.KordExperimental
+import dev.kord.common.annotation.KordUnsafe
+import dev.kord.core.Kord
+import dev.schlaubi.tonbrett.bot.core.soundPlayer
+import dev.schlaubi.tonbrett.bot.core.voiceState
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
+import dev.schlaubi.tonbrett.bot.io.findById
+import dev.schlaubi.tonbrett.bot.util.badRequest
+import dev.schlaubi.tonbrett.bot.util.soundNotFound
 import dev.schlaubi.tonbrett.common.Route.*
 import dev.schlaubi.tonbrett.common.Sound
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.server.routing.Route
 import org.intellij.lang.annotations.Language
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
 import org.litote.kmongo.util.KMongoUtil
 
+@OptIn(KordUnsafe::class, KordExperimental::class)
 fun Route.sounds() {
+    val kord by KordExContext.get().inject<Kord>()
+
     get<Sounds> { (onlyMine, queryString) ->
         val filter = if (onlyMine) {
             Sound::owner eq call.user.id
@@ -31,5 +44,22 @@ fun Route.sounds() {
             .find(and(listOfNotNull(filter, query))).toList()
 
         call.respond(result)
+    }
+
+    authenticated {
+        post<Sounds.Sound.Play> { (soundId) ->
+            val sound = SoundBoardDatabase.sounds.findById(soundId) ?: soundNotFound()
+            val voiceState = call.user.voiceState
+                ?: badRequest("Not connected to voice channel")
+            val player = kord.unsafe.guild(voiceState.guildId).soundPlayer
+
+            @Suppress("EQUALITY_NOT_APPLICABLE")
+            if (player.channelId != voiceState.channelId) {
+                badRequest("Not connected to correct voice channel")
+            }
+
+            player.playSound(sound)
+            call.respond(HttpStatusCode.Accepted)
+        }
     }
 }

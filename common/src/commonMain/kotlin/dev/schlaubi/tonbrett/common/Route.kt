@@ -36,6 +36,13 @@ public class Route {
 
                 public operator fun component1(): String = parent.id
             }
+
+            @Resource("play")
+            public class Play(public val parent: Sound) {
+                public constructor(id: String) : this(Sound(id))
+
+                public operator fun component1(): String = parent.id
+            }
         }
     }
 
@@ -52,5 +59,8 @@ public class Route {
     }
 
     @Resource("users/@me")
-    public data class Me(val parent: Route = Route())
+    public data class Me(val parent: Route = Route()) {
+        @Resource("events")
+        public data class Events(val parent: Me = Me())
+    }
 }

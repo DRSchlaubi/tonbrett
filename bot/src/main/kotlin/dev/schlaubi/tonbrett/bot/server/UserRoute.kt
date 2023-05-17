@@ -1,6 +1,6 @@
 package dev.schlaubi.tonbrett.bot.server
 
-import dev.schlaubi.tonbrett.bot.voiceState
+import dev.schlaubi.tonbrett.bot.core.voiceState
 import dev.schlaubi.tonbrett.common.Route.Me
 import dev.schlaubi.tonbrett.common.User
 import io.ktor.server.application.*

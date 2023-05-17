@@ -11,6 +11,9 @@ dependencies {
     implementation(libs.ktor.server.auth) {
         exclude(module = "ktor-server-core")
     }
+    implementation(libs.ktor.server.websockets) {
+        exclude(module = "ktor-server-core")
+    }
     implementation(libs.kmongo.id.serialization)
     plugin(libs.mikbot.ktor)
     plugin(libs.mikbot.music)

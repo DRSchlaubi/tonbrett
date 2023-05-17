@@ -17,6 +17,7 @@ kordex-processor = { group = "com.kotlindiscord.kord.extensions", name = "annota
 ktor-resources = { group = "io.ktor", name = "ktor-resources", version.ref = "ktor" }
 ktor-client-resources = { group = "io.ktor", name = "ktor-client-resources", version.ref = "ktor" }
 ktor-server-resources = { group = "io.ktor", name = "ktor-server-resources", version.ref = "ktor" }
+ktor-server-websockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor" }
 ktor-server-auth = { group = "io.ktor", name = "ktor-server-auth", version.ref = "ktor" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }

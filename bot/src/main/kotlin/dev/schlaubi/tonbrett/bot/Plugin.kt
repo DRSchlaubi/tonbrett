@@ -9,6 +9,7 @@ import dev.schlaubi.mikbot.plugin.api.PluginMain
 import dev.schlaubi.tonbrett.bot.commands.addCommand
 import dev.schlaubi.tonbrett.bot.commands.removeCommand
 import dev.schlaubi.tonbrett.bot.commands.updateCommand
+import dev.schlaubi.tonbrett.bot.core.VoiceStateWatcher
 
 @PluginMain
 class Plugin(context: PluginContext) : Plugin(context) {

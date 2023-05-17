@@ -1,29 +1,34 @@
 package dev.schlaubi.tonbrett.bot.server
 
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
-import dev.kord.core.Kord
 import dev.schlaubi.mikbot.util_plugins.ktor.api.KtorExtensionPoint
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import org.koin.core.component.inject
 import org.litote.kmongo.id.serialization.IdKotlinXSerializationModule
 import org.pf4j.Extension
 
 @Extension
 class Ktor : KtorExtensionPoint, KordExKoinComponent {
     override fun Application.apply() {
+        install(WebSockets) {
+            contentConverter = KotlinxWebsocketSerializationConverter(Json)
+        }
         installAuth()
         routing {
             files()
             authenticated {
                 sounds()
                 users()
+                webSocket()
             }
         }
 
