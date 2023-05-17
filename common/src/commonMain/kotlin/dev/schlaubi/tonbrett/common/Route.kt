@@ -50,4 +50,7 @@ public class Route {
         @Resource("callback")
         public data class Callback(val parent: Auth = Auth())
     }
+
+    @Resource("users/@me")
+    public data class Me(val parent: Route = Route())
 }
