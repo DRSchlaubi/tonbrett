@@ -5,11 +5,14 @@ kmongo = "4.9.0"
 kord = "0.9.0"
 mikbot = "3.17.3"
 ksp = "1.8.21-1.0.11"
+kordex = "1.5.7-SNAPSHOT"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.5.1" }
 kmongo-id-serialization = { group = "org.litote.kmongo", name = "kmongo-id-serialization", version.ref = "kmongo" }
 kord-common = { group = "dev.kord", name = "kord-common", version.ref = "kord" }
+kordex-processor = { group = "com.kotlindiscord.kord.extensions", name = "annotation-processor", version.ref = "kordex" }
+
 
 ktor-resources = { group = "io.ktor", name = "ktor-resources", version.ref = "ktor" }
 ktor-client-resources = { group = "io.ktor", name = "ktor-client-resources", version.ref = "ktor" }
@@ -23,7 +26,6 @@ mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mik
 mikbot-music = { group = "dev.schlaubi", name = "mikbot-music", version = "2.18.0" }
 
 [plugins]
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 mikbot = { id = "dev.schlaubi.mikbot.gradle-plugin", version.ref = "mikbot" }

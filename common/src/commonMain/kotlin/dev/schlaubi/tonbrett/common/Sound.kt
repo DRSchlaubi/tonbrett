@@ -45,7 +45,7 @@ public data class Sound(
      * @property value the unicode character of the emoji
      */
     @Serializable
-    @SerialName("guild")
+    @SerialName("discord")
     public data class DiscordEmoji(val value: String) : Emoji
 
     /**
@@ -55,7 +55,7 @@ public data class Sound(
      * @property cdnUrl the cdnurl to the emoji image
      */
     @Serializable
-    @SerialName("discord")
+    @SerialName("guild")
     public data class GuildEmoji(val id: SerializableSnowflake) : Emoji {
         val cdnUrl: String = "https://cdn.discordapp.net/emojis/$id.png"
     }

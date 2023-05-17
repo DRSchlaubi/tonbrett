@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.jvm)
+    kotlin("jvm")
     alias(libs.plugins.mikbot)
 }
 
@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.common)
     plugin(libs.mikbot.ktor)
     plugin(libs.mikbot.music)
+    ksp(libs.kordex.processor)
 }
 
 mikbotPlugin {
@@ -33,6 +34,14 @@ tasks {
     withType<KotlinCompile> {
         compilerOptions {
             freeCompilerArgs.add("-Xcontext-receivers")
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir(file("$buildDir/generated/ksp/main/kotlin"))
         }
     }
 }

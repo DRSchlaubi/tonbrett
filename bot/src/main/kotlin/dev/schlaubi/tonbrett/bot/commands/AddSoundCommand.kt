@@ -2,15 +2,12 @@ package dev.schlaubi.tonbrett.bot.commands
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.attachment
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalEmoji
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
-import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.schlaubi.lavakord.rest.loadItem
 import dev.schlaubi.lavakord.rest.models.TrackResponse
+import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.mikbot.plugin.api.util.kord
 import dev.schlaubi.mikbot.plugin.api.util.safeGuild
 import dev.schlaubi.tonbrett.bot.command.emoji
@@ -49,8 +46,8 @@ class AddSoundCommandArgs : Arguments() {
     val emoji by emoji("emoji", "commands.add_sound.arguments.emoji.description")
 }
 
-suspend fun Extension.addSoundCommand() = ephemeralSlashCommand(::AddSoundCommandArgs) {
-    name = "add-sound"
+fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgs) {
+    name = "add"
     description = "commands.add_sound.description"
 
     action {

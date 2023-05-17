@@ -4,8 +4,10 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import dev.schlaubi.mikbot.plugin.api.Plugin
 import dev.schlaubi.mikbot.plugin.api.PluginContext
 import dev.schlaubi.mikbot.plugin.api.PluginMain
-import dev.schlaubi.mikbot.plugin.api.module.MikBotModule
-import dev.schlaubi.tonbrett.bot.commands.addSoundCommand
+ import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
+import dev.schlaubi.tonbrett.bot.commands.addCommand
+import dev.schlaubi.tonbrett.bot.commands.removeCommand
+import dev.schlaubi.tonbrett.bot.commands.updateCommand
 
 @PluginMain
 class Plugin(context: PluginContext) : Plugin(context) {
@@ -14,11 +16,13 @@ class Plugin(context: PluginContext) : Plugin(context) {
     }
 }
 
-private class Module(context: PluginContext) : MikBotModule(context) {
+private class Module(context: PluginContext) : SubCommandModule(context) {
     override val name: String = "tonbrett"
     override val bundle: String = "soundboard"
-
-    override suspend fun setup() {
-        addSoundCommand()
+    override val commandName: String = "sound"
+    override suspend fun overrideSetup() {
+        addCommand()
+        removeCommand()
+        updateCommand()
     }
 }
