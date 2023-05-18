@@ -12,6 +12,7 @@ public data class User(
     public data class VoiceState(
         val botOffline: Boolean,
         val channelMissMatch: Boolean,
-        val channelId: SerializableSnowflake
+        val channelId: SerializableSnowflake,
+        val guildId: SerializableSnowflake
     )
 }
