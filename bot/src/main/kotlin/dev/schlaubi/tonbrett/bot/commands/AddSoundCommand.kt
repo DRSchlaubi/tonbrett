@@ -36,6 +36,7 @@ class AddSoundCommandArgs : Arguments() {
     val name by string {
         name = "name"
         description = "commands.add_sound.arguments.name.description"
+        maxLength = NAME_MAX_LENGTH
     }
 
     val description by optionalString {

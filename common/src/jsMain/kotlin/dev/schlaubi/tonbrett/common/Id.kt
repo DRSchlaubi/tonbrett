@@ -10,7 +10,9 @@ import kotlinx.serialization.encoding.Encoder
 public actual interface Id<T>
 
 @Serializable
-private value class ActualId<T>(val value: String) : Id<T>
+private value class ActualId<T>(val value: String) : Id<T> {
+    override fun toString(): String = value
+}
 
 public class IdSerializer<T>(childSerializer: KSerializer<T>) : KSerializer<Id<T>> {
     private val parent = ActualId.serializer(childSerializer)

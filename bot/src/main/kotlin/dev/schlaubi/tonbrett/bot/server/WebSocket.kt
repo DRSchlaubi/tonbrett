@@ -1,10 +1,11 @@
 package dev.schlaubi.tonbrett.bot.server
 
 import dev.kord.core.behavior.UserBehavior
+import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.common.Event
 import dev.schlaubi.tonbrett.common.Route.Me
 import dev.schlaubi.tonbrett.common.Snowflake
-import io.ktor.server.auth.*
+import io.ktor.server.plugins.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -15,8 +16,6 @@ private val LOG = KotlinLogging.logger { }
 
 private val sessions = mutableMapOf<Snowflake, DefaultWebSocketServerSession>()
 
-suspend fun UserBehavior.sendEvent(event: Event) = sendEvent(id, event)
-
 suspend fun sendEvent(id: Snowflake, event: Event) {
     val session = sessions[id] ?: return
     session.sendSerialized(event)
@@ -24,12 +23,19 @@ suspend fun sendEvent(id: Snowflake, event: Event) {
 
 fun Route.webSocket() {
     resource<Me.Events> {
-        webSocket {
+        webSocket socket@{
             val discordUser = try {
-                call.user
-            } catch (e: OAuth2Exception.MissingAccessToken) {
-                return@webSocket close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "Missing auth information"))
+                val sessionId = call.parameters["session_token"] ?: badRequest("Missing auth information")
+                findSession(sessionId) ?: badRequest("Invalid auth info")
+            } catch (e: BadRequestException) {
+                return@socket close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, e.message!!))
             }
+            sessions.remove(discordUser.id)?.close(
+                CloseReason(
+                    CloseReason.Codes.VIOLATED_POLICY,
+                    "Connected from another location"
+                )
+            )
             sessions[discordUser.id] = this
 
             for (message in incoming) {

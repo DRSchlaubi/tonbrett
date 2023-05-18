@@ -12,8 +12,9 @@ public sealed interface Event
 
 @Serializable
 @SerialName("interface_availability_change")
-public data class InterfaceAvailabilityChangeEvent(
-    val available: Boolean,
-    val botOffline: Boolean
-) : Event
+public data class InterfaceAvailabilityChangeEvent(val available: Boolean, val playingSongId: Id<Sound>?) : Event
+
+@Serializable
+@SerialName("voice_state_update")
+public data class VoiceStateUpdateEvent(val voiceState: User.VoiceState?) : Event
 

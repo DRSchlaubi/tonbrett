@@ -1,5 +1,6 @@
 package dev.schlaubi.tonbrett.common
 
+import dev.schlaubi.tonbrett.common.util.formatEmojiUnicode
 import kotlinx.serialization.*
 import kotlinx.serialization.json.JsonClassDiscriminator
 
@@ -34,10 +35,14 @@ public data class Sound(
 
     /**
      * Representation of either a [GuildEmoji] or a [DiscordEmoji].
+     *
+     * @property url the URL to the image file of this emoji
      */
     @Serializable
     @JsonClassDiscriminator("type")
-    public sealed interface Emoji
+    public sealed interface Emoji {
+        public val url: String
+    }
 
     /**
      * Representation of a Discord standard emoji.
@@ -46,7 +51,10 @@ public data class Sound(
      */
     @Serializable
     @SerialName("discord")
-    public data class DiscordEmoji(val value: String) : Emoji
+    public data class DiscordEmoji(val value: String) : Emoji {
+        override val url: String get() =
+            "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${formatEmojiUnicode(value)}.png"
+    }
 
     /**
      * Representation of a Guild custom emoji.
@@ -57,6 +65,6 @@ public data class Sound(
     @Serializable
     @SerialName("guild")
     public data class GuildEmoji(val id: SerializableSnowflake) : Emoji {
-        val cdnUrl: String = "https://cdn.discordapp.net/emojis/$id.png"
+        override val url: String get() = "https://cdn.discordapp.net/emojis/$id.png"
     }
 }

@@ -4,16 +4,18 @@ import dev.kord.common.KordConfiguration
 import dev.kord.common.entity.DiscordUser
 import dev.schlaubi.mikbot.util_plugins.ktor.api.buildBotUrl
 import dev.schlaubi.tonbrett.bot.config.Config
+import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.http.auth.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -27,7 +29,9 @@ private const val sessionAuth = "session"
 
 private val sessionCache = mutableMapOf<String, DiscordUser>()
 
-data class Session(val id: String) : Principal
+data class Session(val type: Route.Auth.Type)
+
+private class DiscordPrincipal(val user: DiscordUser) : Principal
 
 private val httpClient = HttpClient {
     install(ContentNegotiation) {
@@ -40,13 +44,10 @@ private val httpClient = HttpClient {
 
 fun Application.installAuth() {
     install(Sessions) {
-        cookie<Session>("SESSION")
+        cookie<Session>("AUTH_SESSION")
     }
-
     authentication {
-        session<Session>(sessionAuth) {
-            validate { it.takeIf { it.id in sessionCache } }
-        }
+        register(TokenAuthentication(TokenAuthentication.Config(sessionAuth)))
         oauth(discordAuth) {
             urlProvider = { this@installAuth.buildBotUrl(Route.Auth.Callback()) }
             providerLookup = {
@@ -66,43 +67,70 @@ fun Application.installAuth() {
 
     routing {
         authenticate(discordAuth) {
-            get<Route.Auth> {
-                call.respond("Well this is awkward")
+            resource<Route.Auth> {
+                intercept(ApplicationCallPipeline.Plugins) {
+                    val type = call.parameters["type"]?.let(Route.Auth.Type::valueOf) ?: return@intercept
+                    call.sessions.set(Session(type))
+                }
+                get {
+                    call.respond("Well this is awkward")
+                }
             }
 
             get<Route.Auth.Callback> {
                 val oauth = call.principal<OAuthAccessTokenResponse.OAuth2>()
-                    ?: throw BadRequestException("Missing auth information")
+                    ?: badRequest("Missing auth information")
+
+                val type = call.sessions.get<Session>()?.type ?: badRequest("Missing type")
 
                 val id = generateNonce()
 
-                val discordUser = httpClient.get("https://discord.com/api/v${KordConfiguration.REST_VERSION}/users/@me") {
-                    bearerAuth(oauth.accessToken)
-                }
+                val discordUser =
+                    httpClient.get("https://discord.com/api/v${KordConfiguration.REST_VERSION}/users/@me") {
+                        bearerAuth(oauth.accessToken)
+                    }
 
                 if (!discordUser.status.isSuccess()) {
                     throw BadRequestException("Got unexpected response code: ${discordUser.status}")
                 }
                 sessionCache[id] = discordUser.body()
 
-                call.sessions.set(Session(id))
-
-                call.respondRedirect("/home")
+                call.respondRedirect(type.redirectTo + id)
             }
         }
     }
 }
 
 fun KtorRoute.authenticated(block: KtorRoute.() -> Unit) = authenticate(
-    sessionAuth, build = block)
+    sessionAuth, build = block
+)
+
+private class TokenAuthentication(config: Config) : AuthenticationProvider(config) {
+    class Config(name: String) : AuthenticationProvider.Config(name)
+
+    override suspend fun onAuthenticate(context: AuthenticationContext) {
+        val authToken = context.call.request.parseAuthorizationHeader() ?: run {
+            context.error("MISSING_TOKEN", AuthenticationFailedCause.NoCredentials)
+            return
+        }
+        if (authToken !is HttpAuthHeader.Single || authToken.authScheme != "Bearer" || authToken.blob !in sessionCache) {
+            context.error("WRONG_TOKEN", AuthenticationFailedCause.InvalidCredentials)
+            return
+        }
+        val session = sessionCache[authToken.blob]!!
+
+        context.principal(DiscordPrincipal(session))
+    }
+
+}
+
+fun findSession(id: String) = sessionCache[id]
 
 val ApplicationCall.user: DiscordUser
     get() {
-        val session = sessions.get<Session>() ?:
+        if (authentication.allFailures.isNotEmpty()) {
             throw OAuth2Exception.MissingAccessToken()
+        }
 
-        val user = sessionCache[session.id] ?:
-            throw OAuth2Exception.MissingAccessToken()
-
-        return user
+        return principal<DiscordPrincipal>()!!.user
     }

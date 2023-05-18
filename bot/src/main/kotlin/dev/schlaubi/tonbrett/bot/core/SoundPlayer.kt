@@ -1,8 +1,6 @@
 package dev.schlaubi.tonbrett.bot.core
 
 import dev.kord.core.behavior.GuildBehavior
-import dev.kord.core.event.user.VoiceStateUpdateEvent
-import dev.kord.core.on
 import dev.schlaubi.lavakord.UnsafeRestApi
 import dev.schlaubi.lavakord.audio.TrackEndEvent
 import dev.schlaubi.lavakord.kord.updatePlayer
@@ -37,23 +35,13 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + SupervisorJob()
 
-    init {
-        guild.kord.on<VoiceStateUpdateEvent> {
-            if (state.userId == kord.selfId && old?.channelId != null) {
-                updateAvailability(false, state.channelId == null, old!!.channelId!!)
-            } else if (state.channelId != null) {
-                updateAvailability(available = true, offline = false, channel = state!!.channelId!!)
-            }
-        }
-    }
-
     private suspend fun updateAvailability(
-        available: Boolean, offline: Boolean = false,
+        available: Boolean, playingSound: Sound? = null,
         channel: Snowflake = channelId ?: error("Cannot use default if not connected")
     ) {
         coroutineScope {
             getUsersInChannel(channel).forEach {
-                sendEvent(it, InterfaceAvailabilityChangeEvent(available, offline))
+                sendEvent(it, InterfaceAvailabilityChangeEvent(available, playingSound?.id))
             }
         }
     }
@@ -63,7 +51,7 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
     suspend fun playSound(sound: Sound) {
         require(!locked) { "This player is currently locked" }
         locked = true
-        updateAvailability(locked)
+        updateAvailability(false, sound)
         val state = player.toState()
         val url = buildBotUrl {
             path("soundboard", "sounds", sound.id.toString(), "audio")
@@ -79,8 +67,8 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
                 .take(1)
                 .single()
             state.applyToPlayer(player)
+            locked = false
+            updateAvailability(true)
         }
-        locked = false
-        updateAvailability(locked)
     }
 }

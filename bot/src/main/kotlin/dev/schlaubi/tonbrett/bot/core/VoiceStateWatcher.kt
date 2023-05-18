@@ -2,22 +2,45 @@ package dev.schlaubi.tonbrett.bot.core
 
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
+import com.kotlindiscord.kord.extensions.koin.KordExContext
+import dev.kord.cache.api.query
+import dev.kord.common.annotation.KordExperimental
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.DiscordUser
+import dev.kord.core.Kord
+import dev.kord.core.cache.data.VoiceStateData
 import dev.kord.core.event.user.VoiceStateUpdateEvent
 import dev.schlaubi.tonbrett.bot.server.sendEvent
-import dev.schlaubi.tonbrett.common.InterfaceAvailabilityChangeEvent
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.User
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import dev.schlaubi.tonbrett.common.VoiceStateUpdateEvent as APIVoiceStateUpdateEvent
 
-private val voiceStateCache = mutableMapOf<Snowflake, User.VoiceState>()
+private val kord: Kord by KordExContext.get().inject<Kord>()
 
 val DiscordUser.voiceState: User.VoiceState?
-    get() = voiceStateCache[id]
+    get() = runBlocking { findVoiceState(id) }
 
-fun getUsersInChannel(channelId: Snowflake) = voiceStateCache
-    .toList()
-    .filter { (_, state) -> state.channelId == channelId }
-    .map { (id) -> id }
+@OptIn(KordUnsafe::class, KordExperimental::class)
+suspend fun findVoiceState(userId: Snowflake): User.VoiceState? {
+    val result = kord.cache.query<VoiceStateData> {
+        VoiceStateData::channelId ne null
+        VoiceStateData::userId eq userId
+    }.singleOrNull() ?: return null
+
+    val botChannel = kord.unsafe.guild(result.guildId).soundPlayer.channelId
+
+    return User.VoiceState(
+        botChannel == null, botChannel != result.channelId,
+        result.channelId!!, result.guildId
+    )
+}
+
+suspend fun getUsersInChannel(channelId: Snowflake): List<Snowflake> = kord.cache.query<VoiceStateData> {
+    VoiceStateData::channelId eq channelId
+}.toCollection().map { it.userId }
 
 class VoiceStateWatcher : Extension() {
     override val name: String = "voice_state_watcher"
@@ -25,24 +48,35 @@ class VoiceStateWatcher : Extension() {
     override suspend fun setup() {
         event<VoiceStateUpdateEvent> {
             action {
-                val voiceState = event.state
-                val botChannelId = event.state.getGuild().soundPlayer.channelId
-                val botOnline = botChannelId == null
-                if (voiceState.channelId == null) {
-                    voiceStateCache.remove(voiceState.userId)
-                    sendEvent(voiceState.userId, InterfaceAvailabilityChangeEvent(false, !botOnline))
+                if (event.state.userId == kord.selfId) {
+                    val oldChannel = event.old?.channelId ?: return@action
+                    coroutineScope {
+                        getUsersInChannel(oldChannel).forEach {
+                            launch {
+                                val voiceState = findVoiceState(it)
+                                sendEvent(it, APIVoiceStateUpdateEvent(voiceState))
+                            }
+                        }
+                    }
                 } else {
-                    voiceStateCache[voiceState.userId] =
-                        User.VoiceState(
-                            !botOnline,
+                    val voiceState = event.state
+                    val botChannelId = event.state.getGuild().soundPlayer.channelId
+                    val botOffline = botChannelId == null
+                    if (voiceState.channelId == null) {
+                        sendEvent(voiceState.userId, APIVoiceStateUpdateEvent(null))
+                    } else {
+                        val userState = User.VoiceState(
+                            botOffline,
                             botChannelId != voiceState.channelId,
                             voiceState.channelId!!,
                             voiceState.guildId
                         )
-                    sendEvent(
-                        voiceState.userId,
-                        InterfaceAvailabilityChangeEvent(botChannelId == voiceState.channelId, !botOnline)
-                    )
+
+                        sendEvent(
+                            voiceState.userId,
+                            APIVoiceStateUpdateEvent(userState)
+                        )
+                    }
                 }
             }
         }

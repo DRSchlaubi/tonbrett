@@ -22,6 +22,7 @@ class UpdateSoundArguments : Arguments() {
     val name by optionalString {
         name = "name"
         description = "commands.update_sound.arguments.name.description"
+        maxLength = NAME_MAX_LENGTH
     }
 
     val description by optionalString {

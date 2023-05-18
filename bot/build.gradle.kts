@@ -14,6 +14,9 @@ dependencies {
     implementation(libs.ktor.server.websockets) {
         exclude(module = "ktor-server-core")
     }
+    implementation(libs.ktor.server.cors) {
+        exclude(module = "ktor-server-core")
+    }
     implementation(libs.kmongo.id.serialization)
     plugin(libs.mikbot.ktor)
     plugin(libs.mikbot.music)
@@ -42,6 +45,16 @@ tasks {
         compilerOptions {
             freeCompilerArgs.add("-Xcontext-receivers")
         }
+    }
+
+    val buildWebApp = register<Copy>("buildWebApp") {
+        val webApp = project(":app:web")
+        from(webApp.tasks.getByName("jsBrowserDistribution"))
+        into(buildDir.resolve("resources").resolve("main").resolve("web"))
+    }
+
+    classes {
+        dependsOn(buildWebApp)
     }
 }
 

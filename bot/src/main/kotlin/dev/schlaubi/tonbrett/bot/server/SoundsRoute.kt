@@ -27,8 +27,9 @@ fun Route.sounds() {
     val kord by KordExContext.get().inject<Kord>()
 
     get<Sounds> { (onlyMine, queryString) ->
+        val user = call.user
         val filter = if (onlyMine) {
-            Sound::owner eq call.user.id
+            Sound::owner eq user.id
         } else {
             null
         }
