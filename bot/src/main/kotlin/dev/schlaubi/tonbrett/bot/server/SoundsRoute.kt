@@ -10,6 +10,7 @@ import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.io.findById
 import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.bot.util.soundNotFound
+import dev.schlaubi.tonbrett.bot.util.translate
 import dev.schlaubi.tonbrett.common.Route.*
 import dev.schlaubi.tonbrett.common.Sound
 import io.ktor.http.*
@@ -51,12 +52,12 @@ fun Route.sounds() {
         post<Sounds.Sound.Play> { (soundId) ->
             val sound = SoundBoardDatabase.sounds.findById(soundId) ?: soundNotFound()
             val voiceState = call.user.voiceState
-                ?: badRequest("Not connected to voice channel")
+                ?: badRequest(call.translate("rest.errors.not_connected_to_vc"))
             val player = kord.unsafe.guild(voiceState.guildId).soundPlayer
 
             @Suppress("EQUALITY_NOT_APPLICABLE")
             if (player.channelId != voiceState.channelId) {
-                badRequest("Not connected to correct voice channel")
+                badRequest(call.translate("rest.errors.vc_mismatch"))
             }
 
             player.playSound(sound)
