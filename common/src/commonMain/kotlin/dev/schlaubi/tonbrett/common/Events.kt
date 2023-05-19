@@ -18,3 +18,14 @@ public data class InterfaceAvailabilityChangeEvent(val available: Boolean, val p
 @SerialName("voice_state_update")
 public data class VoiceStateUpdateEvent(val voiceState: User.VoiceState?) : Event
 
+@Serializable
+@SerialName("sound_create")
+public data class SoundCreatedEvent(val sound: Sound) : Event
+
+@Serializable
+@SerialName("sound_delete")
+public data class SoundDeletedEvent(val id: Id<Sound>) : Event
+
+@Serializable
+@SerialName("sound_update")
+public data class SoundUpdatedEvent(val sound: Sound) : Event

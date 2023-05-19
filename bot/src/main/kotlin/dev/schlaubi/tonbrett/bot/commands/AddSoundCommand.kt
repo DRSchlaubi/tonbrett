@@ -14,8 +14,10 @@ import dev.schlaubi.tonbrett.bot.command.emoji
 import dev.schlaubi.tonbrett.bot.command.toEmoji
 import dev.schlaubi.tonbrett.bot.config.Config
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
+import dev.schlaubi.tonbrett.bot.server.broadcastEvent
 import dev.schlaubi.tonbrett.bot.util.player
 import dev.schlaubi.tonbrett.common.Sound
+import dev.schlaubi.tonbrett.common.SoundCreatedEvent
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -27,7 +29,7 @@ import kotlin.io.path.*
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-class AddSoundCommandArgs : Arguments() {
+class AddSoundCommandArguments : Arguments() {
     val sound by attachment {
         name = "attachment"
         description = "commands.add_sound.arguments.attachment.description"
@@ -47,7 +49,7 @@ class AddSoundCommandArgs : Arguments() {
     val emoji by emoji("emoji", "commands.add_sound.arguments.emoji.description")
 }
 
-fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgs) {
+fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArguments) {
     name = "add"
     description = "commands.add_sound.description"
 
@@ -101,5 +103,7 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgs) {
         respond {
             content = translate("commands.add_sound.success")
         }
+
+        broadcastEvent(SoundCreatedEvent(sound))
     }
 }

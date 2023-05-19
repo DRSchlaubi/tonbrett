@@ -39,6 +39,8 @@ fun SoundList(errorReporter: ErrorReporter) {
         if (voiceState == null) {
             offline = true
         } else {
+            available = voiceState.playerAvailable
+            playingSound = voiceState.playingSound
             offline = false
             botOffline = voiceState.botOffline
             channelMismatch = voiceState.channelMissMatch
@@ -50,14 +52,27 @@ fun SoundList(errorReporter: ErrorReporter) {
 
     DisposableEffect(Unit) {
         api.events
-            .onEach {
-                when (it) {
-                    is VoiceStateUpdateEvent -> reload(it.voiceState)
+            .onEach { event ->
+                when (event) {
+                    is VoiceStateUpdateEvent -> reload(event.voiceState)
                     is InterfaceAvailabilityChangeEvent -> {
-                        playingSound = it.playingSongId
-                        available = it.available
+                        playingSound = event.playingSongId
+                        available = event.available
                     }
-                    else -> println("Unknown event type: $it")
+
+                    is SoundDeletedEvent -> {
+                        sounds = sounds.filter { it.id != event.id }
+                    }
+
+                    is SoundCreatedEvent -> {
+                        sounds += event.sound
+                    }
+
+                    is SoundUpdatedEvent -> {
+                        sounds = sounds.filter { it.id != event.sound.id } + event.sound
+                    }
+
+                    else -> println("Unknown event type: $event")
                 }
             }
             .launchIn(coroutineScope)
@@ -73,6 +88,8 @@ fun SoundList(errorReporter: ErrorReporter) {
                 if (state == null) {
                     offline = true
                 } else {
+                    available = state.playerAvailable
+                    playingSound = state.playingSound
                     offline = false
                     botOffline = state.botOffline
                     channelMismatch = state.channelMissMatch

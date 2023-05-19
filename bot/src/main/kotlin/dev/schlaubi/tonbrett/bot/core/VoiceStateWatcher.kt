@@ -30,11 +30,13 @@ suspend fun findVoiceState(userId: Snowflake): User.VoiceState? {
         VoiceStateData::userId eq userId
     }.singleOrNull() ?: return null
 
-    val botChannel = kord.unsafe.guild(result.guildId).soundPlayer.channelId
+    val botState = kord.unsafe.guild(result.guildId).soundPlayer
+    val botChannel = botState.channelId
+    val playerAvailable = !botState.locked
 
     return User.VoiceState(
         botChannel == null, botChannel != result.channelId,
-        result.channelId!!, result.guildId
+        result.channelId!!, result.guildId, playerAvailable, botState.playingSound?.id
     )
 }
 
@@ -49,11 +51,16 @@ suspend fun getUsersInChannel(channelId: Snowflake?): List<Snowflake> =
 class VoiceStateWatcher : Extension() {
     override val name: String = "voice_state_watcher"
 
+    @OptIn(KordUnsafe::class, KordExperimental::class)
     override suspend fun setup() {
         event<VoiceStateUpdateEvent> {
             action {
                 if (event.state.userId == kord.selfId) {
                     val oldChannel = event.old?.channelId
+                    val player = event.kord.unsafe.guild(event.state.guildId).soundPlayer
+                    if (event.state.channelId == null) {
+                        player.reset()
+                    }
                     coroutineScope {
                         (getUsersInChannel(oldChannel) + getUsersInChannel(event.state.channelId)).forEach {
                             launch {
@@ -64,7 +71,8 @@ class VoiceStateWatcher : Extension() {
                     }
                 } else {
                     val voiceState = event.state
-                    val botChannelId = event.state.getGuild().soundPlayer.channelId
+                    val botState = event.state.getGuild().soundPlayer
+                    val botChannelId = botState.channelId
                     val botOffline = botChannelId == null
                     if (voiceState.channelId == null) {
                         sendEvent(voiceState.userId, APIVoiceStateUpdateEvent(null))
@@ -73,7 +81,9 @@ class VoiceStateWatcher : Extension() {
                             botOffline,
                             botChannelId != voiceState.channelId,
                             voiceState.channelId!!,
-                            voiceState.guildId
+                            voiceState.guildId,
+                            botState.locked,
+                            botState.playingSound?.id
                         )
 
                         sendEvent(

@@ -13,6 +13,8 @@ public data class User(
         val botOffline: Boolean,
         val channelMissMatch: Boolean,
         val channelId: SerializableSnowflake,
-        val guildId: SerializableSnowflake
+        val guildId: SerializableSnowflake,
+        val playerAvailable: Boolean,
+        val playingSound: Id<Sound>?
     )
 }

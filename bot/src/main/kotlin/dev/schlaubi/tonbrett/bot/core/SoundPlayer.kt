@@ -27,13 +27,21 @@ val GuildBehavior.soundPlayer: SoundPlayer
 
 class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
     private val player = guild.player
-    private var locked: Boolean = false
+    var playingSound: Sound? = null
+        private set
+    var locked: Boolean = false
+        private set
 
     @Suppress("INVISIBLE_MEMBER")
     val channelId: Snowflake? get() = player.link.lastChannelId?.let(::Snowflake)
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + SupervisorJob()
+
+    fun reset() {
+        playingSound = null
+        locked = false
+    }
 
     private suspend fun updateAvailability(
         available: Boolean, playingSound: Sound? = null,
@@ -51,6 +59,7 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
     suspend fun playSound(sound: Sound) {
         require(!locked) { "This player is currently locked" }
         locked = true
+        playingSound = sound
         updateAvailability(false, sound)
         val state = player.toState()
         val url = buildBotUrl {
@@ -68,6 +77,7 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
                 .single()
             state.applyToPlayer(player)
             locked = false
+            playingSound = null
             updateAvailability(true)
         }
     }

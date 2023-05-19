@@ -9,7 +9,9 @@ import dev.schlaubi.tonbrett.bot.command.emoji
 import dev.schlaubi.tonbrett.bot.command.sound
 import dev.schlaubi.tonbrett.bot.command.toEmoji
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
+import dev.schlaubi.tonbrett.bot.server.broadcastEvent
 import dev.schlaubi.tonbrett.common.Sound
+import dev.schlaubi.tonbrett.common.SoundUpdatedEvent
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
 
@@ -62,5 +64,7 @@ fun SubCommandModule.updateCommand() = ephemeralSubCommand(::UpdateSoundArgument
         respond {
             content = translate("commands.update_sound.success")
         }
+
+        broadcastEvent(SoundUpdatedEvent(newSound))
     }
 }
