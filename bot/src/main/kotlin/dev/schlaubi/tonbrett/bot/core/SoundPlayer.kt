@@ -26,7 +26,7 @@ val GuildBehavior.soundPlayer: SoundPlayer
     }
 
 class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
-    private val player = guild.player
+    val player = guild.player
     var playingSound: Sound? = null
         private set
     var locked: Boolean = false

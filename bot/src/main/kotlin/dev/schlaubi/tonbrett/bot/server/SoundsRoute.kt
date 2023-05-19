@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.koin.KordExContext
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.Kord
+import dev.schlaubi.lavakord.kord.connectAudio
 import dev.schlaubi.tonbrett.bot.core.soundPlayer
 import dev.schlaubi.tonbrett.bot.core.voiceState
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
@@ -55,8 +56,10 @@ fun Route.sounds() {
                 ?: badRequest(call.translate("rest.errors.not_connected_to_vc"))
             val player = kord.unsafe.guild(voiceState.guildId).soundPlayer
 
-            @Suppress("EQUALITY_NOT_APPLICABLE")
-            if (player.channelId != voiceState.channelId) {
+            @Suppress("INVISIBLE_MEMBER", "EQUALITY_NOT_APPLICABLE")
+            if (player.channelId == null) {
+                player.player.link.connectAudio(voiceState.channelId)
+            } else if (player.channelId != voiceState.channelId) {
                 badRequest(call.translate("rest.errors.vc_mismatch"))
             }
 

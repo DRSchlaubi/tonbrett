@@ -26,7 +26,6 @@ fun SoundList(errorReporter: ErrorReporter) {
     var sounds by remember { mutableStateOf<List<Sound>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var available by remember { mutableStateOf(true) }
-    var botOffline by remember { mutableStateOf(false) }
     var channelMismatch by remember { mutableStateOf(false) }
     var offline by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -46,10 +45,9 @@ fun SoundList(errorReporter: ErrorReporter) {
             available = voiceState.playerAvailable
             playingSound = voiceState.playingSound
             offline = false
-            botOffline = voiceState.botOffline
             channelMismatch = voiceState.channelMissMatch
         }
-        if (!loading && !botOffline && !channelMismatch && !offline) {
+        if (!loading && !channelMismatch && !offline) {
             reload()
         }
     }
@@ -95,9 +93,8 @@ fun SoundList(errorReporter: ErrorReporter) {
                     available = state.playerAvailable
                     playingSound = state.playingSound
                     offline = false
-                    botOffline = state.botOffline
                     channelMismatch = state.channelMissMatch
-                    if (!state.botOffline && !state.channelMissMatch) {
+                    if (!state.channelMissMatch) {
                         sounds = api.getSounds()
                     }
                 }
@@ -116,13 +113,12 @@ fun SoundList(errorReporter: ErrorReporter) {
         val strings = LocalStrings.current
         when {
             offline -> ErrorText(strings.offline)
-            botOffline -> ErrorText(strings.botOfflineExplainer)
             channelMismatch -> ErrorText(strings.wrongChannelExplainer)
             !loading && sounds.isEmpty() -> ErrorText(strings.noSounds)
         }
     }
 
-    if (!loading && !botOffline && !channelMismatch && !offline) {
+    if (!loading && !channelMismatch && !offline) {
         SoundContainer(sounds, errorReporter, playingSound, !available)
     }
 }
