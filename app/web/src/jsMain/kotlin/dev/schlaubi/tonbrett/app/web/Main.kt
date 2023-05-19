@@ -8,7 +8,7 @@ import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
 import io.ktor.resources.*
 import io.ktor.resources.serialization.*
-import kotlinx.browser.localStorage
+import kotlinx.browser.sessionStorage
 import kotlinx.browser.window
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.w3c.dom.get
@@ -19,10 +19,10 @@ fun main() {
     val path = url.pathSegments.filter(String::isNotBlank)
     if (path.take(2) != listOf("soundboard", "ui")) error("Invalid path base")
     if (path.size > 2 && path[2] == "login") {
-        localStorage[tokenKey] = url.parameters["token"] ?: error("Missing token")
+        sessionStorage[tokenKey] = url.parameters["token"] ?: error("Missing token")
         window.location.href = href(ResourcesFormat(), Route.Ui())
     } else {
-        if (localStorage[tokenKey] == null) {
+        if (sessionStorage[tokenKey] == null) {
             window.location.href = href(ResourcesFormat(), Route.Auth(type = Route.Auth.Type.WEB))
         } else {
             onWasmReady {
