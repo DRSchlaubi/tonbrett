@@ -4,6 +4,7 @@ import dev.schlaubi.tonbrett.common.Event
 import dev.schlaubi.tonbrett.common.Route
 import dev.schlaubi.tonbrett.common.Sound
 import dev.schlaubi.tonbrett.common.User
+import mu.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -14,12 +15,15 @@ import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.resources.*
+import io.ktor.serialization.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
+
+private val LOG = KotlinLogging.logger { }
 
 class Tonbrett(private val token: String, private val baseUrl: Url) {
     private val eventFlow = MutableSharedFlow<Event>()
@@ -59,7 +63,11 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
         }
 
         while (!session.incoming.isClosedForReceive) {
-            eventFlow.emit(session.receiveDeserialized())
+            try {
+                eventFlow.emit(session.receiveDeserialized())
+            } catch (e: WebsocketDeserializeException) {
+                LOG.warn(e) { "Could not deserialize incoming ws packet" }
+            }
         }
     }
 }

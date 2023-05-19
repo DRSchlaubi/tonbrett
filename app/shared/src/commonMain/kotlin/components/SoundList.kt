@@ -11,10 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.schlaubi.tonbrett.app.ErrorReporter
 import dev.schlaubi.tonbrett.app.api.api
+import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.common.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import mu.KotlinLogging
+
+private val LOG = KotlinLogging.logger {}
 
 @Composable
 fun SoundList(errorReporter: ErrorReporter) {
@@ -72,7 +76,7 @@ fun SoundList(errorReporter: ErrorReporter) {
                         sounds = sounds.filter { it.id != event.sound.id } + event.sound
                     }
 
-                    else -> println("Unknown event type: $event")
+                    else -> LOG.warn { "Unknown event type: $event" }
                 }
             }
             .launchIn(coroutineScope)
@@ -109,10 +113,12 @@ fun SoundList(errorReporter: ErrorReporter) {
 
 
     NonListBlock {
+        val strings = LocalStrings.current
         when {
-            offline -> ErrorText("you off")
-            botOffline -> ErrorText("bot off")
-            channelMismatch -> ErrorText("Wrong channel")
+            offline -> ErrorText(strings.offline)
+            botOffline -> ErrorText(strings.botOfflineExplainer)
+            channelMismatch -> ErrorText(strings.wrongChannelExplainer)
+            !loading && sounds.isEmpty() -> ErrorText(strings.noSounds)
         }
     }
 

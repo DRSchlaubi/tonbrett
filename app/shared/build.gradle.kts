@@ -3,6 +3,7 @@ plugins {
     //id("com.android.library")
     id("org.jetbrains.compose")
     kotlin("plugin.serialization")
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -15,8 +16,10 @@ kotlin {
             languageSettings.optIn("androidx.compose.material3.ExperimentalMaterial3Api")
         }
         commonMain {
+            kotlin.srcDir(file("$buildDir/generated/ksp/metadata/commonMain/kotlin"))
             dependencies {
                 api(projects.client)
+                api(libs.lyricist)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)

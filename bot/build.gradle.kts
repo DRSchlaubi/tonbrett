@@ -61,7 +61,7 @@ tasks {
 sourceSets {
     main {
         java {
-            srcDir(file("$buildDir/generated/ksp/main/kotlin"))
+            srcDir(file("$buildDir/generated/ksp/metadata/commonMain/kotlin"))
         }
     }
 }

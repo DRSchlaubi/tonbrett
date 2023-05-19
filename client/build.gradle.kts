@@ -11,6 +11,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.common)
+                api(libs.kotlin.logging)
                 api(libs.ktor.client.core)
                 api(libs.ktor.client.resources)
                 api(libs.ktor.client.content.negotiation)
