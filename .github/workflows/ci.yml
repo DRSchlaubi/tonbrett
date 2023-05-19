@@ -1,0 +1,33 @@
+name: Artifact CI
+
+on:
+  push:
+
+jobs:
+  publish_artifacts:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '19'
+      - name: Build plugin
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleBot     
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: plugin
+          path: bot/build/*.zip    
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: plugin
+          path: bot/build/plugin/*.zip           
+      - name: Upload plugin bot
+        uses: actions/upload-artifact@v3
+        with:
+          name: bot
+          path: bot/build/bot/*.zip           
