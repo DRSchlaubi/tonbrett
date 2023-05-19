@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: bot
+      MONGO_INITDB_ROOT_PASSWORD: bot
+    volumes:
+      - mongo-data:/data/db
+  bot:
+    image: ghcr.io/drschlaubi/tonbrett:main
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    volumes:
+      - ./sounds:/usr/app/sounds
+    ports:
+      - "127.0.0.1:8080:8080"
+volumes:
+  mongo-data: { }
