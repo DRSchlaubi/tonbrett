@@ -42,6 +42,10 @@ suspend fun getUsersInChannel(channelId: Snowflake): List<Snowflake> = kord.cach
     VoiceStateData::channelId eq channelId
 }.toCollection().map { it.userId }
 
+@JvmName("getUsersInChannelNullable")
+suspend fun getUsersInChannel(channelId: Snowflake?): List<Snowflake> =
+    channelId?.let { getUsersInChannel(it) } ?: emptyList()
+
 class VoiceStateWatcher : Extension() {
     override val name: String = "voice_state_watcher"
 
@@ -49,9 +53,9 @@ class VoiceStateWatcher : Extension() {
         event<VoiceStateUpdateEvent> {
             action {
                 if (event.state.userId == kord.selfId) {
-                    val oldChannel = event.old?.channelId ?: return@action
+                    val oldChannel = event.old?.channelId
                     coroutineScope {
-                        getUsersInChannel(oldChannel).forEach {
+                        (getUsersInChannel(oldChannel) + getUsersInChannel(event.state.channelId)).forEach {
                             launch {
                                 val voiceState = findVoiceState(it)
                                 sendEvent(it, APIVoiceStateUpdateEvent(voiceState))

@@ -3,6 +3,7 @@ package dev.schlaubi.tonbrett.bot.server
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.schlaubi.mikbot.plugin.api.config.Environment
 import dev.schlaubi.mikbot.util_plugins.ktor.api.KtorExtensionPoint
+import dev.schlaubi.tonbrett.common.Route
 import dev.schlaubi.mikbot.plugin.api.config.Config as BotConfig
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.*
@@ -11,6 +12,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -46,6 +48,10 @@ class Ktor : KtorExtensionPoint, KordExKoinComponent {
                 sounds()
                 users()
                 webSocket()
+            }
+
+            get<Route> {
+                call.respondRedirect(application.href(Route.Ui()))
             }
         }
 
