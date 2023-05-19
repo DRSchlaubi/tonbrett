@@ -15,19 +15,14 @@ jobs:
       - name: Build plugin
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: assembleBot     
+          arguments: assembleBot
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v3
         with:
           name: plugin
-          path: bot/build/*.zip    
-      - name: Upload plugin artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: plugin
-          path: bot/build/plugin/*.zip           
+          path: bot/build/plugin/*.zip
       - name: Upload plugin bot
         uses: actions/upload-artifact@v3
         with:
           name: bot
-          path: bot/build/bot/*.zip           
+          path: bot/build/bot/*.zip
