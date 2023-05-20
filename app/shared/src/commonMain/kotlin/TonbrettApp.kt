@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.schlaubi.tonbrett.app.api.api
+import dev.schlaubi.tonbrett.app.api.getToken
 import dev.schlaubi.tonbrett.app.api.reAuthorize
 import dev.schlaubi.tonbrett.app.components.ErrorText
 import dev.schlaubi.tonbrett.app.components.SoundList
@@ -23,7 +24,6 @@ import dev.schlaubi.tonbrett.app.strings.rememberStrings
 import io.ktor.client.plugins.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 
@@ -32,10 +32,10 @@ typealias ErrorReporter = suspend (ClientRequestException) -> Unit
 private val LOG = KotlinLogging.logger {}
 
 @Composable
-fun TonbrettApp() {
+fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableStateOf(false) }) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
-    var sessionExpired by remember { mutableStateOf(false) }
+    var sessionExpired by sessionExpiredState
     var crashed by remember { mutableStateOf(false) }
 
     val lyricist = rememberStrings()
@@ -46,6 +46,7 @@ fun TonbrettApp() {
 
         if (exception.response.status == HttpStatusCode.Unauthorized) {
             sessionExpired = true
+            crashed = false
         } else if (exception.message.isBlank()) {
             LOG.error(exception) { "An error happened during a rest request" }
         }
@@ -61,8 +62,9 @@ fun TonbrettApp() {
                 SoundList(::reportError)
             }
 
-            DisposableEffect(Unit) {
-                scope.launch {
+            DisposableEffect(getToken()) {
+                println("Recomposing ws")
+                val job = scope.launch {
                     try {
                         api.connect()
                     } catch (e: ClientRequestException) {
@@ -70,7 +72,7 @@ fun TonbrettApp() {
                     }
                     crashed = true
                 }
-                onDispose { scope.cancel() }
+                onDispose { job.cancel() }
             }
         } else {
             Column(
