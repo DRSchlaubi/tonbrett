@@ -42,3 +42,5 @@ bin/
 .DS_Store
 
 **/.test-env
+
+wix311/

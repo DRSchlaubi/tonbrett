@@ -12,11 +12,15 @@ dependencies {
     implementation(libs.ktor.server.netty)
 }
 
+
 compose.desktop {
     application {
         mainClass = "dev.schlaubi.tonbrett.app.desktop.MainKt"
 
         nativeDistributions {
+            modules(
+                "java.naming" // required by logback
+            )
             targetFormats(TargetFormat.Deb, TargetFormat.AppImage, TargetFormat.Msi, TargetFormat.Deb)
 
             packageName = "Tonbrett"
@@ -26,5 +30,14 @@ compose.desktop {
                 upgradeUuid = "c8bce0ed-113c-4d78-879b-78ed5c7d9f7f"
             }
         }
+
+        buildTypes {
+            release {
+                proguard {
+                    isEnabled = false
+                }
+            }
+        }
     }
 }
+

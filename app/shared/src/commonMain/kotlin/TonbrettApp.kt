@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.api
 import dev.schlaubi.tonbrett.app.api.getToken
 import dev.schlaubi.tonbrett.app.api.reAuthorize
@@ -24,6 +25,7 @@ import dev.schlaubi.tonbrett.app.strings.rememberStrings
 import io.ktor.client.plugins.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 
@@ -63,8 +65,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
             }
 
             DisposableEffect(getToken()) {
-                println("Recomposing ws")
-                val job = scope.launch {
+                val job = scope.launch(Dispatchers.IO) {
                     try {
                         api.connect()
                     } catch (e: ClientRequestException) {

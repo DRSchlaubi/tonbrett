@@ -10,10 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.schlaubi.tonbrett.app.ErrorReporter
+import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.api
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.common.*
 import io.ktor.client.plugins.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -91,7 +93,7 @@ fun SoundList(errorReporter: ErrorReporter) {
 
     if (loading) {
         DisposableEffect(Unit) {
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.IO) {
                 val state = try {
                     api.getMe().voiceState
                 } catch (e: ClientRequestException) {
