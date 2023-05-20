@@ -44,3 +44,4 @@ bin/
 **/.test-env
 
 wix311/
+local.properties

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.seconds
 
 private val players = mutableMapOf<Snowflake, SoundPlayer>()
 
@@ -54,21 +55,16 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
         }
     }
 
-    @OptIn(UnsafeRestApi::class)
     @Suppress("INVISIBLE_MEMBER", "SuspendFunctionOnCoroutineScope")
     suspend fun playSound(sound: Sound) {
         require(!locked) { "This player is currently locked" }
         locked = true
-        playingSound = sound
         updateAvailability(false, sound)
         val state = player.toState()
         val url = buildBotUrl {
             path("soundboard", "sounds", sound.id.toString(), "audio")
         }.toString()
-        player.link.node.updatePlayer(
-            guild.id, false,
-            UpdatePlayerRequest(identifier = url)
-        )
+        player.injectTrack(url)
         launch {
             // Wait for track to end
             player.player.events
@@ -76,9 +72,8 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
                 .take(1)
                 .single()
             locked = false
-            playingSound = null
             updateAvailability(true)
-            state.applyToPlayer(player)
+            val track = state.currentTrack?.track?.track ?: return@launch
         }
     }
 }
