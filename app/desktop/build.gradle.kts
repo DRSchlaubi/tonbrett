@@ -1,4 +1,6 @@
+import org.gradle.platform.OperatingSystem
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.org.jline.utils.OSUtils
 
 plugins {
     kotlin("jvm")
@@ -21,7 +23,11 @@ compose.desktop {
             modules(
                 "java.naming" // required by logback
             )
-            targetFormats(TargetFormat.Deb, TargetFormat.AppImage, TargetFormat.Msi, TargetFormat.Deb)
+            when {
+                OSUtils.IS_WINDOWS -> targetFormats(TargetFormat.Msi)
+                OSUtils.IS_OSX -> targetFormats(TargetFormat.Dmg)
+                else -> targetFormats(TargetFormat.Deb)
+            }
 
             licenseFile = rootProject.file("LICENSE")
 

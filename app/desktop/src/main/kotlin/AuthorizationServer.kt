@@ -9,7 +9,6 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-
 fun startAuthorizationServer(reAuthorize: Boolean, onAuth: () -> Unit) =
     embeddedServer(Netty, port = 12548, module = { authModule(onAuth) }).start(wait = !reAuthorize)
 
