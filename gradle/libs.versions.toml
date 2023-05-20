@@ -50,3 +50,4 @@ android-base = { id = "com.android.base", version.ref = "android" }
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "4.0.4" }

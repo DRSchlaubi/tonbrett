@@ -1,10 +1,12 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import dev.schlaubi.tonbrett.gradle.apiUrl
 
 plugins {
     kotlin("multiplatform")
     //id("com.android.library")
     id("org.jetbrains.compose")
     kotlin("plugin.serialization")
+    alias(libs.plugins.buildconfig)
     alias(libs.plugins.ksp)
 }
 
@@ -30,6 +32,7 @@ kotlin {
         }
         commonMain {
             kotlin.srcDir(file("$buildDir/generated/ksp/metadata/commonMain/kotlin"))
+            kotlin.srcDir(file("$buildDir/generated/buildConfig/metadata/main"))
             dependencies {
                 api(projects.client)
                 api(libs.lyricist)
@@ -56,4 +59,9 @@ kotlin {
             }
         }
     }
+}
+
+buildConfig {
+    packageName("dev.schlaubi.tonbrett.app.shared")
+    buildConfigField("String", "API_URL", "\"${project.apiUrl}\"")
 }
