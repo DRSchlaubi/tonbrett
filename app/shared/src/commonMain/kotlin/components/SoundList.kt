@@ -40,6 +40,11 @@ fun SoundList(errorReporter: ErrorReporter) {
     }
 
     fun reload(voiceState: User.VoiceState?) {
+        val didUpdate =
+            offline == (voiceState == null) &&
+                    available == voiceState?.playerAvailable &&
+                    playingSound == voiceState.playingSound
+
         if (voiceState == null) {
             offline = true
         } else {
@@ -48,7 +53,7 @@ fun SoundList(errorReporter: ErrorReporter) {
             offline = false
             channelMismatch = voiceState.channelMissMatch
         }
-        if (!loading && !channelMismatch && !offline) {
+        if (didUpdate && !loading && !channelMismatch && !offline && sounds.isEmpty()) {
             reload()
         }
     }
