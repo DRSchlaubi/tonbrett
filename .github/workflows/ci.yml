@@ -6,6 +6,9 @@ on:
 env:
   JAVA_VERSION: 19
 
+permissions:
+  contents: write
+
 jobs:
   build_bot_artifacts:
     name: Build Discord Bot
