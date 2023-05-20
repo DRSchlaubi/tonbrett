@@ -1,4 +1,3 @@
-import org.gradle.platform.OperatingSystem
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.org.jline.utils.OSUtils
 
@@ -35,6 +34,7 @@ compose.desktop {
             packageVersion = project.version.toString()
 
             windows {
+                menuGroup = "Tonbrett"
                 upgradeUuid = "c8bce0ed-113c-4d78-879b-78ed5c7d9f7f"
             }
         }
