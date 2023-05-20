@@ -45,6 +45,7 @@ bin/
 
 # Windows app
 wix311/
+local.properties
 # iOS App
 .externalNativeBuild
 .cxx
