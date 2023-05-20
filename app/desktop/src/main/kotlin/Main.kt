@@ -5,15 +5,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import dev.schlaubi.tonbrett.app.TonbrettApp
+import dev.schlaubi.tonbrett.app.api.AppContext
+import dev.schlaubi.tonbrett.app.api.ProvideContext
 import dev.schlaubi.tonbrett.app.api.getConfig
 import dev.schlaubi.tonbrett.app.api.getUrl
-import dev.schlaubi.tonbrett.app.api.reAuthorize
-import dev.schlaubi.tonbrett.app.api.resetApi
 import dev.schlaubi.tonbrett.app.title
 import dev.schlaubi.tonbrett.common.Route
-import io.ktor.http.*
-import io.ktor.resources.*
-import io.ktor.resources.serialization.*
+import io.ktor.http.URLBuilder
+import io.ktor.resources.href
+import io.ktor.resources.serialization.ResourcesFormat
 import java.awt.Desktop
 import java.net.URI
 
@@ -34,14 +34,21 @@ fun main(reAuthorize: Boolean, onAuth: () -> Unit) {
 fun startApplication() = application {
     val sessionExpired = remember { mutableStateOf(false) }
     Window(onCloseRequest = ::exitApplication, title = title) {
-        reAuthorize = {
-            window.isMinimized = true
-            main(reAuthorize = true) {
-                resetApi()
-                window.isMinimized = false
-                sessionExpired.value = false
+        val context = remember {
+            object : AppContext() {
+                override fun reAuthorize() {
+                    window.isMinimized = true
+                    main(reAuthorize = true) {
+                        resetApi()
+                        window.isMinimized = false
+                        sessionExpired.value = false
+                    }
+                }
             }
         }
-        TonbrettApp(sessionExpired)
+        context.resetApi()
+        ProvideContext(context) {
+            TonbrettApp(sessionExpired)
+        }
     }
 }

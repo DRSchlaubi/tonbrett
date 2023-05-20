@@ -1,9 +1,11 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import dev.schlaubi.tonbrett.gradle.apiUrl
+import dev.schlaubi.tonbrett.gradle.androidSdk
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("multiplatform")
-    //id("com.android.library")
+    id("com.android.library")
     id("org.jetbrains.compose")
     kotlin("plugin.serialization")
     alias(libs.plugins.buildconfig)
@@ -19,6 +21,21 @@ kotlin {
                 withAndroid()
                 withJvm()
             }
+
+            group("jvm") {
+                withAndroid()
+                withJvm()
+            }
+
+            group("mobile") {
+                withApple()
+                withAndroid()
+            }
+        }
+    }
+    android {
+        compilations.all {
+            compilerOptions.options.jvmTarget = JvmTarget.JVM_1_8
         }
     }
     jvm("desktop")
@@ -52,10 +69,18 @@ kotlin {
             }
         }
 
-        named("desktopMain") {
+        named("jvmMain") {
             dependencies {
                 implementation(libs.kmongo.id.serialization)
                 implementation(libs.kord.common)
+            }
+        }
+
+        afterEvaluate {
+            named("mobileMain") {
+                dependencies {
+                    api(libs.kvault)
+                }
             }
         }
     }
@@ -64,4 +89,13 @@ kotlin {
 buildConfig {
     packageName("dev.schlaubi.tonbrett.app.shared")
     buildConfigField("String", "API_URL", "\"${project.apiUrl}\"")
+}
+
+android {
+    namespace = "dev.schlaubi.tonbrett.app"
+    compileSdkVersion = androidSdk
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+    }
 }

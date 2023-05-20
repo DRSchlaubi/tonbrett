@@ -4,8 +4,6 @@ plugins {
     kotlin("jvm") apply false
     kotlin("multiplatform") apply false
     kotlin("android") apply false
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.android.library) apply false
     alias(libs.plugins.compose) apply false
 }
 

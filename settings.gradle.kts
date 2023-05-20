@@ -8,7 +8,8 @@ include(
     ":app",
     ":app:shared",
     ":app:web",
-    ":app:desktop"
+    ":app:desktop",
+    ":app:android"
 )
 
 pluginManagement {

@@ -2,6 +2,8 @@ package dev.schlaubi.tonbrett.app.web
 
 import androidx.compose.ui.window.CanvasBasedWindow
 import dev.schlaubi.tonbrett.app.TonbrettApp
+import dev.schlaubi.tonbrett.app.api.AppContext
+import dev.schlaubi.tonbrett.app.api.ProvideContext
 import dev.schlaubi.tonbrett.app.api.tokenKey
 import dev.schlaubi.tonbrett.app.title
 import dev.schlaubi.tonbrett.common.Route
@@ -13,6 +15,10 @@ import kotlinx.browser.window
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.w3c.dom.get
 import org.w3c.dom.set
+
+private val context = AppContext().apply {
+    resetApi()
+}
 
 fun main() {
     val url = Url(window.location.href)
@@ -27,7 +33,9 @@ fun main() {
         } else {
             onWasmReady {
                 CanvasBasedWindow(title) {
-                    TonbrettApp()
+                    ProvideContext(context) {
+                        TonbrettApp()
+                    }
                 }
             }
         }

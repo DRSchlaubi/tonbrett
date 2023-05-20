@@ -4,7 +4,6 @@ import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.schlaubi.mikbot.plugin.api.config.Environment
 import dev.schlaubi.mikbot.util_plugins.ktor.api.KtorExtensionPoint
 import dev.schlaubi.tonbrett.common.Route
-import dev.schlaubi.mikbot.plugin.api.config.Config as BotConfig
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.server.application.*
@@ -20,6 +19,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import org.litote.kmongo.id.serialization.IdKotlinXSerializationModule
 import org.pf4j.Extension
+import dev.schlaubi.mikbot.plugin.api.config.Config as BotConfig
 
 @Extension
 class Ktor : KtorExtensionPoint, KordExKoinComponent {
@@ -69,6 +69,10 @@ class Ktor : KtorExtensionPoint, KordExKoinComponent {
         }
         exception<OAuth2Exception> { call: ApplicationCall, cause: OAuth2Exception ->
             call.respond(HttpStatusCode.Unauthorized, cause.errorCode ?: "")
+        }
+
+        exception<IllegalArgumentException> { call, cause ->
+            call.respond(HttpStatusCode.BadRequest, cause.message.toString())
         }
     }
 }

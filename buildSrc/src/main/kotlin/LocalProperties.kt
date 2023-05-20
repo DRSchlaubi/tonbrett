@@ -6,13 +6,15 @@ import java.util.*
 val Project.apiUrl: String
     get() {
         val file = rootProject.file("local.properties")
-        return if (file.exists()) {
+        if (file.exists()) {
             val properties = Properties().apply {
                 load(file.bufferedReader())
             }
 
-            properties.getProperty("api.url")
-        } else {
-            "https://musikus.gutikus.schlau.bi"
+            val localUrl = properties.getProperty("api.url")
+            if(!localUrl.isNullOrBlank()) {
+                return localUrl
+            }
         }
+        return "https://musikus.gutikus.schlau.bi"
     }

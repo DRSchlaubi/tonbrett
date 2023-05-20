@@ -1,23 +1,42 @@
 package dev.schlaubi.tonbrett.app.api
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import dev.schlaubi.tonbrett.client.Tonbrett
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
+expect fun getUrl(): Url
+
+abstract class AppContextBase {
+    abstract fun getToken(): String
+
+    private val apiState = mutableStateOf<Tonbrett?>(null)
+
+    val api: Tonbrett get() = apiState.value ?: error("App not initialized")
+
+    fun resetApi() {
+        apiState.value = Tonbrett(getToken(), getUrl())
+    }
+}
+
+expect open class AppContext : AppContextBase {
+    fun reAuthorize()
+}
 
 expect val Dispatchers.IO: CoroutineDispatcher
 
-expect fun getToken(): String
-expect fun getUrl(): Url
 
-expect fun reAuthorize()
+val LocalContext: ProvidableCompositionLocal<AppContext> =
+    compositionLocalOf { error("App context does not have default") }
 
-fun resetApi() {
-    api = Tonbrett(getToken(), getUrl())
+@Composable
+fun ProvideContext(
+    context: AppContext,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalContext provides context,
+        content = content
+    )
 }
-
-var api by mutableStateOf(Tonbrett(getToken(), getUrl()))

@@ -12,13 +12,15 @@ const val tokenKey = "token"
 actual val Dispatchers.IO: CoroutineDispatcher
     get() = Main
 
-actual fun getToken() = sessionStorage[tokenKey] ?: error("Please sign in")
+actual open class AppContext : AppContextBase() {
+    override fun getToken() = sessionStorage[tokenKey] ?: error("Please sign in")
+
+    actual fun reAuthorize() {
+        sessionStorage.removeItem(tokenKey)
+        window.location.reload()
+    }
+}
 
 actual fun getUrl() = URLBuilder(window.location.href).apply {
     pathSegments = emptyList()
 }.build()
-
-actual fun reAuthorize() {
-    sessionStorage.removeItem(tokenKey)
-    window.location.reload()
-}

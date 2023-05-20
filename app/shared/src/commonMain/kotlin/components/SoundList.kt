@@ -5,16 +5,29 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.schlaubi.tonbrett.app.ErrorReporter
 import dev.schlaubi.tonbrett.app.api.IO
-import dev.schlaubi.tonbrett.app.api.api
+import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
-import dev.schlaubi.tonbrett.common.*
-import io.ktor.client.plugins.*
+import dev.schlaubi.tonbrett.common.Id
+import dev.schlaubi.tonbrett.common.InterfaceAvailabilityChangeEvent
+import dev.schlaubi.tonbrett.common.Sound
+import dev.schlaubi.tonbrett.common.SoundCreatedEvent
+import dev.schlaubi.tonbrett.common.SoundDeletedEvent
+import dev.schlaubi.tonbrett.common.SoundUpdatedEvent
+import dev.schlaubi.tonbrett.common.User
+import dev.schlaubi.tonbrett.common.VoiceStateUpdateEvent
+import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -32,6 +45,7 @@ fun SoundList(errorReporter: ErrorReporter) {
     var channelMismatch by remember { mutableStateOf(false) }
     var offline by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val api = LocalContext.current.api
 
     fun reload() {
         loading = true
@@ -43,9 +57,9 @@ fun SoundList(errorReporter: ErrorReporter) {
 
     fun reload(voiceState: User.VoiceState?) {
         val didUpdate =
-            offline == (voiceState == null) &&
-                    available == voiceState?.playerAvailable &&
-                    playingSound == voiceState.playingSound
+            offline != (voiceState == null) ||
+                    available != voiceState?.playerAvailable ||
+                    playingSound != voiceState.playingSound
 
         if (voiceState == null) {
             offline = true

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ErrorReporter
-import dev.schlaubi.tonbrett.app.api.api
+import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.Sound
 import io.ktor.client.plugins.*
@@ -54,6 +54,7 @@ fun SoundCard(
     val corners = RoundedCornerShape(10.dp)
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
+    val api = LocalContext.current.api
 
     ElevatedCard(
         colors = CardDefaults.cardColors(containerColor = ColorScheme.secondaryContainer),

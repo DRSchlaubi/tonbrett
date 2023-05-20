@@ -14,9 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.schlaubi.tonbrett.app.api.IO
-import dev.schlaubi.tonbrett.app.api.api
-import dev.schlaubi.tonbrett.app.api.getToken
-import dev.schlaubi.tonbrett.app.api.reAuthorize
+import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.components.ErrorText
 import dev.schlaubi.tonbrett.app.components.SoundList
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
@@ -39,6 +37,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
     val scaffoldState = rememberScaffoldState()
     var sessionExpired by sessionExpiredState
     var crashed by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     val lyricist = rememberStrings()
     suspend fun reportError(exception: ClientRequestException) {
@@ -64,10 +63,10 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                 SoundList(::reportError)
             }
 
-            DisposableEffect(getToken()) {
+            DisposableEffect(context.getToken()) {
                 val job = scope.launch(Dispatchers.IO) {
                     try {
-                        api.connect()
+                        context.api.connect()
                     } catch (e: ClientRequestException) {
                         reportError(e)
                     }
@@ -84,7 +83,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
             ) {
                 if (sessionExpired) {
                     CrashErrorScreen(LocalStrings.current.sessionExpiredExplainer) {
-                        Button({ reAuthorize() }) {
+                        Button({ context.reAuthorize() }) {
                             Icon(Icons.Default.Refresh, LocalStrings.current.reAuthorize)
                             Text(LocalStrings.current.reAuthorize, color = ColorScheme.textColor)
                         }
