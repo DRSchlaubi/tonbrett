@@ -84,7 +84,7 @@ class VoiceStateWatcher : Extension() {
                             !botOffline && channelMismatch,
                             voiceState.channelId!!,
                             voiceState.guildId,
-                            botState.locked,
+                            !botState.locked,
                             botState.playingSound?.id
                         )
 
