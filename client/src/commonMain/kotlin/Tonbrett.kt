@@ -14,6 +14,7 @@ import io.ktor.resources.*
 import io.ktor.serialization.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.util.cio.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -71,6 +72,8 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
             } catch (e: WebsocketDeserializeException) {
                 LOG.warn(e) { "Could not deserialize incoming ws packet" }
             } catch (e: EOFException) {
+                LOG.warn(e) { "Websocket connection closed unexpectedly" }
+            } catch (e: ChannelIOException) {
                 LOG.warn(e) { "Websocket connection closed unexpectedly" }
             }
         }

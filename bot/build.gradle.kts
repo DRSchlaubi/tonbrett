@@ -6,6 +6,10 @@ plugins {
     alias(libs.plugins.mikbot)
 }
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
     implementation(projects.common)
     implementation(libs.ktor.server.auth) {
