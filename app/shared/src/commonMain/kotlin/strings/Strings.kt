@@ -6,5 +6,7 @@ data class Strings(
     val botOfflineExplainer: String,
     val wrongChannelExplainer: String,
     val noSounds: String,
-    val offline: String
+    val offline: String,
+    val sessionExpiredExplainer: String,
+    val reAuthorize: String
 )

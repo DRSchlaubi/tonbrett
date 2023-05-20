@@ -75,10 +75,10 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
                 .filterIsInstance<TrackEndEvent>()
                 .take(1)
                 .single()
-            state.applyToPlayer(player)
             locked = false
             playingSound = null
             updateAvailability(true)
+            state.applyToPlayer(player)
         }
     }
 }

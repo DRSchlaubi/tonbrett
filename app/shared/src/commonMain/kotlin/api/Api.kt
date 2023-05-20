@@ -6,6 +6,8 @@ import io.ktor.http.*
 expect fun getToken(): String
 expect fun getUrl(): Url
 
+expect fun reAuthorize()
+
 //expect fun getLanguageTag(): String
 
 val api = Tonbrett(getToken(), getUrl())

@@ -1,10 +1,7 @@
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.icons.Icons
@@ -17,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.schlaubi.tonbrett.app.api.api
+import dev.schlaubi.tonbrett.app.api.reAuthorize
 import dev.schlaubi.tonbrett.app.components.ErrorText
 import dev.schlaubi.tonbrett.app.components.SoundList
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
@@ -24,6 +22,7 @@ import dev.schlaubi.tonbrett.app.strings.ProvideStrings
 import dev.schlaubi.tonbrett.app.strings.rememberStrings
 import io.ktor.client.plugins.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
@@ -36,6 +35,7 @@ private val LOG = KotlinLogging.logger {}
 fun TonbrettApp() {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
+    var sessionExpired by remember { mutableStateOf(false) }
     var crashed by remember { mutableStateOf(false) }
 
     val lyricist = rememberStrings()
@@ -44,7 +44,9 @@ fun TonbrettApp() {
             "An unknown error occurred check browser console for more"
         }
 
-        if (exception.message.isBlank()) {
+        if (exception.response.status == HttpStatusCode.Unauthorized) {
+            sessionExpired = true
+        } else if (exception.message.isBlank()) {
             LOG.error(exception) { "An error happened during a rest request" }
         }
 
@@ -52,7 +54,7 @@ fun TonbrettApp() {
     }
 
     ProvideStrings(lyricist) {
-        if (!crashed) {
+        if (!crashed && !sessionExpired) {
             Scaffold(
                 containerColor = ColorScheme.container,
                 snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) }) {
@@ -61,7 +63,11 @@ fun TonbrettApp() {
 
             DisposableEffect(Unit) {
                 scope.launch {
-                    api.connect()
+                    try {
+                        api.connect()
+                    } catch (e: ClientRequestException) {
+                        reportError(e)
+                    }
                     crashed = true
                 }
                 onDispose { scope.cancel() }
@@ -73,17 +79,32 @@ fun TonbrettApp() {
                 modifier = Modifier.background(ColorScheme.container)
                     .fillMaxSize()
             ) {
-                Row {
-                    ErrorText(LocalStrings.current.crashedExplainer)
-                }
-
-                Row {
-                    Button({ crashed = false }) {
-                        Icon(Icons.Default.Refresh, LocalStrings.current.reload)
-                        Text(LocalStrings.current.reload, color = ColorScheme.textColor)
+                if (sessionExpired) {
+                    CrashErrorScreen(LocalStrings.current.sessionExpiredExplainer) {
+                        Button({ reAuthorize() }) {
+                            Icon(Icons.Default.Refresh, LocalStrings.current.reAuthorize)
+                            Text(LocalStrings.current.reAuthorize, color = ColorScheme.textColor)
+                        }
+                    }
+                } else {
+                    CrashErrorScreen(LocalStrings.current.crashedExplainer) {
+                        Button({ crashed = false }) {
+                            Icon(Icons.Default.Refresh, LocalStrings.current.reload)
+                            Text(LocalStrings.current.reload, color = ColorScheme.textColor)
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CrashErrorScreen(text: String, button: @Composable RowScope.() -> Unit) {
+    Row {
+        ErrorText(text)
+    }
+    Row {
+        button()
     }
 }

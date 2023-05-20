@@ -9,5 +9,7 @@ val DeStrings = Strings(
     botOfflineExplainer = "Der Bot ist derzeit in keinem Sprachkanal, benutze /join um ihn deinem Kanal beitreten zu lassen",
     wrongChannelExplainer = "Du bist in einem anderen Sprachkanal als der bot, betrete entweder den Kanal des Bots oder hole ihn in deinen",
     noSounds = "Es gibt keine Sounds in dieser traurigen Welt",
-    offline = "Du bist derzeit in keinem Sprachkanal"
+    offline = "Du bist derzeit in keinem Sprachkanal",
+    sessionExpiredExplainer = "Deine derzeitige Sitzung ist abgelaufen, bitte melde dich neu an",
+    reAuthorize = "Neu anmelden"
 )

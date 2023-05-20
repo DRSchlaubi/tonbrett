@@ -12,3 +12,8 @@ actual fun getToken() = sessionStorage[tokenKey] ?: error("Please sign in")
 actual fun getUrl() = URLBuilder(window.location.href).apply {
     pathSegments = emptyList()
 }.build()
+
+ actual fun reAuthorize() {
+    sessionStorage.removeItem(tokenKey)
+    window.location.reload()
+}
