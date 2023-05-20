@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     kotlin("multiplatform")
     //id("com.android.library")
@@ -6,7 +8,18 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
+    targetHierarchy.default {
+        common {
+            group("nonWeb") {
+                withNative()
+                withAndroid()
+                withJvm()
+            }
+        }
+    }
+    jvm("desktop")
     js(IR) {
         browser()
     }
@@ -33,6 +46,13 @@ kotlin {
         named("jsMain") {
             dependencies {
                 api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:1.8.20")
+            }
+        }
+
+        named("desktopMain") {
+            dependencies {
+                implementation(libs.kmongo.id.serialization)
+                implementation(libs.kord.common)
             }
         }
     }

@@ -3,6 +3,7 @@ plugins {
 }
 
 kotlin {
+    jvm()
     js(IR) {
         browser()
     }
@@ -22,6 +23,12 @@ kotlin {
         named("jsMain") {
             dependencies {
                 implementation(libs.ktor.client.js)
+            }
+        }
+
+        named("jvmMain") {
+            dependencies {
+                implementation(libs.ktor.client.okhttp)
             }
         }
     }

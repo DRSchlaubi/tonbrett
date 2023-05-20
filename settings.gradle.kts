@@ -7,7 +7,8 @@ include(":common", ":bot", ":client")
 include(
     ":app",
     ":app:shared",
-    ":app:web"
+    ":app:web",
+    ":app:desktop"
 )
 
 pluginManagement {

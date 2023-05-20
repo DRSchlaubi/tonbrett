@@ -61,7 +61,8 @@ public class Route {
 
         @Serializable
         public enum class Type(public val redirectTo: String) {
-            WEB("/soundboard/ui/login?token=")
+            WEB("/soundboard/ui/login?token="),
+            APP("http://localhost:12548/login?token=")
         }
     }
 

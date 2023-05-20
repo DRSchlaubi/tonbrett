@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/app/desktop" />
             <option value="$PROJECT_DIR$/app/shared" />
             <option value="$PROJECT_DIR$/app/web" />
             <option value="$PROJECT_DIR$/bot" />

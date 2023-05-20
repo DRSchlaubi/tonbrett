@@ -1,10 +1,6 @@
 package dev.schlaubi.tonbrett.client
 
-import dev.schlaubi.tonbrett.common.Event
-import dev.schlaubi.tonbrett.common.Route
-import dev.schlaubi.tonbrett.common.Sound
-import dev.schlaubi.tonbrett.common.User
-import mu.KotlinLogging
+import dev.schlaubi.tonbrett.common.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -18,22 +14,27 @@ import io.ktor.resources.*
 import io.ktor.serialization.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.utils.io.core.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
+import mu.KotlinLogging
 
 private val LOG = KotlinLogging.logger { }
 
 class Tonbrett(private val token: String, private val baseUrl: Url) {
     private val eventFlow = MutableSharedFlow<Event>()
+    private val json = Json {
+        serializersModule = TonbrettSerializersModule
+    }
     private val client = HttpClient {
         expectSuccess = true
         install(ContentNegotiation) {
-            json()
+            json(json)
         }
         install(WebSockets) {
-            contentConverter = KotlinxWebsocketSerializationConverter(Json)
+            contentConverter = KotlinxWebsocketSerializationConverter(json)
         }
         install(Resources)
 
@@ -64,9 +65,13 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
 
         while (!session.incoming.isClosedForReceive) {
             try {
-                eventFlow.emit(session.receiveDeserialized())
+                val event = session.receiveDeserialized<Event>()
+                LOG.debug { "Received event: $event" }
+                eventFlow.emit(event)
             } catch (e: WebsocketDeserializeException) {
                 LOG.warn(e) { "Could not deserialize incoming ws packet" }
+            } catch (e: EOFException) {
+                LOG.warn(e) { "Websocket connection closed unexpectedly" }
             }
         }
     }
