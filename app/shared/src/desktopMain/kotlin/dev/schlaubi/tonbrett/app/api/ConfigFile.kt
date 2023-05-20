@@ -16,7 +16,7 @@ import kotlin.io.path.*
 data class Config(@EncodeDefault(EncodeDefault.Mode.NEVER) val sessionToken: String? = null)
 
 fun getAppDataFolder(): Path {
-    val basePath = if (System.getProperty("os.name").startsWith("windows")) {
+    val basePath = if (System.getProperty("os.name").contains("windows", ignoreCase = true)) {
         Path(System.getenv("APPDATA"))
     } else {
         Path(System.getProperty("user.home"))
