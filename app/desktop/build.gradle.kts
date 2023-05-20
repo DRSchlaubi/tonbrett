@@ -23,6 +23,8 @@ compose.desktop {
             )
             targetFormats(TargetFormat.Deb, TargetFormat.AppImage, TargetFormat.Msi, TargetFormat.Deb)
 
+            licenseFile = rootProject.file("LICENSE")
+
             packageName = "Tonbrett"
             packageVersion = project.version.toString()
 
