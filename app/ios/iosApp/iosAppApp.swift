@@ -34,7 +34,7 @@ struct TonbrettApp: App {
                 ComposeView()
             })
             .onOpenURL { incomingUrl in
-                if(incomingUrl.scheme == "tonbrett" && incomingUrl.host() == "login") {
+                if(incomingUrl.scheme == "tonbrett" && incomingUrl.host == "login") {
                     let token = incomingUrl.queryParameters!["token"]!
                     AuthenticationKt.setToken(token: token)
                     isShowingLoginView = false
