@@ -42,6 +42,9 @@ kotlin {
     js(IR) {
         browser()
     }
+    iosSimulatorArm64()
+    iosX64()
+    iosArm64()
 
     sourceSets {
         all {

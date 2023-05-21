@@ -7,6 +7,8 @@ package dev.schlaubi.tonbrett.app.strings
 import androidx.compose.runtime.*
 import cafe.adriel.lyricist.LanguageTag
 import cafe.adriel.lyricist.Lyricist
+import kotlin.experimental.ExperimentalObjCRefinement
+import kotlin.native.HiddenFromObjC
 
 expect fun getLanguageTag(): String
 

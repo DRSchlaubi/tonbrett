@@ -43,4 +43,14 @@ bin/
 
 **/.test-env
 
+# Windows app
 wix311/
+# iOS App
+.externalNativeBuild
+.cxx
+app/ios/Podfile.lock
+app/ios/Pods/*
+app/ios/iosApp.xcworkspace/*
+app/ios/iosApp.xcodeproj/*
+!app/ios/iosApp.xcodeproj/project.pbxproj
+app/ios/ios.podspec

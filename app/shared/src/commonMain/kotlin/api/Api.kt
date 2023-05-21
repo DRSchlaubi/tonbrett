@@ -5,6 +5,8 @@ import dev.schlaubi.tonbrett.client.Tonbrett
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlin.experimental.ExperimentalObjCRefinement
+import kotlin.native.HiddenFromObjC
 
 expect fun getUrl(): Url
 

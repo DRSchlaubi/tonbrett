@@ -5,3 +5,7 @@ plugins {
 repositories {
     mavenCentral()
 }
+
+dependencies {
+    compileOnly(kotlin("gradle-plugin"))
+}

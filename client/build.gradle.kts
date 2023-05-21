@@ -31,6 +31,9 @@ kotlin {
             compilerOptions.options.jvmTarget = JvmTarget.JVM_1_8
         }
     }
+    iosSimulatorArm64()
+    iosX64()
+    iosArm64()
 
     sourceSets {
         commonMain {
@@ -47,6 +50,12 @@ kotlin {
         named("jsMain") {
             dependencies {
                 implementation(libs.ktor.client.js)
+            }
+        }
+
+        named("appleMain") {
+            dependencies {
+                implementation(libs.ktor.client.darwin)
             }
         }
 

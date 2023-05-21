@@ -5,7 +5,6 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="testRunner" value="GRADLE" />
-        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="temurin-19" />
         <option name="modules">
@@ -14,6 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/app/android" />
             <option value="$PROJECT_DIR$/app/desktop" />
+            <option value="$PROJECT_DIR$/app/ios" />
             <option value="$PROJECT_DIR$/app/shared" />
             <option value="$PROJECT_DIR$/app/web" />
             <option value="$PROJECT_DIR$/bot" />
