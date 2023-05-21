@@ -16,9 +16,7 @@ import org.jetbrains.skiko.wasm.onWasmReady
 import org.w3c.dom.get
 import org.w3c.dom.set
 
-private val context = AppContext().apply {
-    resetApi()
-}
+private val context = AppContext()
 
 fun main() {
     val url = Url(window.location.href)
@@ -32,6 +30,7 @@ fun main() {
             window.location.href = href(ResourcesFormat(), Route.Auth(type = Route.Auth.Type.WEB))
         } else {
             onWasmReady {
+                context.resetApi()
                 CanvasBasedWindow(title) {
                     ProvideContext(context) {
                         TonbrettApp()
