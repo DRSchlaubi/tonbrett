@@ -114,7 +114,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: dev.schlaubi.tonbrett.android
           releaseFiles: app/android/build/outputs/bundle/release/tonbrett-app-release.aab
-          track: internal-testing
+          track: internal
 
   create_release:
     name: Create Release
