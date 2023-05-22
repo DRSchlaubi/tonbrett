@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ErrorReporter
+import dev.schlaubi.tonbrett.app.OptionalWebImage
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.Sound
@@ -32,8 +33,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SoundContainer(sounds: List<Sound>, errorReporter: ErrorReporter, playingSound: Id<Sound>?, disabled: Boolean) {
     LazyVerticalGrid(GridCells.Adaptive(160.dp)) {
-        items(sounds) { (id, name, _, description) ->
-            SoundCard(id, name, description, id == playingSound, errorReporter, disabled)
+        items(sounds) { (id, name, _, description, emoji) ->
+            SoundCard(id, name, emoji, description, id == playingSound, errorReporter, disabled)
         }
     }
     if (disabled) {
@@ -45,6 +46,7 @@ fun SoundContainer(sounds: List<Sound>, errorReporter: ErrorReporter, playingSou
 fun SoundCard(
     id: Id<Sound>,
     name: String,
+    emoji: Sound.Emoji?,
     description: String?,
     playing: Boolean,
     reportError: ErrorReporter,
@@ -84,11 +86,12 @@ fun SoundCard(
                 }
             }
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
         ) {
+            OptionalWebImage(emoji?.url, modifier = Modifier.size(16.dp).padding(end = 5.dp))
             Text(name, color = ColorScheme.textColor, fontSize = 16.sp)
         }
     }

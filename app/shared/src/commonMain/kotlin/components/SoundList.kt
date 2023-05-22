@@ -93,7 +93,9 @@ fun SoundList(errorReporter: ErrorReporter) {
                     }
 
                     is SoundUpdatedEvent -> {
-                        sounds = sounds.filter { it.id != event.sound.id } + event.sound
+                        val copy = sounds.toMutableList()
+                        copy[copy.indexOfFirst { it.id == event.sound.id }] = event.sound
+                        sounds = copy
                     }
 
                     else -> LOG.warn { "Unknown event type: $event" }

@@ -1,5 +1,6 @@
 import dev.schlaubi.tonbrett.gradle.sdkInt
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -25,9 +26,20 @@ android {
         applicationId = "dev.schlaubi.tonbrett.android"
         minSdk = 26
         targetSdk = sdkInt
-        versionCode = 1
+        versionCode = System.getenv("GITHUB_RUN_ID")?.drop(4)?.toInt() ?: 1
         versionName = rootProject.version.toString()
     }
+
+    buildTypes {
+        release {
+            applicationVariants.all {
+                outputs.all {
+                    archivesName = "tonbrett-app"
+                }
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
     }

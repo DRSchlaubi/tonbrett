@@ -20,6 +20,11 @@ kotlin {
                 withNative()
                 withAndroid()
                 withJvm()
+
+                group("nonWebSkia") {
+                    withApple()
+                    withJvm()
+                }
             }
 
             group("jvm") {
@@ -79,11 +84,15 @@ kotlin {
             }
         }
 
-        afterEvaluate {
-            named("mobileMain") {
-                dependencies {
-                    api(libs.kvault)
-                }
+        named("nonWebMain") {
+            dependencies {
+                api(libs.imageloader)
+            }
+        }
+
+        named("mobileMain") {
+            dependencies {
+                api(libs.kvault)
             }
         }
     }
