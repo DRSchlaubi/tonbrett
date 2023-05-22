@@ -1,5 +1,6 @@
 import dev.schlaubi.tonbrett.gradle.sdkInt
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -25,9 +26,28 @@ android {
         applicationId = "dev.schlaubi.tonbrett.android"
         minSdk = 26
         targetSdk = sdkInt
-        versionCode = 1
+        versionCode = System.getenv("GITHUB_RUN_ID")?.toInt() ?: 1
         versionName = rootProject.version.toString()
     }
+    val releaseSigningConfig by signingConfigs.creating {
+        storeFile = rootProject.file("keystore/android_keystore.jks")
+        storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+        keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+        keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+    }
+
+    buildTypes {
+        release {
+            applicationVariants.all {
+                outputs.all {
+                    archivesName = "tonbrett-app"
+                }
+            }
+
+            signingConfig = releaseSigningConfig
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
     }

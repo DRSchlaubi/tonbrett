@@ -1,3 +1,5 @@
+@file:JvmName("ImageLoaderAndroid")
+
 package dev.schlaubi.tonbrett.app
 
 import com.seiko.imageloader.component.ComponentRegistryBuilder
