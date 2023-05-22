@@ -51,8 +51,6 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
         } else if (exception.message.isBlank()) {
             LOG.error(exception) { "An error happened during a rest request" }
         }
-
-        scaffoldState.snackbarHostState.showSnackbar(errorMessage)
     }
 
     ProvideStrings(lyricist) {

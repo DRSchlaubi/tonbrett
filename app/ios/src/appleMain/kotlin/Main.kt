@@ -1,4 +1,5 @@
 import androidx.compose.ui.window.ComposeUIViewController
+import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.TonbrettApp
 import dev.schlaubi.tonbrett.app.api.ProvideContext
 import platform.UIKit.UIAlertController
@@ -16,9 +17,11 @@ fun MainUiViewController(): UIViewController {
             onReauthorization()
         }
     }
-     val controller = ComposeUIViewController {
+    val controller = ComposeUIViewController {
         ProvideContext(context) {
-            TonbrettApp()
+            ProvideImageLoader {
+                TonbrettApp()
+            }
         }
     }
 

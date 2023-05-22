@@ -11,7 +11,7 @@ const val tokenKey = "token"
 actual val Dispatchers.IO: CoroutineDispatcher
     get() = IO
 
-actual open class AppContext(androidContext: Context) : AppContextBase() {
+actual open class AppContext(val androidContext: Context) : AppContextBase() {
     val vault = KVault(androidContext)
 
     fun getTokenOrNull() = vault.string(tokenKey)

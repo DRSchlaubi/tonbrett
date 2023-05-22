@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+ import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.TonbrettApp
 import dev.schlaubi.tonbrett.app.api.AppContext
 import dev.schlaubi.tonbrett.app.api.ProvideContext
@@ -21,7 +22,9 @@ class AppActivity : AppCompatActivity() {
             }
             context.resetApi()
             ProvideContext(context) {
-                TonbrettApp()
+                ProvideImageLoader {
+                    TonbrettApp()
+                }
             }
         }
     }
