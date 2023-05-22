@@ -26,7 +26,7 @@ android {
         applicationId = "dev.schlaubi.tonbrett.android"
         minSdk = 26
         targetSdk = sdkInt
-        versionCode = System.getenv("GITHUB_RUN_ID")?.toInt() ?: 1
+        versionCode = System.getenv("GITHUB_RUN_ID")?.drop(4)?.toInt() ?: 1
         versionName = rootProject.version.toString()
     }
     val releaseSigningConfig by signingConfigs.creating {
