@@ -106,7 +106,7 @@ jobs:
   create_release:
     name: Create Release
     runs-on: windows-latest # for some weird reason this job does not get picked on ubuntu
-    needs: [build_bot_artifacts, build_desktop_app]
+    needs: [build_bot_artifacts, build_desktop_app, build_android_app]
     steps:
       - uses: actions/download-artifact@v3
         name: Download Artifacts from Ubuntu
