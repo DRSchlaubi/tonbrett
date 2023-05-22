@@ -99,7 +99,7 @@ jobs:
           path: app/android/build/outputs/apk/release/*.apk
       - uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: ${{ SERVICE_ACCOUNT_JSON }}
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: dev.schlaubi.tonbrett.app.android
           releaseFiles: app/android/build/outputs/bundle/release/tonbrett-app-release.aab
           track: internal-testing
