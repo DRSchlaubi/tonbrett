@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'ios'
-    spec.version                  = '1.3.0'
+    spec.version                  = '1.5.0'
     spec.homepage                 = 'https://github.com/DRSchlaubi/tonbrett'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''

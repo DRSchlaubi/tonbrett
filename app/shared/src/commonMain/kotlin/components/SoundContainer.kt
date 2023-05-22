@@ -91,7 +91,7 @@ fun SoundCard(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
         ) {
-            OptionalWebImage(emoji?.url, modifier = Modifier.size(16.dp).padding(end = 5.dp))
+            OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
             Text(name, color = ColorScheme.textColor, fontSize = 16.sp)
         }
     }
