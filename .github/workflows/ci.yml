@@ -91,7 +91,7 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         with:
-          arguments: :app:desktop:bundleRelease :app:desktop:assembleRelease
+          arguments: :app:android:bundleRelease :app:android:assembleRelease
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
