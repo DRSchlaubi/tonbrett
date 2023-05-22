@@ -2,7 +2,7 @@
   <artifact type="jar" name="web-js-1.3.0">
     <output-path>$PROJECT_DIR$/app/web/build/libs</output-path>
     <root id="archive" name="web-js-1.3.0.jar">
-      <element id="module-output" name="dev.schlaubi.tonbrett.tonbrett.app.web.jsMain" />
+      <element id="module-output" name="tonbrett.app.web.jsMain" />
     </root>
   </artifact>
 </component>

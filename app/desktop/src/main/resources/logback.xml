@@ -6,7 +6,7 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${APPDATA}/omsi-launcher/logs/logFile.log</file>
+        <file>${APPDATA}/Tonbrett/logs/logFile.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${APPDATA}/Tonbrett/logs/logFile.%d{yyyy-MM-dd}.log</fileNamePattern>

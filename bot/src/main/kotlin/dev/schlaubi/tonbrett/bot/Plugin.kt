@@ -5,7 +5,7 @@ import dev.kord.gateway.Intent
 import dev.schlaubi.mikbot.plugin.api.Plugin
 import dev.schlaubi.mikbot.plugin.api.PluginContext
 import dev.schlaubi.mikbot.plugin.api.PluginMain
- import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
+import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.tonbrett.bot.commands.*
 import dev.schlaubi.tonbrett.bot.core.VoiceStateWatcher
 
