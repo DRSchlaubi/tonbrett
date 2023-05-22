@@ -29,12 +29,6 @@ android {
         versionCode = System.getenv("GITHUB_RUN_ID")?.drop(4)?.toInt() ?: 1
         versionName = rootProject.version.toString()
     }
-    val releaseSigningConfig by signingConfigs.creating {
-        storeFile = rootProject.file("keystore/android_keystore.jks")
-        storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-        keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-        keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
-    }
 
     buildTypes {
         release {
@@ -43,8 +37,6 @@ android {
                     archivesName = "tonbrett-app"
                 }
             }
-
-            signingConfig = releaseSigningConfig
         }
     }
 

@@ -72,6 +72,7 @@ jobs:
             app/desktop/build/compose/binaries/main-release/dmg/*.dmg
   build_android_app:
     runs-on: ubuntu-latest
+    name: Build Android App
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -97,12 +98,24 @@ jobs:
         with:
           name: android-app
           path: app/android/build/outputs/apk/release/*.apk
+      - uses: r0adkll/sign-android-release@v1
+        id: sign_bundle
+        name: Sign app APK
+        with:
+          releaseDirectory: app/android/build/outputs/bundle/release/
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
       - uses: r0adkll/upload-google-play@v1
+        name: Release on Play Store
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: dev.schlaubi.tonbrett.app.android
-          releaseFiles: app/android/build/outputs/bundle/release/tonbrett-app-release.aab
+          releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
           track: internal-testing
+
   create_release:
     name: Create Release
     runs-on: windows-latest # for some weird reason this job does not get picked on ubuntu
