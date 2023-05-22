@@ -40,11 +40,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
     val context = LocalContext.current
 
     val lyricist = rememberStrings()
-    suspend fun reportError(exception: ClientRequestException) {
-        val errorMessage = exception.response.bodyAsText().ifBlank {
-            "An unknown error occurred check browser console for more"
-        }
-
+    fun reportError(exception: ClientRequestException) {
         if (exception.response.status == HttpStatusCode.Unauthorized) {
             sessionExpired = true
             crashed = false
