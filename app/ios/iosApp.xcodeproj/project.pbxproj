@@ -105,9 +105,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8E3F49822A1A51E7001D2B92 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
-				8E08223E2A1CB20700852A6B /* Ensure build environment is available */,
-				85433CD92AD76BFD949C6466 /* [CP] Check Pods Manifest.lock */,
 				8E3F496F2A1A51E5001D2B92 /* Sources */,
+				85433CD92AD76BFD949C6466 /* [CP] Check Pods Manifest.lock */,
 				8E3F49702A1A51E5001D2B92 /* Frameworks */,
 				8E3F49712A1A51E5001D2B92 /* Resources */,
 				C6EB1AFF7763061CB96D186D /* [CP] Embed Pods Frameworks */,
@@ -189,24 +188,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		8E08223E2A1CB20700852A6B /* Ensure build environment is available */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Ensure build environment is available";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\nif type -p java; then\n    echo found java executable in PATH\nelse\n  curl -s \"https://get.sdkman.io\" | bash\n  source \"$HOME/.sdkman/bin/sdkman-init.sh\"\n  sdk install java 19.0.1-tem  \nfi\n";
 		};
 		C6EB1AFF7763061CB96D186D /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
