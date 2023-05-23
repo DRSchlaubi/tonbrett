@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="web-js-1.0-SNAPSHOT">
-    <output-path>$PROJECT_DIR$/app/web/build/libs</output-path>
-    <root id="archive" name="web-js-1.0-SNAPSHOT.jar">
-      <element id="module-output" name="tonbrett.app.web.jsMain" />
-    </root>
-  </artifact>
-</component>

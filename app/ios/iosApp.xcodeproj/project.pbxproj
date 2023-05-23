@@ -105,8 +105,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8E3F49822A1A51E7001D2B92 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
-				8E3F496F2A1A51E5001D2B92 /* Sources */,
 				85433CD92AD76BFD949C6466 /* [CP] Check Pods Manifest.lock */,
+				8E3F496F2A1A51E5001D2B92 /* Sources */,
 				8E3F49702A1A51E5001D2B92 /* Frameworks */,
 				8E3F49712A1A51E5001D2B92 /* Resources */,
 				C6EB1AFF7763061CB96D186D /* [CP] Embed Pods Frameworks */,

@@ -81,12 +81,7 @@ kotlin {
             dependencies {
                 implementation(libs.kmongo.id.serialization)
                 implementation(libs.kord.common)
-            }
-        }
-
-        named("nonWebMain") {
-            dependencies {
-                api(libs.imageloader)
+                implementation(libs.imageloader)
             }
         }
 

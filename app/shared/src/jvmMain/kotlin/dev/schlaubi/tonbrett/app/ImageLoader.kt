@@ -19,7 +19,7 @@ private val LOG = KotlinLogging.logger { }
 internal expect fun ComponentRegistryBuilder.registerComponents(appContext: AppContext)
 
 @Composable
-actual fun OptionalWebImage(url: String?, contentDescription: String?, modifier: Modifier) {
+actual fun OptionalWebImageInternal(url: String?, contentDescription: String?, modifier: Modifier) {
     if (url != null) {
         val painter = rememberAsyncImagePainter(url)
 
