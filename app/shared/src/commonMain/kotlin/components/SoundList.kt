@@ -148,7 +148,9 @@ fun SoundList(errorReporter: ErrorReporter) {
     }
 
     if (!loading && !channelMismatch && !offline) {
-        SoundContainer(sounds, errorReporter, playingSound, !available)
+        SoundContainer(sounds, errorReporter, playingSound, !available) {
+            sounds = it
+        }
     }
 }
 

@@ -11,5 +11,8 @@ val EnStrings = Strings(
     noSounds = "There are no sounds in this sad world :(",
     offline = "You are currently not connected to a voice channel",
     sessionExpiredExplainer = "Your session expired! Please sign in again",
-    reAuthorize = "Re-login"
+    reAuthorize = "Re-login",
+    searchExplainer = "Search for sounds",
+    search = "Search",
+    onlineMine = "Only mine"
 )

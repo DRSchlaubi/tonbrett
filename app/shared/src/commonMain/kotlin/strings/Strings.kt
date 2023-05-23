@@ -8,5 +8,8 @@ data class Strings(
     val noSounds: String,
     val offline: String,
     val sessionExpiredExplainer: String,
-    val reAuthorize: String
+    val reAuthorize: String,
+    val searchExplainer: String,
+    val search: String,
+    val onlineMine: String
 )

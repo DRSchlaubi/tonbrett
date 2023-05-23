@@ -39,7 +39,7 @@ fun Route.sounds() {
         val query = if (queryString.isNullOrBlank()) {
             null
         } else {
-            KMongoUtil.toBson("{name: /$queryString/}")
+            KMongoUtil.toBson("{name: /$queryString/i}")
         }
 
         @Language("MongoDB-JSON")

@@ -11,5 +11,8 @@ val DeStrings = Strings(
     noSounds = "Es gibt keine Sounds in dieser traurigen Welt",
     offline = "Du bist derzeit in keinem Sprachkanal",
     sessionExpiredExplainer = "Deine derzeitige Sitzung ist abgelaufen, bitte melde dich neu an",
-    reAuthorize = "Neu anmelden"
+    reAuthorize = "Neu anmelden",
+    searchExplainer = "Nach Sounds suchen",
+    search = "Suche",
+    onlineMine = "Nur eigene"
 )

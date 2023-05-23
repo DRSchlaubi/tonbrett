@@ -31,14 +31,23 @@ import io.ktor.client.plugins.*
 import kotlinx.coroutines.launch
 
 @Composable
-fun SoundContainer(sounds: List<Sound>, errorReporter: ErrorReporter, playingSound: Id<Sound>?, disabled: Boolean) {
-    LazyVerticalGrid(GridCells.Adaptive(160.dp)) {
-        items(sounds) { (id, name, _, description, emoji) ->
-            SoundCard(id, name, emoji, description, id == playingSound, errorReporter, disabled)
+fun SoundContainer(
+    sounds: List<Sound>,
+    errorReporter: ErrorReporter,
+    playingSound: Id<Sound>?,
+    disabled: Boolean,
+    soundUpdater: SoundUpdater
+) {
+    Column {
+        SearchBar(soundUpdater)
+        LazyVerticalGrid(GridCells.Adaptive(160.dp)) {
+            items(sounds) { (id, name, _, description, emoji) ->
+                SoundCard(id, name, emoji, description, id == playingSound, errorReporter, disabled)
+            }
         }
-    }
-    if (disabled) {
-        Box(modifier = Modifier.fillMaxSize().background(ColorScheme.disabled.copy(alpha = .4f))) {}
+        if (disabled) {
+            Box(modifier = Modifier.fillMaxSize().background(ColorScheme.disabled.copy(alpha = .4f))) {}
+        }
     }
 }
 
