@@ -1,3 +1,4 @@
+@file:JvmName("ImageLoaderDesktop")
 package dev.schlaubi.tonbrett.app
 
 import com.seiko.imageloader.component.ComponentRegistryBuilder

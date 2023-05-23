@@ -1,3 +1,4 @@
+@file:JvmName("ImageLoaderJvm")
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.foundation.Image
