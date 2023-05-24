@@ -1,8 +1,11 @@
 package dev.schlaubi.tonbrett.app.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -42,14 +45,21 @@ fun SearchBar(updateSounds: SoundUpdater) {
 
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp)
     ) {
         SearchField(value, onlineMine, updateSounds, ::updateSearch)
         Spacer(Modifier.padding(horizontal = 5.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             OnlineMineCheckbox(onlineMine, value, updateSounds, ::updateOnlineMine)
-            Spacer(Modifier.padding(horizontal = 2.dp))
-            Text(strings.onlineMine, color = ColorScheme.textColor)
+            BoxWithConstraints {
+                if (maxWidth >= 30.dp) {
+                    Spacer(Modifier.padding(horizontal = 2.dp))
+                    Text(strings.onlineMine, color = ColorScheme.textColor)
+                } else {
+                    Icon(Icons.Default.Person, "Only mine", tint = ColorScheme.secondaryContainer)
+                }
+            }
         }
     }
 }
@@ -73,7 +83,6 @@ private fun SearchField(value: String, onlyMine: Boolean, updateSounds: SoundUpd
         updates
             .debounce(300.milliseconds)
             .onEach {
-                println("Reque")
                 withContext(Dispatchers.IO) {
                     updateSounds(api.getSounds(onlyMine, it.ifBlank { null }))
                 }
@@ -99,14 +108,20 @@ private fun SearchField(value: String, onlyMine: Boolean, updateSounds: SoundUpd
         singleLine = true,
         modifier = Modifier.fillMaxWidth(.8f)
     )
-
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun OnlineMineCheckbox(checked: Boolean, search: String,updateSounds: SoundUpdater, updateValue: (Boolean) -> Unit) {
+private fun OnlineMineCheckbox(
+    checked: Boolean,
+    search: String,
+    updateSounds: SoundUpdater,
+    updateValue: (Boolean) -> Unit
+) {
     var disabled by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val api = LocalContext.current.api
+    var showToolTip by remember { mutableStateOf(false) }
 
     fun update(to: Boolean) {
         if (disabled) return
