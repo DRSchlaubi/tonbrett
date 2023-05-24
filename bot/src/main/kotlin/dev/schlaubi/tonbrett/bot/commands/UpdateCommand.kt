@@ -7,6 +7,7 @@ import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.mikbot.plugin.api.util.discordError
 import dev.schlaubi.tonbrett.bot.command.emoji
 import dev.schlaubi.tonbrett.bot.command.sound
+import dev.schlaubi.tonbrett.bot.command.tagArgument
 import dev.schlaubi.tonbrett.bot.command.toEmoji
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.server.broadcastEvent
@@ -33,6 +34,8 @@ class UpdateSoundArguments : Arguments() {
     }
 
     val emoji by emoji("emoji", "commands.update_sound.arguments.emoji.description")
+
+    val tag by tagArgument("tag", "commands.update_sound.arguments.tag.description")
 }
 
 fun SubCommandModule.updateCommand() = ephemeralSubCommand(::UpdateSoundArguments) {
@@ -57,7 +60,8 @@ fun SubCommandModule.updateCommand() = ephemeralSubCommand(::UpdateSoundArgument
         val newSound = sound.copy(
             name = arguments.name ?: sound.name,
             description = arguments.description ?: sound.description,
-            emoji = arguments.emoji?.toEmoji() ?: sound.emoji
+            emoji = arguments.emoji?.toEmoji() ?: sound.emoji,
+            tag = arguments.tag ?: sound.tag
         )
 
         SoundBoardDatabase.sounds.save(newSound)

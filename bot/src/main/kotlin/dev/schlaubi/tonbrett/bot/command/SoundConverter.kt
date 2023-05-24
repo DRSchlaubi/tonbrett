@@ -17,7 +17,11 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.schlaubi.mikbot.plugin.api.util.discordError
 import dev.schlaubi.mikbot.plugin.api.util.safeInput
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
+import dev.schlaubi.tonbrett.bot.io.search
 import dev.schlaubi.tonbrett.common.Sound
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import org.bson.types.ObjectId
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
@@ -60,12 +64,9 @@ class SoundConverter(validator: Validator<Sound>) : SingleConverter<Sound>(valid
                 return true
             }
 
-            val foundByName = SoundBoardDatabase.sounds.findOne(
-                and(
-                    Sound::owner eq context.getUser()?.id,
-                    Sound::name eq text
-                )
-            )
+            val foundByName = SoundBoardDatabase.sounds
+                .search(text, true, context.getUser()!!.id)
+                .firstOrNull()
             if (foundByName != null) {
                 parsed = foundByName
             } else {
@@ -81,17 +82,11 @@ class SoundConverter(validator: Validator<Sound>) : SingleConverter<Sound>(valid
 
     private suspend fun AutoCompleteInteraction.onAutoComplete() {
         val input = focusedOption.safeInput
-        val sounds = SoundBoardDatabase.sounds.find(Sound::owner eq user.id)
-            .toList().asSequence()
-
-        val results = if (input.isBlank()) {
-            sounds
-        } else {
-            sounds.filter { it.name.startsWith(input) }
-        }
+        val sounds = SoundBoardDatabase.sounds
+            .search(input, true, user.id)
 
         suggestString {
-            results.take(25).forEach {
+            sounds.take(25).toList().forEach {
                 choice(it.name, "id:${it.id}")
             }
         }

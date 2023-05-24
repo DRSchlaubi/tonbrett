@@ -26,7 +26,8 @@ public data class Sound(
     @EncodeDefault(EncodeDefault.Mode.NEVER)
     val emoji: Emoji? = null,
     @EncodeDefault(EncodeDefault.Mode.NEVER)
-    val public: Boolean = true
+    val public: Boolean = true,
+    val tag: String? = null
 ) {
     /**
      * The file name of this sounds audio file.

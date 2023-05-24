@@ -11,6 +11,7 @@ import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.mikbot.plugin.api.util.kord
 import dev.schlaubi.mikbot.plugin.api.util.safeGuild
 import dev.schlaubi.tonbrett.bot.command.emoji
+import dev.schlaubi.tonbrett.bot.command.tagArgument
 import dev.schlaubi.tonbrett.bot.command.toEmoji
 import dev.schlaubi.tonbrett.bot.config.Config
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
@@ -47,6 +48,8 @@ class AddSoundCommandArguments : Arguments() {
     }
 
     val emoji by emoji("emoji", "commands.add_sound.arguments.emoji.description")
+
+    val tag by tagArgument("tag", "commands.add_sound.arguments.tag.description")
 }
 
 fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArguments) {
@@ -90,7 +93,8 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
         }
         val sound = Sound(
             id, arguments.name, user.id,
-            arguments.description, arguments.emoji?.toEmoji()
+            arguments.description, arguments.emoji?.toEmoji(),
+            tag = arguments.tag
         )
         val file = Config.SOUNDS_FOLDER / sound.fileName
         val soundsFolder = file.parent

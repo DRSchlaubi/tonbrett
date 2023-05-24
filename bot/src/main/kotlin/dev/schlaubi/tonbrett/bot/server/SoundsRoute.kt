@@ -9,6 +9,7 @@ import dev.schlaubi.tonbrett.bot.core.soundPlayer
 import dev.schlaubi.tonbrett.bot.core.voiceState
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.io.findById
+import dev.schlaubi.tonbrett.bot.io.search
 import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.bot.util.soundNotFound
 import dev.schlaubi.tonbrett.bot.util.translate
@@ -21,6 +22,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.Route
 import org.intellij.lang.annotations.Language
 import org.litote.kmongo.and
+import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.eq
 import org.litote.kmongo.util.KMongoUtil
 
@@ -29,24 +31,7 @@ fun Route.sounds() {
     val kord by KordExContext.get().inject<Kord>()
 
     get<Sounds> { (onlyMine, queryString) ->
-        val user = call.user
-        val filter = if (onlyMine) {
-            Sound::owner eq user.id
-        } else {
-            null
-        }
-
-        val query = if (queryString.isNullOrBlank()) {
-            null
-        } else {
-            KMongoUtil.toBson("{name: /$queryString/i}")
-        }
-
-        @Language("MongoDB-JSON")
-        val result = SoundBoardDatabase.sounds
-            .find(and(listOfNotNull(filter, query))).toList()
-
-        call.respond(result)
+        call.respond(SoundBoardDatabase.sounds.search(queryString, onlyMine, call.user.id))
     }
 
     authenticated {
