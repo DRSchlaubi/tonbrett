@@ -12,7 +12,6 @@ import kotlinx.serialization.json.JsonClassDiscriminator
  * @property owner the id of the user who owns this sound
  * @property description an optional description of this sound
  * @property emoji an optional [Emoji] representing this sound
- * @property public whether this sound is public
  */
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -61,7 +60,6 @@ public data class Sound(
      * Representation of a Guild custom emoji.
      *
      * @property id the id of the emoji
-     * @property cdnUrl the cdnurl to the emoji image
      */
     @Serializable
     @SerialName("guild")

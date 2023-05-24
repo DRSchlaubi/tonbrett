@@ -7,11 +7,9 @@ import dev.schlaubi.stdx.core.isNotNullOrBlank
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.Sound
 import kotlinx.coroutines.flow.Flow
-import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
-import org.litote.kmongo.coroutine.aggregate
 import org.litote.kmongo.util.KMongoUtil
 
 object SoundBoardDatabase : KordExKoinComponent {
@@ -39,6 +37,7 @@ fun CoroutineCollection<Sound>.search(
     user: Snowflake
 ): Flow<Sound> {
     val filter = buildList {
+        add(or(Sound::public eq true, Sound::owner eq user))
         if (onlineMine) {
             add(Sound::owner eq user)
         }
@@ -64,6 +63,6 @@ fun CoroutineCollection<Sound>.search(
 }
 
 
-private fun String.toFuzzyFilter(name: String) = KMongoUtil.toBson("{name: /$this/i}")
+private fun String.toFuzzyFilter(name: String) = KMongoUtil.toBson("{$name: /$this/i}")
 
 private fun String.toFuzzyFilter(name: String, prefix: String) = substringAfter(prefix).toFuzzyFilter(name)

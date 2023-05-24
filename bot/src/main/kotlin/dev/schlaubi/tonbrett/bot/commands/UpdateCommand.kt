@@ -1,6 +1,7 @@
 package dev.schlaubi.tonbrett.bot.commands
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalBoolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
@@ -36,6 +37,11 @@ class UpdateSoundArguments : Arguments() {
     val emoji by emoji("emoji", "commands.update_sound.arguments.emoji.description")
 
     val tag by tagArgument("tag", "commands.update_sound.arguments.tag.description")
+
+    val public by optionalBoolean {
+        name = "public"
+        description = "commands.update_sound.arguments.public.description"
+    }
 }
 
 fun SubCommandModule.updateCommand() = ephemeralSubCommand(::UpdateSoundArguments) {
@@ -61,6 +67,7 @@ fun SubCommandModule.updateCommand() = ephemeralSubCommand(::UpdateSoundArgument
             name = arguments.name ?: sound.name,
             description = arguments.description ?: sound.description,
             emoji = arguments.emoji?.toEmoji() ?: sound.emoji,
+            public = arguments.public ?: sound.public,
             tag = arguments.tag ?: sound.tag
         )
 

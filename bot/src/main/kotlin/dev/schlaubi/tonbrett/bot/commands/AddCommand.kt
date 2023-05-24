@@ -1,9 +1,7 @@
 package dev.schlaubi.tonbrett.bot.commands
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.attachment
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
+import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.schlaubi.lavakord.rest.loadItem
 import dev.schlaubi.lavakord.rest.models.TrackResponse
@@ -50,6 +48,12 @@ class AddSoundCommandArguments : Arguments() {
     val emoji by emoji("emoji", "commands.add_sound.arguments.emoji.description")
 
     val tag by tagArgument("tag", "commands.add_sound.arguments.tag.description")
+
+    val public by defaultingBoolean {
+        name = "public"
+        description = "commands.add_sound.arguments.public.description"
+        defaultValue = true
+    }
 }
 
 fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArguments) {
@@ -94,6 +98,7 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
         val sound = Sound(
             id, arguments.name, user.id,
             arguments.description, arguments.emoji?.toEmoji(),
+            public = arguments.public,
             tag = arguments.tag
         )
         val file = Config.SOUNDS_FOLDER / sound.fileName
