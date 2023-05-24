@@ -44,7 +44,7 @@ fun SoundList(errorReporter: ErrorReporter) {
 
     fun reload() {
         loading = true
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.IO) {
             sounds = api.getSounds()
             loading = false
         }
@@ -70,33 +70,35 @@ fun SoundList(errorReporter: ErrorReporter) {
     }
 
     LaunchedEffect(Unit) {
-        api.events
-            .onEach { event ->
-                when (event) {
-                    is VoiceStateUpdateEvent -> reload(event.voiceState)
-                    is InterfaceAvailabilityChangeEvent -> {
-                        playingSound = event.playingSongId
-                        available = event.available
-                    }
+        withContext(Dispatchers.IO) {
+            api.events
+                .onEach { event ->
+                    when (event) {
+                        is VoiceStateUpdateEvent -> reload(event.voiceState)
+                        is InterfaceAvailabilityChangeEvent -> {
+                            playingSound = event.playingSongId
+                            available = event.available
+                        }
 
-                    is SoundDeletedEvent -> {
-                        sounds = sounds.filter { it.id != event.id }
-                    }
+                        is SoundDeletedEvent -> {
+                            sounds = sounds.filter { it.id != event.id }
+                        }
 
-                    is SoundCreatedEvent -> {
-                        sounds += event.sound
-                    }
+                        is SoundCreatedEvent -> {
+                            sounds += event.sound
+                        }
 
-                    is SoundUpdatedEvent -> {
-                        val copy = sounds.toMutableList()
-                        copy[copy.indexOfFirst { it.id == event.sound.id }] = event.sound
-                        sounds = copy
-                    }
+                        is SoundUpdatedEvent -> {
+                            val copy = sounds.toMutableList()
+                            copy[copy.indexOfFirst { it.id == event.sound.id }] = event.sound
+                            sounds = copy
+                        }
 
-                    else -> LOG.warn { "Unknown event type: $event" }
+                        else -> LOG.warn { "Unknown event type: $event" }
+                    }
                 }
-            }
-            .launchIn(coroutineScope)
+                .launchIn(coroutineScope)
+        }
     }
 
 
