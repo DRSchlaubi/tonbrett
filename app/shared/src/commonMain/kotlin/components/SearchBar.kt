@@ -69,8 +69,8 @@ private fun SearchField(value: String, onlyMine: Boolean, updateSounds: SoundUpd
         }
     }
 
-    DisposableEffect(Unit) {
-        val job = updates
+    LaunchedEffect(Unit) {
+        updates
             .debounce(300.milliseconds)
             .onEach {
                 withContext(Dispatchers.IO) {
@@ -78,7 +78,6 @@ private fun SearchField(value: String, onlyMine: Boolean, updateSounds: SoundUpd
                 }
             }
             .launchIn(scope)
-        onDispose { job.cancel() }
     }
 
     OutlinedTextField(

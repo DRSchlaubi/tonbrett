@@ -5,13 +5,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 
 private val LOG = KotlinLogging.logger {}
@@ -74,7 +69,7 @@ fun SoundList(errorReporter: ErrorReporter) {
         }
     }
 
-    DisposableEffect(Unit) {
+    LaunchedEffect(Unit) {
         api.events
             .onEach { event ->
                 when (event) {
@@ -102,19 +97,17 @@ fun SoundList(errorReporter: ErrorReporter) {
                 }
             }
             .launchIn(coroutineScope)
-
-        onDispose { }
     }
 
 
     if (loading) {
-        DisposableEffect(Unit) {
-            coroutineScope.launch(Dispatchers.IO) {
+        LaunchedEffect(Unit) {
+            withContext(Dispatchers.IO) {
                 val state = try {
                     api.getMe().voiceState
                 } catch (e: ClientRequestException) {
                     errorReporter(e)
-                    return@launch
+                    return@withContext
                 }
                 if (state == null) {
                     offline = true
@@ -129,7 +122,6 @@ fun SoundList(errorReporter: ErrorReporter) {
                 }
                 loading = false
             }
-            onDispose { }
         }
 
         NonListBlock {

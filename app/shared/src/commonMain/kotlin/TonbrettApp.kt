@@ -57,8 +57,8 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                 SoundList(::reportError)
             }
 
-            DisposableEffect(context.getToken()) {
-                val job = scope.launch(Dispatchers.IO) {
+            LaunchedEffect(context.getToken()) {
+                scope.launch(Dispatchers.IO) {
                     try {
                         context.api.connect()
                     } catch (e: ClientRequestException) {
@@ -66,7 +66,6 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                     }
                     crashed = true
                 }
-                onDispose { job.cancel() }
             }
         } else {
             Column(
