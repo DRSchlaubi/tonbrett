@@ -21,7 +21,6 @@ import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.strings.ProvideStrings
 import dev.schlaubi.tonbrett.app.strings.rememberStrings
 import io.ktor.client.plugins.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

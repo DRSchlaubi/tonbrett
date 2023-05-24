@@ -47,7 +47,7 @@ fun SearchBar(updateSounds: SoundUpdater) {
         SearchField(value, onlineMine, updateSounds, ::updateSearch)
         Spacer(Modifier.padding(horizontal = 5.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            OnlineMineCheckbox(onlineMine, updateSounds, ::updateOnlineMine)
+            OnlineMineCheckbox(onlineMine, value, updateSounds, ::updateOnlineMine)
             Spacer(Modifier.padding(horizontal = 2.dp))
             Text(strings.onlineMine, color = ColorScheme.textColor)
         }
@@ -69,10 +69,11 @@ private fun SearchField(value: String, onlyMine: Boolean, updateSounds: SoundUpd
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(onlyMine) {
         updates
             .debounce(300.milliseconds)
             .onEach {
+                println("Reque")
                 withContext(Dispatchers.IO) {
                     updateSounds(api.getSounds(onlyMine, it.ifBlank { null }))
                 }
@@ -102,7 +103,7 @@ private fun SearchField(value: String, onlyMine: Boolean, updateSounds: SoundUpd
 }
 
 @Composable
-private fun OnlineMineCheckbox(checked: Boolean, updateSounds: SoundUpdater, updateValue: (Boolean) -> Unit) {
+private fun OnlineMineCheckbox(checked: Boolean, search: String,updateSounds: SoundUpdater, updateValue: (Boolean) -> Unit) {
     var disabled by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val api = LocalContext.current.api
@@ -112,7 +113,7 @@ private fun OnlineMineCheckbox(checked: Boolean, updateSounds: SoundUpdater, upd
         disabled = true
         updateValue(to)
         scope.launch(Dispatchers.IO) {
-            val newSounds = api.getSounds(onlyMine = to)
+            val newSounds = api.getSounds(query = search, onlyMine = to)
             updateSounds(newSounds)
             disabled = false
         }
