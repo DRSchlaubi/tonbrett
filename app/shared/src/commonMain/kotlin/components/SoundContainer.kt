@@ -21,10 +21,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ErrorReporter
 import dev.schlaubi.tonbrett.app.OptionalWebImage
 import dev.schlaubi.tonbrett.app.api.LocalContext
+import dev.schlaubi.tonbrett.app.util.conditional
 import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.Sound
 import io.ktor.client.plugins.*
@@ -39,14 +41,21 @@ fun SoundContainer(
     soundUpdater: SoundUpdater
 ) {
     Column {
-        SearchBar(soundUpdater)
-        LazyVerticalGrid(GridCells.Adaptive(160.dp)) {
-            items(sounds) { (id, name, _, description, emoji) ->
-                SoundCard(id, name, emoji, description, id == playingSound, errorReporter, disabled)
+        SearchBarScope(soundUpdater) {
+            LazyVerticalGrid(GridCells.Adaptive(160.dp)) {
+                items(sounds) { (id, name, _, description, emoji) ->
+                    SoundCard(id, name, emoji, description, id == playingSound, errorReporter, disabled)
+                }
             }
-        }
-        if (disabled) {
-            Box(modifier = Modifier.fillMaxSize().background(ColorScheme.disabled.copy(alpha = .4f))) {}
+
+            if (disabled) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(ColorScheme.disabled.copy(alpha = .4f))
+                        .zIndex(100f)
+                ) {}
+            }
         }
     }
 }
@@ -71,12 +80,9 @@ fun SoundCard(
         colors = CardDefaults.cardColors(containerColor = ColorScheme.secondaryContainer),
         shape = corners,
         modifier = Modifier.size(width = 128.dp, height = 64.dp)
-            .padding(vertical = 3.dp, horizontal = 5.dp).run {
-                if (playing) {
-                    border(BorderStroke(2.dp, ColorScheme.active), corners)
-                } else {
-                    this
-                }
+            .padding(vertical = 3.dp, horizontal = 5.dp)
+            .conditional(playing) {
+                border(BorderStroke(2.dp, ColorScheme.active), corners)
             }
             .hoverable(interactionSource)
             .run {
@@ -104,7 +110,7 @@ fun SoundCard(
             Text(name, color = ColorScheme.textColor, fontSize = 16.sp)
         }
     }
-    if (description != null && hovered) {
+    if (description != null && hovered && !playing) {
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))

@@ -14,9 +14,9 @@ import io.ktor.resources.*
 import io.ktor.serialization.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.util.cio.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
@@ -53,6 +53,8 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
 
     suspend fun play(soundId: String): Unit = client.post(Route.Sounds.Sound.Play(soundId)).body()
 
+    suspend fun getTags(query: String? = null, limit: Int? = 0): List<String> = client.get(Route.Tags(query, limit)).body()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("INVISIBLE_MEMBER")
     suspend fun connect() {
@@ -73,7 +75,7 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
                 LOG.warn(e) { "Could not deserialize incoming ws packet" }
             } catch (e: EOFException) {
                 LOG.warn(e) { "Websocket connection closed unexpectedly" }
-            } catch (e: ChannelIOException) {
+            } catch (e: ClosedReceiveChannelException) {
                 LOG.warn(e) { "Websocket connection closed unexpectedly" }
             }
         }

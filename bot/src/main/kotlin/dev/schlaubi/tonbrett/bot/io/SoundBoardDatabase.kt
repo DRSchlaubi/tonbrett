@@ -7,6 +7,9 @@ import dev.schlaubi.stdx.core.isNotNullOrBlank
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.Sound
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
+import kotlinx.serialization.Serializable
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
@@ -19,16 +22,24 @@ object SoundBoardDatabase : KordExKoinComponent {
 suspend fun CoroutineCollection<Sound>.findById(id: String) =
     findOneById(ObjectId(id))
 
-data class Tag(val tag: String)
+@Serializable
+data class Tags(val tags: List<String>)
 
-fun CoroutineCollection<Sound>.findAllTags(query: String? = null): Flow<Tag> {
+fun CoroutineCollection<Sound>.findAllTags(query: String? = null, limit: Int? = null): Flow<String> {
     val pipeline = listOfNotNull(
         match(Sound::tag ne null),
-        group(Tag::tag addToSet Sound::tag),
-        if (query.isNotNullOrBlank()) match(query.toFuzzyFilter("tag")) else null
+        if (query.isNotNullOrBlank()) match(query.toFuzzyFilter("tag")) else null,
+        group(Sound::tag, Tags::tags.addToSet(Sound::tag))
     )
 
-    return aggregate<Tag>(pipeline).toFlow()
+    val flow = aggregate<Tags>(pipeline).toFlow()
+        .map { it.tags.first() }
+
+    return if(limit != null) {
+        flow.take(limit)
+    } else {
+        flow
+    }
 }
 
 fun CoroutineCollection<Sound>.search(
@@ -46,6 +57,7 @@ fun CoroutineCollection<Sound>.search(
                 query.startsWith("tag:") -> query.toFuzzyFilter("tag", "tag:")
                 query.startsWith("description:") ->
                     query.toFuzzyFilter("description", "description:")
+                query.startsWith("name:") -> query.toFuzzyFilter("name", "name:")
                 else -> {
                     or(
                         query.toFuzzyFilter("name", query),

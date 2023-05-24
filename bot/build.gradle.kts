@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     alias(libs.plugins.ksp)
     kotlin("jvm")
+    kotlin("plugin.serialization")
     alias(libs.plugins.mikbot)
 }
 

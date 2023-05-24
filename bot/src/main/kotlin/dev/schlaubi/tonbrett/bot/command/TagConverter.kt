@@ -19,7 +19,7 @@ fun Arguments.tagArgument(name: String, description: String) = optionalString {
 
         suggestString {
             tags.take(25).toList().forEach {
-                choice(it.tag, it.tag)
+                choice(it, it)
             }
         }
     }

@@ -8,30 +8,31 @@ import dev.schlaubi.lavakord.kord.connectAudio
 import dev.schlaubi.tonbrett.bot.core.soundPlayer
 import dev.schlaubi.tonbrett.bot.core.voiceState
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
+import dev.schlaubi.tonbrett.bot.io.findAllTags
 import dev.schlaubi.tonbrett.bot.io.findById
 import dev.schlaubi.tonbrett.bot.io.search
 import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.bot.util.soundNotFound
 import dev.schlaubi.tonbrett.bot.util.translate
-import dev.schlaubi.tonbrett.common.Route.*
-import dev.schlaubi.tonbrett.common.Sound
+import dev.schlaubi.tonbrett.common.Route.Sounds
+import dev.schlaubi.tonbrett.common.Route.Tags
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.Route
-import org.intellij.lang.annotations.Language
-import org.litote.kmongo.and
-import org.litote.kmongo.coroutine.CoroutineCollection
-import org.litote.kmongo.eq
-import org.litote.kmongo.util.KMongoUtil
+import kotlinx.coroutines.flow.toList
 
 @OptIn(KordUnsafe::class, KordExperimental::class)
 fun Route.sounds() {
     val kord by KordExContext.get().inject<Kord>()
 
+    get<Tags> { (query, limit) ->
+        call.respond(SoundBoardDatabase.sounds.findAllTags(query, limit).toList())
+    }
+
     get<Sounds> { (onlyMine, queryString) ->
-        call.respond(SoundBoardDatabase.sounds.search(queryString, onlyMine, call.user.id))
+        call.respond(SoundBoardDatabase.sounds.search(queryString, onlyMine, call.user.id).toList())
     }
 
     authenticated {

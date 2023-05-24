@@ -1,16 +1,22 @@
 package dev.schlaubi.tonbrett.app.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.input.key.*
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.api.IO
@@ -19,61 +25,114 @@ import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.common.Sound
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
 
 typealias SoundUpdater = (List<Sound>) -> Unit
 
+@OptIn(ExperimentalComposeUiApi::class)
+private val protectedKeys = listOf(Key.Enter, Key.DirectionUp, Key.DirectionDown)
+
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchBar(updateSounds: SoundUpdater) {
+fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) {
     var onlineMine by remember { mutableStateOf(false) }
-    var value by remember { mutableStateOf("") }
+    var value by remember { mutableStateOf(TextFieldValue("")) }
+    val enterPresses = remember { MutableSharedFlow<Unit>() }
     val strings = LocalStrings.current
+    var showSuggestions by remember { mutableStateOf(false) }
+    var selectedSuggestion by remember(showSuggestions) { mutableStateOf(-1) }
+    val scope = rememberCoroutineScope()
 
     fun updateOnlineMine(to: Boolean) {
         onlineMine = to
     }
 
-    fun updateSearch(to: String) {
+    fun updateSearch(to: TextFieldValue) {
         value = to
     }
 
-    Row(
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp)
-    ) {
-        SearchField(value, onlineMine, updateSounds, ::updateSearch)
-        Spacer(Modifier.padding(horizontal = 5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            OnlineMineCheckbox(onlineMine, value, updateSounds, ::updateOnlineMine)
-            BoxWithConstraints {
-                if (maxWidth >= 30.dp) {
-                    Spacer(Modifier.padding(horizontal = 2.dp))
-                    Text(strings.onlineMine, color = ColorScheme.textColor)
+    fun showSuggestions(to: Boolean) {
+        showSuggestions = to
+    }
+
+    fun selectSuggestion(index: Int) {
+        selectedSuggestion = index
+    }
+
+    // Capture key events higher up in the chain so we can pass them down to children
+    Column(Modifier.onPreviewKeyEvent {
+        if (it.type != KeyEventType.KeyUp) return@onPreviewKeyEvent it.key in protectedKeys
+        selectedSuggestion = when (it.key) {
+            Key.DirectionUp -> (selectedSuggestion - 1).coerceAtLeast(0)
+            Key.DirectionDown -> (selectedSuggestion + 1)
+            Key.Enter -> {
+                return@onPreviewKeyEvent if (selectedSuggestion >= 0) {
+                    scope.launch {
+                        enterPresses.emit(Unit)
+                    }
+                    true
                 } else {
-                    Icon(Icons.Default.Person, "Only mine", tint = ColorScheme.secondaryContainer)
+                    false
+                }
+            }
+
+            Key.Escape -> -1 // reset selection until menu reopens
+            else -> return@onPreviewKeyEvent false
+        }
+        true
+    }) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp)
+        ) {
+            SearchField(value, onlineMine, updateSounds, ::updateSearch, showSuggestions, ::showSuggestions)
+            Spacer(Modifier.padding(horizontal = 5.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                OnlineMineCheckbox(onlineMine, value.text, updateSounds, ::updateOnlineMine)
+                BoxWithConstraints {
+                    if (maxWidth >= 30.dp) {
+                        Spacer(Modifier.padding(horizontal = 2.dp))
+                        Text(strings.onlineMine, color = ColorScheme.textColor)
+                    } else {
+                        Icon(Icons.Default.Person, "Only mine", tint = ColorScheme.secondaryContainer)
+                    }
+                }
+            }
+        }
+        BoxWithConstraints {
+            content()
+            if (showSuggestions) {
+                ProvideEnterPressFlow(enterPresses) {
+                    SearchSuggestions(value, selectedSuggestion, ::updateSearch, ::showSuggestions, ::selectSuggestion)
                 }
             }
         }
     }
 }
 
-@OptIn(FlowPreview::class)
+@OptIn(FlowPreview::class, ExperimentalComposeUiApi::class)
 @Composable
-private fun SearchField(value: String, onlyMine: Boolean, updateSounds: SoundUpdater, updateSearch: (String) -> Unit) {
+private fun SearchField(
+    value: TextFieldValue, onlyMine: Boolean, updateSounds: SoundUpdater,
+    updateSearch: (TextFieldValue) -> Unit,
+    showSuggestions: Boolean,
+    updateShowSuggestions: (Boolean) -> Unit
+) {
     val updates = remember { MutableStateFlow(value) }
     val scope = rememberCoroutineScope()
     val strings = LocalStrings.current
     val api = LocalContext.current.api
+    val focusManager = LocalFocusManager.current
 
-    fun handleInput(input: String) {
-        updateSearch(input)
+    fun handleInput(input: TextFieldValue) {
+        val text = input.text
+        if (!showSuggestions && text.getOrNull(text.lastIndex - 1) == ':') {
+            updateShowSuggestions(true)
+        }
         scope.launch {
             updates.emit(input)
         }
@@ -84,15 +143,20 @@ private fun SearchField(value: String, onlyMine: Boolean, updateSounds: SoundUpd
             .debounce(300.milliseconds)
             .onEach {
                 withContext(Dispatchers.IO) {
-                    updateSounds(api.getSounds(onlyMine, it.ifBlank { null }))
+                    updateSounds(api.getSounds(onlyMine, it.text.ifBlank { null }))
                 }
             }
             .launchIn(scope)
     }
 
+    // Handle incoming changes from everywhere
+    LaunchedEffect(value.text) {
+        handleInput(value)
+    }
+
     OutlinedTextField(
         value,
-        ::handleInput,
+        updateSearch,
         placeholder = { Text(strings.searchExplainer) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = ColorScheme.searchBarColor,
@@ -104,13 +168,28 @@ private fun SearchField(value: String, onlyMine: Boolean, updateSounds: SoundUpd
             unfocusedBorderColor = ColorScheme.searchBarColor
         ),
         shape = RoundedCornerShape(10.dp),
-        trailingIcon = { Icon(Icons.Default.Search, strings.search) },
+        trailingIcon = {
+            TrailingIcon(value) {
+                scope.launch {
+                    updates.emit(it)
+                }
+                updateSearch(it)
+            }
+        },
         singleLine = true,
         modifier = Modifier.fillMaxWidth(.8f)
+            .onFocusChanged { updateShowSuggestions(it.hasFocus) }
+            .focusRequester(remember { FocusRequester() })
+            .onPreviewKeyEvent {
+                when (it.key) {
+                    Key.Escape, Key.Enter -> focusManager.clearFocus()
+                    else -> return@onPreviewKeyEvent false
+                }
+                true
+            }
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun OnlineMineCheckbox(
     checked: Boolean,
@@ -121,7 +200,6 @@ private fun OnlineMineCheckbox(
     var disabled by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val api = LocalContext.current.api
-    var showToolTip by remember { mutableStateOf(false) }
 
     fun update(to: Boolean) {
         if (disabled) return
@@ -140,4 +218,15 @@ private fun OnlineMineCheckbox(
             checkedColor = if (disabled) ColorScheme.secondaryContainer else ColorScheme.blurple
         )
     )
+}
+
+@Composable
+private fun TrailingIcon(value: TextFieldValue, updateSearch: (TextFieldValue) -> Unit) {
+    if (value.text.isEmpty()) {
+        Icon(Icons.Default.Search, null)
+    } else {
+        IconButton({ updateSearch(TextFieldValue("")) }) {
+            Icon(Icons.Default.Clear, null)
+        }
+    }
 }

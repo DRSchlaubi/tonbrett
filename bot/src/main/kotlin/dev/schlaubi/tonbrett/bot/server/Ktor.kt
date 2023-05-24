@@ -15,6 +15,7 @@ import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import org.litote.kmongo.id.serialization.IdKotlinXSerializationModule
@@ -72,7 +73,9 @@ class Ktor : KtorExtensionPoint, KordExKoinComponent {
         }
 
         exception<IllegalArgumentException> { call, cause ->
-            call.respond(HttpStatusCode.BadRequest, cause.message.toString())
+            if (cause !is SerializationException) {
+                call.respond(HttpStatusCode.BadRequest, cause.message.toString())
+            }
         }
     }
 }

@@ -97,7 +97,7 @@ fun SoundList(errorReporter: ErrorReporter) {
                         else -> LOG.warn { "Unknown event type: $event" }
                     }
                 }
-                .launchIn(coroutineScope)
+                .launchIn(this)
         }
     }
 
@@ -131,19 +131,20 @@ fun SoundList(errorReporter: ErrorReporter) {
         }
     }
 
-
-    NonListBlock {
-        val strings = LocalStrings.current
-        when {
-            offline -> ErrorText(strings.offline)
-            channelMismatch -> ErrorText(strings.wrongChannelExplainer)
-            !loading && sounds.isEmpty() -> ErrorText(strings.noSounds)
+    Column {
+        if (!loading && !channelMismatch && !offline) {
+            SoundContainer(sounds, errorReporter, playingSound, !available) {
+                sounds = it
+            }
         }
-    }
 
-    if (!loading && !channelMismatch && !offline) {
-        SoundContainer(sounds, errorReporter, playingSound, !available) {
-            sounds = it
+        NonListBlock {
+            val strings = LocalStrings.current
+            when {
+                offline -> ErrorText(strings.offline)
+                channelMismatch -> ErrorText(strings.wrongChannelExplainer)
+                !loading && sounds.isEmpty() -> ErrorText(strings.noSounds)
+            }
         }
     }
 }

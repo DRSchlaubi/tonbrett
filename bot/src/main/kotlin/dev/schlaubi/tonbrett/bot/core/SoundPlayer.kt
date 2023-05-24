@@ -1,10 +1,7 @@
 package dev.schlaubi.tonbrett.bot.core
 
 import dev.kord.core.behavior.GuildBehavior
-import dev.schlaubi.lavakord.UnsafeRestApi
 import dev.schlaubi.lavakord.audio.TrackEndEvent
-import dev.schlaubi.lavakord.kord.updatePlayer
-import dev.schlaubi.lavakord.rest.models.UpdatePlayerRequest
 import dev.schlaubi.mikbot.util_plugins.ktor.api.buildBotUrl
 import dev.schlaubi.tonbrett.bot.server.sendEvent
 import dev.schlaubi.tonbrett.bot.util.player
@@ -17,7 +14,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration.Companion.seconds
 
 private val players = mutableMapOf<Snowflake, SoundPlayer>()
 
@@ -26,7 +22,7 @@ val GuildBehavior.soundPlayer: SoundPlayer
         SoundPlayer(this)
     }
 
-class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
+class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
     val player = guild.player
     var playingSound: Sound? = null
         private set
@@ -48,6 +44,7 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
         available: Boolean, playingSound: Sound? = null,
         channel: Snowflake = channelId ?: error("Cannot use default if not connected")
     ) {
+        this.playingSound = playingSound
         coroutineScope {
             getUsersInChannel(channel).forEach {
                 sendEvent(it, InterfaceAvailabilityChangeEvent(available, playingSound?.id))
@@ -60,7 +57,6 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
         require(!locked) { "This player is currently locked" }
         locked = true
         updateAvailability(false, sound)
-        val state = player.toState()
         val url = buildBotUrl {
             path("soundboard", "sounds", sound.id.toString(), "audio")
         }.toString()
@@ -73,7 +69,6 @@ class SoundPlayer(private val guild: GuildBehavior) : CoroutineScope {
                 .single()
             locked = false
             updateAvailability(true)
-            val track = state.currentTrack?.track?.track ?: return@launch
         }
     }
 }

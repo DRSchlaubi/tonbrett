@@ -9,6 +9,16 @@ import kotlinx.serialization.Serializable
  */
 @Resource("/soundboard")
 public class Route {
+
+    /**
+     * /soundsboard/tags - Lists all available tags
+     *
+     * @property query an optional query the tags should match
+     * @property limit an optional limit of how many tags to receive at most
+     */
+    @Resource("tags")
+    public data class Tags(val query: String? = null, val limit: Int? = null, val parent: Route = Route())
+
     /**
      * /soundboard/sounds - endpoint for listing/modifying all sounds.
      *
