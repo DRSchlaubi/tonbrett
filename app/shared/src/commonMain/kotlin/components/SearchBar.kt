@@ -112,7 +112,7 @@ private fun OnlineMineCheckbox(checked: Boolean, updateSounds: SoundUpdater, upd
         disabled = true
         updateValue(to)
         scope.launch(Dispatchers.IO) {
-            val newSounds = api.getSounds(onlyMine = checked)
+            val newSounds = api.getSounds(onlyMine = to)
             updateSounds(newSounds)
             disabled = false
         }
