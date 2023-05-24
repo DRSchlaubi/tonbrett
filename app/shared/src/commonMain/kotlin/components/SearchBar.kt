@@ -107,7 +107,7 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
             content()
             if (showSuggestions) {
                 ProvideEnterPressFlow(enterPresses) {
-                    SearchSuggestions(value, selectedSuggestion, ::updateSearch, ::showSuggestions, ::selectSuggestion)
+                    SearchSuggestions(value, selectedSuggestion, ::updateSearch, ::showSuggestions)
                 }
             }
         }

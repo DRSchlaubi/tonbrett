@@ -1,5 +1,6 @@
 package dev.schlaubi.tonbrett.bot.command
 
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
@@ -14,7 +15,6 @@ import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
-import dev.schlaubi.mikbot.plugin.api.util.discordError
 import dev.schlaubi.mikbot.plugin.api.util.safeInput
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.io.search
@@ -23,8 +23,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import org.bson.types.ObjectId
-import org.litote.kmongo.and
-import org.litote.kmongo.eq
 
 private const val idPrefix = "id:"
 
@@ -70,7 +68,10 @@ class SoundConverter(validator: Validator<Sound>) : SingleConverter<Sound>(valid
             if (foundByName != null) {
                 parsed = foundByName
             } else {
-                discordError(context.translate("commands.generic.not_found", arrayOf(text)))
+                handleError(
+                    DiscordRelayedException(context.translate("commands.generic.not_found", arrayOf(text))),
+                    context
+                )
             }
         }
 

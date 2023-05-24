@@ -20,11 +20,11 @@ public data class Sound(
     val id: Id<Sound>,
     val name: String,
     val owner: SerializableSnowflake,
-    @EncodeDefault(EncodeDefault.Mode.NEVER)
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val description: String? = null,
-    @EncodeDefault(EncodeDefault.Mode.NEVER)
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val emoji: Emoji? = null,
-    @EncodeDefault(EncodeDefault.Mode.NEVER)
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val public: Boolean = true,
     val tag: String? = null
 ) {

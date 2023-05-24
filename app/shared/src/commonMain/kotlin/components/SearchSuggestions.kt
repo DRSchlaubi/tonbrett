@@ -37,8 +37,7 @@ fun SearchSuggestions(
     value: TextFieldValue,
     selectedKeyboardSuggestion: Int,
     updateSearch: (TextFieldValue) -> Unit,
-    showSuggestions: (Boolean) -> Unit,
-    selectKeyboardSuggestion: (Int) -> Unit
+    showSuggestions: (Boolean) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val hoveringOverSuggestions by interactionSource.collectIsHoveredAsState()
@@ -122,14 +121,6 @@ fun SearchSuggestions(
                                     )
                                 }
                             }
-                        }
-
-                        val currentIndex = LocalSuggestionComposition.current.currentIndex
-                        println(currentIndex)
-                        println(selectKeyboardSuggestion)
-                        println("==")
-                        if (selectedKeyboardSuggestion >= currentIndex) {
-                            selectKeyboardSuggestion(currentIndex)
                         }
                     }
                 }
