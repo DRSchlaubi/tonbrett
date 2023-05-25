@@ -133,6 +133,7 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
       - uses: r0adkll/upload-google-play@v1
         name: Release on Play Store
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: dev.schlaubi.tonbrett.android
@@ -144,6 +145,7 @@ jobs:
     name: Create Release
     runs-on: windows-latest # for some weird reason this job does not get picked on ubuntu
     needs: [build_bot_artifacts, build_desktop_app, build_android_app]
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/download-artifact@v3
         name: Download Artifacts from Ubuntu
@@ -171,7 +173,6 @@ jobs:
           name: android-app
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             deb/*.deb
