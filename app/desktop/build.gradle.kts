@@ -37,6 +37,14 @@ compose.desktop {
                 menuGroup = "Tonbrett"
                 upgradeUuid = "c8bce0ed-113c-4d78-879b-78ed5c7d9f7f"
             }
+
+            macOS {
+                bundleID = "dev.schlaubi.tonbrett.app.mac"
+                entitlementsFile.set(file("entitlements.entitlements"))
+                signing {
+                    identity = "Developer ID Application: Michael Rittmeister"
+                }
+            }
         }
 
         buildTypes {

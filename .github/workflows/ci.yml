@@ -45,10 +45,33 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{env.JAVA_VERSION}}
+      - name: Setup MacOS signing
+        if: matrix.os == 'macos-latest'
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.MACOS_SIGNING_CERTIFICATE }}
+          P12_PASSWORD: ${{ secrets.MAC_SIGNING_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.MAC_SIGNING_PASSWORD }}
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
       - name: Build App Distribution
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: packageReleaseDistributionForCurrentOS
+          arguments: packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true
       - name: Setup MSbuild
         if: matrix.os == 'windows-latest'
         uses: microsoft/setup-msbuild@v1.3.1
