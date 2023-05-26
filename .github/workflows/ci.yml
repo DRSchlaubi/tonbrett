@@ -52,13 +52,16 @@ jobs:
           P12_PASSWORD: ${{ secrets.MAC_SIGNING_PASSWORD }}
           KEYCHAIN_PASSWORD: ${{ secrets.MAC_SIGNING_PASSWORD }}
           PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          INSTALLER_CERTIFICATE_BASE64: ${{ secrets.APPLE_INSTALLER_KEY }}
         run: |
           # create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          INSTALLER_CERTIFICATE_PATH=$RUNNER_TEMP/installer_certificate.p12
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
 
           # import certificate and provisioning profile from secrets
           echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "$INSTALLER_CERTIFICATE_BASE64" | base64 --decode -o INSTALLER_CERTIFICATE_PATH
 
           # create temporary keychain
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
@@ -67,6 +70,7 @@ jobs:
 
           # import certificate to keychain
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security import INSTALLER_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
           
           # Store Password for notarization
@@ -93,9 +97,11 @@ jobs:
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /f certificate\certificate.pfx /p '${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}' /t http://timestamp.sectigo.com/ /d Tonbrett app/desktop/build/compose/binaries/main-release/msi/*.msi
       - name: Notarize MacOS installer
         if: matrix.os == 'macos-latest'
+        uses: gradle/gradle-build-action@v2
         env:
-        run: |
-
+          NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
+        with:
+          arguments: notarizeReleasePkg
       - name: Upload distributions
         uses: actions/upload-artifact@v3
         with:
@@ -191,4 +197,3 @@ jobs:
             msi/*.msi
             *.zip
             *.apk
-
