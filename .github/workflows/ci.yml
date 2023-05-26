@@ -96,7 +96,7 @@ jobs:
         env:
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
         with:
-          arguments: notarizeReleasePkg
+          arguments: notarizeReleasePkg -Pcompose.desktop.mac.sign=true
       - name: Upload distributions
         uses: actions/upload-artifact@v3
         with:
