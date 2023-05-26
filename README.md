@@ -29,10 +29,13 @@ using [Mikbot](https://github.com/DRSchlaubi/mikbot) and
 
 # Project Structure
 
-| Path                     | Description                                           |
-|--------------------------|-------------------------------------------------------|
-| [common](common)         | Common entities and Routes between web player and bot |
-| [client](client)         | Multiplatform client for API                          |
-| [app](app)               | Root projects for App                                 |
-| [app:shared](app/shared) | Multiplatform UI code for App                         |
-| [app:web](app/web)       | Web launcher for app using Kotlin/JS                  |
+| Path                       | Description                                           |
+|----------------------------|-------------------------------------------------------|
+| [common](common)           | Common entities and Routes between web player and bot |
+| [client](client)           | Multiplatform client for API                          |
+| [app](app)                 | Root projects for App                                 |
+| [app:shared](app/shared)   | Multiplatform UI code for App                         |
+| [app:web](app/web)         | Web launcher for app using Kotlin/JS                  |
+| [app:android](app/android) | Android launcher for the app                          |
+| [app:desktop](app/desktop) | Desktop launcher for the app using JLink              |
+| [app:ios](app/ios)         | iOS/iPadOS launcher for the app using Kotlin/Native   |
