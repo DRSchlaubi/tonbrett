@@ -71,12 +71,7 @@ jobs:
           # import certificate to keychain
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security import INSTALLER_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-          security list-keychain -d user -s $KEYCHAIN_PATH
-          
-          # Store Password for notarization
-          xcrun altool --store-password-in-keychain-item "NOTARIZATION_PASSWORD" \
-                       --username michael@rittmeister.in \
-                       --password $PASSWORD          
+          security list-keychain -d user -s $KEYCHAIN_PATH   
 
       - name: Build App Distribution
         uses: gradle/gradle-build-action@v2
@@ -109,7 +104,7 @@ jobs:
           path: |
             app/desktop/build/compose/binaries/main-release/deb/*.deb
             app/desktop/build/compose/binaries/main-release/msi/*.msi
-            app/desktop/build/compose/binaries/main-release/pkg/pkg.dmg
+            app/desktop/build/compose/binaries/main-release/pkg/*.pkg
   build_android_app:
     runs-on: ubuntu-latest
     name: Build Android App

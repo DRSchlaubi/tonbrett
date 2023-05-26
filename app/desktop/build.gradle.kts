@@ -52,7 +52,7 @@ compose.desktop {
                 }
                 notarization {
                     appleID.set("michael@rittmeister.in")
-                    password.set("@keychain:NOTARIZATION_PASSWORD")
+                    password.set(System.getenv("NOTARIZATION_PASSWORD"))
                 }
             }
         }
