@@ -24,25 +24,35 @@ compose.desktop {
             )
             when {
                 OSUtils.IS_WINDOWS -> targetFormats(TargetFormat.Msi)
-                OSUtils.IS_OSX -> targetFormats(TargetFormat.Dmg)
+                OSUtils.IS_OSX -> targetFormats(TargetFormat.Pkg)
                 else -> targetFormats(TargetFormat.Deb)
             }
 
             licenseFile = rootProject.file("LICENSE")
+            vendor = "Schlaubi"
+            description = "Companion App for Discord Tonbrett bot"
+            copyright = "(c) 2023 Michael Rittmeister"
 
             packageName = "Tonbrett"
             packageVersion = project.version.toString()
 
             windows {
+                iconFile.set(file("logo.png"))
                 menuGroup = "Tonbrett"
                 upgradeUuid = "c8bce0ed-113c-4d78-879b-78ed5c7d9f7f"
             }
 
             macOS {
+                iconFile.set(file("logo.png"))
                 bundleID = "dev.schlaubi.tonbrett.app.mac"
                 entitlementsFile.set(file("entitlements.entitlements"))
+                appStore = false
                 signing {
-                    identity = "Developer ID Application: Michael Rittmeister"
+                    identity = "Michael Rittmeister"
+                }
+                notarization {
+                    appleID.set("michael@rittmeister.in")
+                    password.set("@keychain:NOTARIZATION_PASSWORD")
                 }
             }
         }

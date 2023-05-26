@@ -16,13 +16,16 @@ import kotlin.io.path.*
 data class Config(@EncodeDefault(EncodeDefault.Mode.NEVER) val sessionToken: String? = null)
 
 fun getAppDataFolder(): Path {
-    val basePath = if (System.getProperty("os.name").contains("windows", ignoreCase = true)) {
-        Path(System.getenv("APPDATA"))
-    } else {
-        Path(System.getProperty("user.home"))
+    val os = System.getProperty("os.name")
+    val basePath = when {
+        os.contains("windows", ignoreCase = true) ->
+            Path(System.getenv("APPDATA"))
+        os.contains("mac", ignoreCase = true) ->
+            Path(System.getenv("HOME")) / "Library" / "Application Support"
+        else -> Path(System.getProperty("user.home"))
     }
-
-    return basePath / "tonbrett"
+    println(basePath)
+    return basePath / "Tonbrett"
 }
 
 fun getConfigFile() = getAppDataFolder() / "config.json"

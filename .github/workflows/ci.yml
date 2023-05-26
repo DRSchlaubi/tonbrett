@@ -51,6 +51,7 @@ jobs:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.MACOS_SIGNING_CERTIFICATE }}
           P12_PASSWORD: ${{ secrets.MAC_SIGNING_PASSWORD }}
           KEYCHAIN_PASSWORD: ${{ secrets.MAC_SIGNING_PASSWORD }}
+          PASSWORD: ${{ secrets.APPLE_PASSWORD }}
         run: |
           # create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
@@ -67,6 +68,11 @@ jobs:
           # import certificate to keychain
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
+          
+          # Store Password for notarization
+          xcrun altool --store-password-in-keychain-item "NOTARIZATION_PASSWORD" \
+                       --username michael@rittmeister.in \
+                       --password $PASSWORD          
 
       - name: Build App Distribution
         uses: gradle/gradle-build-action@v2
@@ -85,6 +91,11 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /f certificate\certificate.pfx /p '${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}' /t http://timestamp.sectigo.com/ /d Tonbrett app/desktop/build/compose/binaries/main-release/msi/*.msi
+      - name: Notarize MacOS installer
+        if: matrix.os == 'macos-latest'
+        env:
+        run: |
+
       - name: Upload distributions
         uses: actions/upload-artifact@v3
         with:
@@ -92,7 +103,7 @@ jobs:
           path: |
             app/desktop/build/compose/binaries/main-release/deb/*.deb
             app/desktop/build/compose/binaries/main-release/msi/*.msi
-            app/desktop/build/compose/binaries/main-release/dmg/*.dmg
+            app/desktop/build/compose/binaries/main-release/pkg/pkg.dmg
   build_android_app:
     runs-on: ubuntu-latest
     name: Build Android App
@@ -176,7 +187,7 @@ jobs:
         with:
           files: |
             deb/*.deb
-            dmg/*.dmg
+            pkg/*.pkg
             msi/*.msi
             *.zip
             *.apk
