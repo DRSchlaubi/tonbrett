@@ -15,8 +15,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core)
     implementation(libs.androidx.browser)
-    implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation(libs.mdc.android)
+    implementation(libs.androidx.constraintlayout)
 }
 
 android {
