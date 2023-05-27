@@ -32,7 +32,7 @@ suspend fun findVoiceState(userId: Snowflake): User.VoiceState? {
 
     val botState = kord.unsafe.guild(result.guildId).soundPlayer
     val botChannel = botState.channelId
-    val playerAvailable = !botState.locked
+    val playerAvailable = !botState.locked || botState.currentUser == userId
     val botOffline = botChannel == null
     val channelMismatch = botChannel != result.channelId
 
@@ -56,6 +56,10 @@ class VoiceStateWatcher : Extension() {
     @OptIn(KordUnsafe::class, KordExperimental::class)
     override suspend fun setup() {
         event<VoiceStateUpdateEvent> {
+            check {
+                // Ignore changes without channel change
+                failIf { event.state.channelId == event.old?.channelId }
+            }
             action {
                 if (event.state.userId == kord.selfId) {
                     val oldChannel = event.old?.channelId

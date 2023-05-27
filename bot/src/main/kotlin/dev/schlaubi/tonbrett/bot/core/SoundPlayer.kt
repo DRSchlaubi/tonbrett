@@ -10,6 +10,7 @@ import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.Sound
 import io.ktor.http.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
@@ -28,6 +29,8 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         private set
     var locked: Boolean = false
         private set
+    var currentUser: Snowflake? = null
+        private set
 
     @Suppress("INVISIBLE_MEMBER")
     val channelId: Snowflake? get() = player.link.lastChannelId?.let(::Snowflake)
@@ -41,34 +44,45 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
     }
 
     private suspend fun updateAvailability(
-        available: Boolean, playingSound: Sound? = null,
+        available: Boolean, playingSound: Sound? = null, user: Snowflake? = null,
         channel: Snowflake = channelId ?: error("Cannot use default if not connected")
     ) {
         this.playingSound = playingSound
         coroutineScope {
             getUsersInChannel(channel).forEach {
-                sendEvent(it, InterfaceAvailabilityChangeEvent(available, playingSound?.id))
+                sendEvent(it, InterfaceAvailabilityChangeEvent(available || it == user, playingSound?.id))
             }
         }
     }
 
+    @Suppress("INVISIBLE_MEMBER")
+    suspend fun stop()  {
+        updateAvailability(true)
+        player.skip()
+    }
+
     @Suppress("INVISIBLE_MEMBER", "SuspendFunctionOnCoroutineScope")
-    suspend fun playSound(sound: Sound) {
-        require(!locked) { "This player is currently locked" }
+    suspend fun playSound(sound: Sound, user: Snowflake) {
+        val alreadyLocked = locked
         locked = true
-        updateAvailability(false, sound)
+        updateAvailability(false, sound, user)
         val url = buildBotUrl {
             path("soundboard", "sounds", sound.id.toString(), "audio")
         }.toString()
-        player.injectTrack(url)
+        currentUser = user
+        player.injectTrack(url, noReplace = alreadyLocked)
         launch {
             // Wait for track to end
             player.player.events
                 .filterIsInstance<TrackEndEvent>()
+                .filter { it.reason != TrackEndEvent.EndReason.REPLACED }
                 .take(1)
                 .single()
             locked = false
-            updateAvailability(true)
+            currentUser = null
+            if (channelId != null) {
+                updateAvailability(true)
+            }
         }
     }
 }

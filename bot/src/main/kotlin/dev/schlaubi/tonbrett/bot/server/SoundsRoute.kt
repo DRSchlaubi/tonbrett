@@ -14,8 +14,7 @@ import dev.schlaubi.tonbrett.bot.io.search
 import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.bot.util.soundNotFound
 import dev.schlaubi.tonbrett.bot.util.translate
-import dev.schlaubi.tonbrett.common.Route.Sounds
-import dev.schlaubi.tonbrett.common.Route.Tags
+import dev.schlaubi.tonbrett.common.Route.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.resources.*
@@ -26,6 +25,14 @@ import kotlinx.coroutines.flow.toList
 @OptIn(KordUnsafe::class, KordExperimental::class)
 fun Route.sounds() {
     val kord by KordExContext.get().inject<Kord>()
+
+    post<StopPlayer> {
+        val guild = call.user.voiceState?.guildId ?: badRequest("Not connected to voice channel")
+        val player = kord.unsafe.guild(guild).soundPlayer
+        if (!player.locked) badRequest("Player not playing")
+        player.stop()
+        call.respond(HttpStatusCode.Accepted)
+    }
 
     get<Tags> { (query, limit) ->
         call.respond(SoundBoardDatabase.sounds.findAllTags(query, limit).toList())
@@ -38,9 +45,14 @@ fun Route.sounds() {
     authenticated {
         post<Sounds.Sound.Play> { (soundId) ->
             val sound = SoundBoardDatabase.sounds.findById(soundId) ?: soundNotFound()
-            val voiceState = call.user.voiceState
+            val user = call.user
+            val voiceState = user.voiceState
                 ?: badRequest(call.translate("rest.errors.not_connected_to_vc"))
             val player = kord.unsafe.guild(voiceState.guildId).soundPlayer
+
+            if (player.locked && player.currentUser != user.id) {
+                badRequest("You are not permitted to skip a track")
+            }
 
             @Suppress("INVISIBLE_MEMBER", "EQUALITY_NOT_APPLICABLE")
             if (player.channelId == null) {
@@ -49,7 +61,7 @@ fun Route.sounds() {
                 badRequest(call.translate("rest.errors.vc_mismatch"))
             }
 
-            player.playSound(sound)
+            player.playSound(sound, user.id)
             call.respond(HttpStatusCode.Accepted)
         }
     }

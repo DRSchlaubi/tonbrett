@@ -1,6 +1,7 @@
 package dev.schlaubi.tonbrett.app.components
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
@@ -8,9 +9,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -19,18 +21,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ErrorReporter
 import dev.schlaubi.tonbrett.app.OptionalWebImage
+import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.app.util.conditional
 import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.Sound
 import io.ktor.client.plugins.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -77,6 +83,20 @@ fun SoundCard(
     val hovered by interactionSource.collectIsHoveredAsState()
     val api = LocalContext.current.api
 
+    fun request(block: suspend CoroutineScope.() -> Unit) = coroutineScope.launch(Dispatchers.IO) {
+        try {
+            block()
+        } catch (e: ClientRequestException) {
+            reportError(e)
+        }
+    }
+
+    fun play() = request {
+        api.play(id.toString())
+    }
+
+    fun stop() = request { api.stop() }
+
     ElevatedCard(
         colors = CardDefaults.cardColors(containerColor = ColorScheme.secondaryContainer),
         shape = corners,
@@ -86,30 +106,55 @@ fun SoundCard(
                 border(BorderStroke(2.dp, ColorScheme.active), corners)
             }
             .hoverable(interactionSource)
-            .run {
-                if (!disabled) {
-                    clickable {
-                        coroutineScope.launch {
-                            try {
-                                api.play(id.toString())
-                            } catch (e: ClientRequestException) {
-                                reportError(e)
-                            }
+            .pointerInput(playing) {
+                detectTapGestures(
+                    onDoubleTap = {
+                        if (playing) {
+                            play()
+                        }
+                    },
+                    onTap = {
+                        if (playing) {
+                            stop()
+                        } else {
+                            play()
                         }
                     }
-                } else {
-                    this
-                }
+                )
             }
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
-        ) {
-            OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
-            Text(name, color = ColorScheme.textColor, fontSize = 16.sp)
+        BoxWithConstraints {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
+            ) {
+                OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
+                Text(name, color = ColorScheme.textColor, fontSize = 16.sp)
+            }
+            if (playing && hovered && !disabled) {
+                Box(Modifier.zIndex(1f).background(ColorScheme.secondaryContainer)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        IconButton({
+                            play()
+                        }) {
+                            Icon(Icons.Default.Refresh, null, tint = ColorScheme.textColor)
+                        }
+                        Divider(Modifier.width(1.dp).height(15.dp))
+                        IconButton({
+                            stop()
+                        }) {
+                            Icon(Icons.Default.Stop, null, tint = ColorScheme.textColor)
+                        }
+                    }
+                }
+            }
         }
+
     }
     if (description != null && hovered && !playing) {
         Box(

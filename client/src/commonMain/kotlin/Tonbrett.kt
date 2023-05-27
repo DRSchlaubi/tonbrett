@@ -55,6 +55,8 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
 
     suspend fun getTags(query: String? = null, limit: Int? = 0): List<String> = client.get(Route.Tags(query, limit)).body()
 
+    suspend fun stop() = client.post(Route.StopPlayer()).body<Unit>()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun connect() {
         val session = client.webSocketSession {

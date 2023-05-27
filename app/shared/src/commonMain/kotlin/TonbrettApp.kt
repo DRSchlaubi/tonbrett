@@ -63,7 +63,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                     } catch (e: ClientRequestException) {
                         reportError(e)
                     }
-                    crashed = true
+                    crashed = !sessionExpired
                 }
             }
         } else {

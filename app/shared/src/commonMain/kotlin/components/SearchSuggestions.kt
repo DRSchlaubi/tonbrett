@@ -68,7 +68,7 @@ fun SearchSuggestions(
         Box(
             modifier = Modifier
                 .padding(vertical = 5.dp, horizontal = 7.dp)
-                .zIndex(1f)
+                .zIndex(2f)
                 .shadow(7.dp)
         ) {
             Surface(

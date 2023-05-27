@@ -106,4 +106,10 @@ public class Route {
         @Resource("login")
         public data class Login(val token: String, val parent: Ui = Ui())
     }
+
+    /**
+     * /soundboard/player/stop - stops playing current track
+     */
+    @Resource("player/stop")
+    public data class StopPlayer(val parent: Route = Route())
 }
