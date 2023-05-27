@@ -62,8 +62,8 @@ fun CoroutineCollection<Sound>.search(
                 else -> {
                     or(
                         query.toFuzzyFilter("name", "name:"),
-                        query.toFuzzyFilter("description", query),
-                        query.toFuzzyFilter("tag", query)
+                        query.toFuzzyFilter("description", "description:"),
+                        query.toFuzzyFilter("tag", "tag:")
                     )
                 }
             }

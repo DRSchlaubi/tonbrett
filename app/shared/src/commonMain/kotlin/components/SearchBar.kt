@@ -94,7 +94,7 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp)
         ) {
             SearchField(value, onlineMine, updateSounds, ::updateSearch, showSuggestions, ::showSuggestions)
-            Spacer(Modifier.padding(horizontal = 5.dp))
+            Spacer(Modifier.padding(horizontal = 5.dp).canClearFocus())
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.canClearFocus()) {
                 OnlineMineCheckbox(onlineMine, value.text, updateSounds, ::updateOnlineMine)
                 BoxWithConstraints {
