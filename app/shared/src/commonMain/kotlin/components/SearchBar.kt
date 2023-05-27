@@ -22,6 +22,7 @@ import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
+import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.common.Sound
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -91,7 +92,7 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
         ) {
             SearchField(value, onlineMine, updateSounds, ::updateSearch, showSuggestions, ::showSuggestions)
             Spacer(Modifier.padding(horizontal = 5.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.canClearFocus()) {
                 OnlineMineCheckbox(onlineMine, value.text, updateSounds, ::updateOnlineMine)
                 BoxWithConstraints {
                     if (maxWidth >= 30.dp) {

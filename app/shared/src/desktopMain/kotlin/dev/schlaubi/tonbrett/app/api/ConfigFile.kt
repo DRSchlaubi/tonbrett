@@ -24,7 +24,6 @@ fun getAppDataFolder(): Path {
             Path(System.getenv("HOME")) / "Library" / "Application Support"
         else -> Path(System.getProperty("user.home"))
     }
-    println(basePath)
     return basePath / "Tonbrett"
 }
 

@@ -26,6 +26,7 @@ import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ErrorReporter
 import dev.schlaubi.tonbrett.app.OptionalWebImage
 import dev.schlaubi.tonbrett.app.api.LocalContext
+import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.app.util.conditional
 import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.Sound
@@ -42,7 +43,7 @@ fun SoundContainer(
 ) {
     Column {
         SearchBarScope(soundUpdater) {
-            LazyVerticalGrid(GridCells.Adaptive(160.dp)) {
+            LazyVerticalGrid(GridCells.Adaptive(160.dp), Modifier.canClearFocus()) {
                 items(sounds) { (id, name, _, description, emoji) ->
                     SoundCard(id, name, emoji, description, id == playingSound, errorReporter, disabled)
                 }
