@@ -2,6 +2,7 @@ package dev.schlaubi.tonbrett.app.desktop
 
 import dev.schlaubi.tonbrett.app.api.Config
 import dev.schlaubi.tonbrett.app.api.saveConfig
+import dev.schlaubi.tonbrett.common.authServerPort
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -13,7 +14,8 @@ import kotlinx.coroutines.*
 
 fun startAuthorizationServer(reAuthorize: Boolean, onAuth: () -> Unit){
     val scope = CoroutineScope(Dispatchers.Default)
-    scope.embeddedServer(Netty, port = 12548, module = { authModule(onAuth, scope) }).start(wait = !reAuthorize).stopServerOnCancellation()
+    scope.embeddedServer(Netty, port = authServerPort, module = { authModule(onAuth, scope) })
+        .start(wait = !reAuthorize).stopServerOnCancellation()
 }
 
 fun Application.authModule(onAuth: () -> Unit, scope: CoroutineScope) {

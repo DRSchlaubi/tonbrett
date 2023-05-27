@@ -4,6 +4,8 @@ import io.ktor.resources.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+public const val authServerPort: Int = 12548
+
 /**
  * /soundboard - all plugin routes
  */
@@ -72,19 +74,35 @@ public class Route {
         @Serializable
         public enum class Type(public val redirectTo: String) {
             WEB("/soundboard/ui/login?token="),
-            APP("http://localhost:12548/login?token="),
+            APP("http://localhost:$authServerPort/login?token="),
             MOBILE_APP("tonbrett://login?token=")
         }
     }
 
+    /**
+     * /soundboard/users/@me - current user status.
+     */
     @Resource("users/@me")
     public data class Me(val parent: Route = Route()) {
+        /**
+         * /soundboard/users/@me/events - websocket entrypoint for live updates
+         *
+         * @property sessionToken the session token
+         */
         @Resource("events")
         public data class Events(@SerialName("session_token") val sessionToken: String, val parent: Me = Me())
     }
 
+    /**
+     * /soundboard/ui - WebUI base path
+     */
     @Resource("ui")
     public data class Ui(val parent: Route = Route()) {
+        /**
+         * /soundboard/ui/login - Path to save current token
+         *
+         * @property token the token to save
+         */
         @Resource("login")
         public data class Login(val token: String, val parent: Ui = Ui())
     }
