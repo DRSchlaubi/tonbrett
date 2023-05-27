@@ -42,6 +42,7 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
     var onlineMine by remember { mutableStateOf(false) }
     var value by remember { mutableStateOf(TextFieldValue("")) }
     val enterPresses = remember { MutableSharedFlow<Unit>() }
+    var maxSuggestions by remember { mutableStateOf(0) }
     val strings = LocalStrings.current
     var showSuggestions by remember { mutableStateOf(false) }
     var selectedSuggestion by remember(showSuggestions) { mutableStateOf(-1) }
@@ -59,8 +60,8 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
         showSuggestions = to
     }
 
-    fun selectSuggestion(index: Int) {
-        selectedSuggestion = index
+    fun updateMaxSuggestionsTo(to: Int) {
+        maxSuggestions = to
     }
 
     // Capture key events higher up in the chain so we can pass them down to children
@@ -68,7 +69,7 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
         if (it.type != KeyEventType.KeyUp) return@onPreviewKeyEvent it.key in protectedKeys
         selectedSuggestion = when (it.key) {
             Key.DirectionUp -> (selectedSuggestion - 1).coerceAtLeast(0)
-            Key.DirectionDown -> (selectedSuggestion + 1)
+            Key.DirectionDown -> (selectedSuggestion + 1).coerceAtMost(maxSuggestions)
             Key.Enter -> {
                 return@onPreviewKeyEvent if (selectedSuggestion >= 0) {
                     scope.launch {
@@ -108,7 +109,7 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
             content()
             if (showSuggestions) {
                 ProvideEnterPressFlow(enterPresses) {
-                    SearchSuggestions(value, selectedSuggestion, ::updateSearch, ::showSuggestions)
+                    SearchSuggestions(value, selectedSuggestion, ::updateSearch, ::showSuggestions, ::updateMaxSuggestionsTo)
                 }
             }
         }

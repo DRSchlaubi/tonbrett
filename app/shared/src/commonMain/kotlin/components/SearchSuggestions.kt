@@ -37,14 +37,15 @@ fun SearchSuggestions(
     value: TextFieldValue,
     selectedKeyboardSuggestion: Int,
     updateSearch: (TextFieldValue) -> Unit,
-    showSuggestions: (Boolean) -> Unit
+    showSuggestions: (Boolean) -> Unit,
+    updateMaxSuggestions: (Int) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val hoveringOverSuggestions by interactionSource.collectIsHoveredAsState()
     var selectedSuggestion by remember { mutableStateOf(-1) }
     var currentTags by remember { mutableStateOf(emptyList<String>()) }
     val api = LocalContext.current.api
-    val tagOnlySearch = value.text.startsWith("tag:") && !value.text.endsWith(" ")
+    val tagOnlySearch = value.text.startsWith("tag:")
 
     fun selectSuggestion(index: Int) {
         selectedSuggestion = index
@@ -121,6 +122,8 @@ fun SearchSuggestions(
                                     )
                                 }
                             }
+
+                            updateMaxSuggestions(LocalSuggestionComposition.current.currentIndex)
                         }
                     }
                 }

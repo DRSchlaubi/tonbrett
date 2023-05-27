@@ -20,11 +20,13 @@ data class SuggestionScope(
 }
 
 data class SuggestionItemComposition(
-    var currentIndex: Int,
+    var nextIndex: Int,
     val mouseInput: Int,
     val keyboardInput: Int
 ) {
-    fun getAndIncrement() = currentIndex++
+    val currentIndex: Int
+        get() = nextIndex - 1
+    fun getAndIncrement() = nextIndex++
 }
 
 @Composable
