@@ -6,9 +6,8 @@ import dev.schlaubi.mikbot.plugin.api.util.database
 import dev.schlaubi.stdx.core.isNotNullOrBlank
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.Sound
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.serialization.Serializable
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
@@ -25,15 +24,17 @@ suspend fun CoroutineCollection<Sound>.findById(id: String) =
 @Serializable
 data class Tags(val tags: List<String>)
 
+@OptIn(ExperimentalCoroutinesApi::class)
 fun CoroutineCollection<Sound>.findAllTags(query: String? = null, limit: Int? = null): Flow<String> {
     val pipeline = listOfNotNull(
         match(Sound::tag ne null),
         if (query.isNotNullOrBlank()) match(query.toFuzzyFilter("tag")) else null,
-        group(Sound::tag, Tags::tags.addToSet(Sound::tag))
+        group(null, Tags::tags.addToSet(Sound::tag)),
+        project(fields(include(Tags::tags), excludeId()))
     )
 
     val flow = aggregate<Tags>(pipeline).toFlow()
-        .map { it.tags.first() }
+        .flatMapConcat { it.tags.asFlow() }
 
     return if(limit != null) {
         flow.take(limit)
