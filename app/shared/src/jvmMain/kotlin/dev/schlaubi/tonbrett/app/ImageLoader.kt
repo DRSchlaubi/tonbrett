@@ -1,4 +1,5 @@
 @file:JvmName("ImageLoaderJvm")
+
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.foundation.Image
@@ -26,12 +27,11 @@ internal expect fun ComponentRegistryBuilder.registerComponents(appContext: AppC
 actual fun OptionalWebImageInternal(url: String?, contentDescription: String?, modifier: Modifier) {
     if (url != null) {
         val painter = rememberAsyncImagePainter(url)
-
-        Image(painter, contentDescription, modifier)
-
         val state = painter.requestState
         if (state is ImageRequestState.Failure) {
             LOG.warn(state.error) { "Could not load image $url" }
+        } else {
+            Image(painter, contentDescription, modifier)
         }
     }
 }
