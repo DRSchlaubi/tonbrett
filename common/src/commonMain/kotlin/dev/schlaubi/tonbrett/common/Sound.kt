@@ -63,7 +63,19 @@ public data class Sound(
      */
     @Serializable
     @SerialName("guild")
-    public data class GuildEmoji(val id: SerializableSnowflake) : Emoji {
-        override val url: String get() = "https://cdn.discordapp.net/emojis/$id.png"
+    public data class GuildEmoji(val id: SerializableSnowflake, val isAnimated: Boolean = false) : Emoji {
+        override val url: String get() = buildString {
+            append("https://cdn.discordapp.com/emojis/")
+            if (isAnimated) {
+                append("a_")
+            }
+            append(id)
+            append('.')
+            if (isAnimated) {
+                append("gif")
+            } else {
+                append("png")
+            }
+        }
     }
 }

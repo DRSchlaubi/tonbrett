@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.emoji
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.converters.union
+import dev.kord.core.Kord
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.x.emoji.Emojis
 import dev.schlaubi.tonbrett.common.Sound
@@ -29,17 +30,15 @@ fun Arguments.emoji(name: String, description: String): OptionalCoalescingConver
     }
     val string = string {
         applyName()
-    }
 
-    val brokenConverter =  union(
-        name, description, converters = arrayOf(
-            emoji, string
-        )
-    ) {
-        if (value is String && Emojis[value.toString()] == null) {
-            fail(translate("arguments.emoji.invalid"))
+        validate {
+            if (Emojis[value] == null) {
+                fail(translate("arguments.emoji.invalid"))
+            }
         }
     }
+
+    val brokenConverter =  union(name, description, converters = arrayOf(emoji, string))
     args.removeIf { it.converter == brokenConverter }
     return arg(name, description, brokenConverter.toOptional().withBuilder(DummyBuilder))
 }
@@ -47,7 +46,7 @@ fun Arguments.emoji(name: String, description: String): OptionalCoalescingConver
 context(CommandContext)
 fun Any.toEmoji(): Sound.Emoji = when (this) {
     is String -> Sound.DiscordEmoji(this)
-    is GuildEmoji -> Sound.GuildEmoji(id)
+    is GuildEmoji -> Sound.GuildEmoji(id, isAnimated)
     else -> error("Invalid emoji type: $this")
 }
 
