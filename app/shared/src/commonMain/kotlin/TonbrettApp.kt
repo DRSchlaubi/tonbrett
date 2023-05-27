@@ -24,6 +24,7 @@ import io.ktor.client.plugins.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 
 typealias ErrorReporter = suspend (ClientRequestException) -> Unit
@@ -57,7 +58,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
             }
 
             LaunchedEffect(context.getToken()) {
-                scope.launch(Dispatchers.IO) {
+                withContext(Dispatchers.IO) {
                     try {
                         context.api.connect()
                     } catch (e: ClientRequestException) {
