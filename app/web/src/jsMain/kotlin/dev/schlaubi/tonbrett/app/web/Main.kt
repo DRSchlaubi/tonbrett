@@ -6,10 +6,9 @@ import dev.schlaubi.tonbrett.app.api.AppContext
 import dev.schlaubi.tonbrett.app.api.ProvideContext
 import dev.schlaubi.tonbrett.app.api.tokenKey
 import dev.schlaubi.tonbrett.app.title
+import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
-import io.ktor.resources.*
-import io.ktor.resources.serialization.*
 import kotlinx.browser.sessionStorage
 import kotlinx.browser.window
 import org.jetbrains.skiko.wasm.onWasmReady
@@ -24,10 +23,10 @@ fun main() {
     if (path.take(2) != listOf("soundboard", "ui")) error("Invalid path base")
     if (path.size > 2 && path[2] == "login") {
         sessionStorage[tokenKey] = url.parameters["token"] ?: error("Missing token")
-        window.location.href = href(ResourcesFormat(), Route.Ui())
+        window.location.href = href(Route.Ui())
     } else {
         if (sessionStorage[tokenKey] == null) {
-            window.location.href = href(ResourcesFormat(), Route.Auth(type = Route.Auth.Type.WEB))
+            window.location.href = href(Route.Auth(type = Route.Auth.Type.WEB))
         } else {
             onWasmReady {
                 context.resetApi()

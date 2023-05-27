@@ -56,10 +56,9 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
     suspend fun getTags(query: String? = null, limit: Int? = 0): List<String> = client.get(Route.Tags(query, limit)).body()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    @Suppress("INVISIBLE_MEMBER")
     suspend fun connect() {
         val session = client.webSocketSession {
-            href(client.resources().resourcesFormat, Route.Me.Events(token), url)
+            href(Route.Me.Events(token), url)
             url {
                 protocol = if (baseUrl.protocol.isSecure()) URLProtocol.WSS else URLProtocol.WS
                 port = protocol.defaultPort
@@ -81,3 +80,7 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
         }
     }
 }
+
+@Suppress("INVISIBLE_MEMBER")
+inline fun <reified T> HttpClient.href(resource: T, urlBuilder: URLBuilder) =
+    href(resources().resourcesFormat, resource, urlBuilder)

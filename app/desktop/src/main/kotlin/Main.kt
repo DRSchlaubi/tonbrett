@@ -11,21 +11,17 @@ import dev.schlaubi.tonbrett.app.api.ProvideContext
 import dev.schlaubi.tonbrett.app.api.getConfig
 import dev.schlaubi.tonbrett.app.api.getUrl
 import dev.schlaubi.tonbrett.app.title
+import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
-import io.ktor.http.URLBuilder
-import io.ktor.resources.href
-import io.ktor.resources.serialization.ResourcesFormat
+import io.ktor.http.*
 import java.awt.Desktop
-import java.net.URI
 
 fun main() = main(reAuthorize = false) { startApplication() }
 
 fun main(reAuthorize: Boolean, onAuth: () -> Unit) {
     val config = getConfig()
     if (reAuthorize || config.sessionToken == null) {
-        val urlBuilder = URLBuilder(getUrl())
-        href(ResourcesFormat(), Route.Auth(Route.Auth.Type.APP), urlBuilder)
-        Desktop.getDesktop().browse(URI(urlBuilder.buildString()))
+        Desktop.getDesktop().browse(href(Route.Auth(Route.Auth.Type.APP), URLBuilder(getUrl())).build().toURI())
         startAuthorizationServer(reAuthorize, onAuth)
     } else {
         startApplication()

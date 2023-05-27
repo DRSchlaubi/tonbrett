@@ -10,9 +10,8 @@ import dev.schlaubi.tonbrett.app.api.AppContext
 import dev.schlaubi.tonbrett.app.api.getUrl
 import dev.schlaubi.tonbrett.app.api.tokenKey
 import dev.schlaubi.tonbrett.common.Route
+import dev.schlaubi.tonbrett.client.href
 import io.ktor.http.URLBuilder
-import io.ktor.resources.href
-import io.ktor.resources.serialization.ResourcesFormat
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         }
         if (context.getTokenOrNull() == null) {
             val urlBuilder = URLBuilder(getUrl())
-            href(ResourcesFormat(), Route.Auth(Route.Auth.Type.MOBILE_APP), urlBuilder)
+            href(Route.Auth(Route.Auth.Type.MOBILE_APP), urlBuilder)
             val intent = CustomTabsIntent.Builder()
                 .build()
             intent.launchUrl(this, Uri.parse(urlBuilder.buildString()))
