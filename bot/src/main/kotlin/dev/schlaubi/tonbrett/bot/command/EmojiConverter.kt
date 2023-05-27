@@ -5,16 +5,12 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.Converter
 import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.OptionalCoalescingConverter
-import com.kotlindiscord.kord.extensions.commands.converters.builders.CoalescingConverterBuilder
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import com.kotlindiscord.kord.extensions.commands.converters.builders.OptionalCoalescingConverterBuilder
-import com.kotlindiscord.kord.extensions.commands.converters.impl.EmojiConverter
-import com.kotlindiscord.kord.extensions.commands.converters.impl.StringConverter
 import com.kotlindiscord.kord.extensions.commands.converters.impl.emoji
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.converters.union
-import dev.kord.core.Kord
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.x.emoji.Emojis
 import dev.schlaubi.tonbrett.common.Sound

@@ -43,7 +43,7 @@ fun SoundContainer(
 ) {
     Column {
         SearchBarScope(soundUpdater) {
-            LazyVerticalGrid(GridCells.Adaptive(160.dp), Modifier.canClearFocus()) {
+            LazyVerticalGrid(GridCells.Adaptive(160.dp), Modifier.canClearFocus().fillMaxHeight()) {
                 items(sounds) { (id, name, _, description, emoji) ->
                     SoundCard(id, name, emoji, description, id == playingSound, errorReporter, disabled)
                 }

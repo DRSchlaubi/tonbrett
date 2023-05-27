@@ -13,6 +13,7 @@ import dev.schlaubi.tonbrett.app.ErrorReporter
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
+import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.InterfaceAvailabilityChangeEvent
 import dev.schlaubi.tonbrett.common.Sound
@@ -138,7 +139,7 @@ fun SoundList(errorReporter: ErrorReporter) {
             }
         }
 
-        NonListBlock {
+        NonListBlock(Modifier.canClearFocus()) {
             val strings = LocalStrings.current
             when {
                 offline -> ErrorText(strings.offline)
@@ -150,10 +151,10 @@ fun SoundList(errorReporter: ErrorReporter) {
 }
 
 @Composable
-private fun NonListBlock(content: @Composable ColumnScope.() -> Unit) {
+private fun NonListBlock(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+        modifier = modifier.fillMaxWidth().padding(vertical = 10.dp),
         content = content
     )
 }

@@ -1,5 +1,6 @@
 package dev.schlaubi.tonbrett.app.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
@@ -179,9 +181,11 @@ private fun SearchField(
             }
         },
         singleLine = true,
+        visualTransformation = SyntaxHighlightingTextTransformation,
         modifier = Modifier.fillMaxWidth(.8f)
             .onFocusChanged { updateShowSuggestions(it.hasFocus) }
             .focusRequester(remember { FocusRequester() })
+            .background(color = Color.Companion.Transparent, shape = RoundedCornerShape(25.dp))
             .onPreviewKeyEvent {
                 when (it.key) {
                     Key.Escape, Key.Enter -> focusManager.clearFocus()
