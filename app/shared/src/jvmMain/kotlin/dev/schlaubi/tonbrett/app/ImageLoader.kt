@@ -11,7 +11,6 @@ import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.ImageRequestState
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.component.ComponentRegistryBuilder
-import com.seiko.imageloader.component.decoder.GifDecoder
 import com.seiko.imageloader.component.setupKtorComponents
 import com.seiko.imageloader.rememberAsyncImagePainter
 import dev.schlaubi.tonbrett.app.api.AppContext
@@ -21,7 +20,7 @@ import mu.KotlinLogging
 
 private val LOG = KotlinLogging.logger { }
 
-internal expect fun ComponentRegistryBuilder.registerComponents(appContext: AppContext)
+internal expect fun ComponentRegistryBuilder.registerComponents(appContext: AppContext, coroutineScope: CoroutineScope)
 
 @Composable
 actual fun OptionalWebImageInternal(url: String?, contentDescription: String?, modifier: Modifier) {
@@ -48,7 +47,6 @@ fun ProvideImageLoader(content: @Composable () -> Unit) {
 private fun newImageLoader(appContext: AppContext, coroutineScope: CoroutineScope): ImageLoader = ImageLoader {
     components {
         setupKtorComponents()
-        add(GifDecoder.Factory(coroutineScope))
-        registerComponents(appContext)
+        registerComponents(appContext, coroutineScope)
     }
 }
