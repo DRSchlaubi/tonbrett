@@ -23,7 +23,6 @@ import dev.schlaubi.tonbrett.app.strings.rememberStrings
 import io.ktor.client.plugins.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 
@@ -33,7 +32,6 @@ private val LOG = KotlinLogging.logger {}
 
 @Composable
 fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableStateOf(false) }) {
-    val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     var sessionExpired by sessionExpiredState
     var crashed by remember { mutableStateOf(false) }

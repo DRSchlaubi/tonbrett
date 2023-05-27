@@ -1,7 +1,6 @@
 package dev.schlaubi.tonbrett.app.components
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
@@ -21,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -32,6 +30,7 @@ import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.app.util.conditional
+import dev.schlaubi.tonbrett.app.util.isMobile
 import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.Sound
 import io.ktor.client.plugins.*
@@ -67,6 +66,7 @@ fun SoundContainer(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SoundCard(
     id: Id<Sound>,
@@ -106,21 +106,27 @@ fun SoundCard(
                 border(BorderStroke(2.dp, ColorScheme.active), corners)
             }
             .hoverable(interactionSource)
-            .pointerInput(playing) {
-                detectTapGestures(
-                    onDoubleTap = {
-                        if (playing) {
-                            play()
-                        }
-                    },
-                    onTap = {
+            .conditional(isMobile) {
+                combinedClickable(
+                    onClick = {
                         if (playing) {
                             stop()
                         } else {
                             play()
                         }
+                    },
+                    onDoubleClick = {
+                        if (playing && !disabled) {
+                            play()
+                        }
                     }
                 )
+            }.conditional(!isMobile) {
+                clickable {
+                    if (!disabled) {
+                        play()
+                    }
+                }
             }
     ) {
         BoxWithConstraints {
