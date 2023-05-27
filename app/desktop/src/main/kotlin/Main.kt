@@ -2,6 +2,9 @@ package dev.schlaubi.tonbrett.app.desktop
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.res.loadImageBitmap
+import androidx.compose.ui.res.useResource
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
@@ -30,7 +33,9 @@ fun main(reAuthorize: Boolean, onAuth: () -> Unit) {
 
 fun startApplication() = application {
     val sessionExpired = remember { mutableStateOf(false) }
-    Window(onCloseRequest = ::exitApplication, title = title) {
+    Window(onCloseRequest = ::exitApplication, title = title,
+        icon = BitmapPainter(useResource("logo.png", ::loadImageBitmap))
+    ) {
         val context = remember {
             object : AppContext() {
                 override fun reAuthorize() {
