@@ -5,8 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
+import androidx.compose.ui.window.singleWindowApplication
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.TonbrettApp
 import dev.schlaubi.tonbrett.app.api.AppContext
@@ -31,28 +30,27 @@ fun main(reAuthorize: Boolean, onAuth: () -> Unit) {
     }
 }
 
-fun startApplication() = application {
+fun startApplication() = singleWindowApplication(
+    title = title,
+    icon = BitmapPainter(useResource("logo.png", ::loadImageBitmap))
+) {
     val sessionExpired = remember { mutableStateOf(false) }
-    Window(onCloseRequest = ::exitApplication, title = title,
-        icon = BitmapPainter(useResource("logo.png", ::loadImageBitmap))
-    ) {
-        val context = remember {
-            object : AppContext() {
-                override fun reAuthorize() {
-                    window.isMinimized = true
-                    main(reAuthorize = true) {
-                        resetApi()
-                        window.isMinimized = false
-                        sessionExpired.value = false
-                    }
+    val context = remember {
+        object : AppContext() {
+            override fun reAuthorize() {
+                window.isMinimized = true
+                main(reAuthorize = true) {
+                    resetApi()
+                    window.isMinimized = false
+                    sessionExpired.value = false
                 }
             }
         }
-        context.resetApi()
-        ProvideContext(context) {
-            ProvideImageLoader {
-                TonbrettApp(sessionExpired)
-            }
+    }
+    context.resetApi()
+    ProvideContext(context) {
+        ProvideImageLoader {
+            TonbrettApp(sessionExpired)
         }
     }
 }
