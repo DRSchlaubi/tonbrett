@@ -1,6 +1,9 @@
 package dev.schlaubi.tonbrett.app.components
 
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -12,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -25,6 +29,7 @@ import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.util.canClearFocus
+import dev.schlaubi.tonbrett.app.util.conditional
 import dev.schlaubi.tonbrett.common.Sound
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -95,7 +100,8 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
         ) {
             SearchField(value, onlineMine, updateSounds, ::updateSearch, showSuggestions, ::showSuggestions)
             Spacer(Modifier.padding(horizontal = 5.dp).canClearFocus())
-            Row(verticalAlignment = Alignment.CenterVertically,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.canClearFocus().fillMaxWidth()
             ) {
                 OnlineMineCheckbox(onlineMine, value.text, updateSounds, ::updateOnlineMine)
@@ -236,11 +242,22 @@ private fun OnlineMineCheckbox(
 
 @Composable
 private fun TrailingIcon(value: TextFieldValue, updateSearch: (TextFieldValue) -> Unit) {
-    if (value.text.isEmpty()) {
-        Icon(Icons.Default.Search, null)
-    } else {
-        IconButton({ updateSearch(TextFieldValue("")) }) {
-            Icon(Icons.Default.Clear, null)
-        }
+    val isSearching = value.text.isNotEmpty()
+    val transition = updateTransition(targetState = isSearching)
+    val iconRotation by transition.animateFloat { searching ->
+        if (searching) 90f else 0f
     }
+
+    val icon = if (value.text.isEmpty()) {
+        Icons.Default.Search
+    } else {
+        Icons.Default.Clear
+    }
+
+    Icon(icon, null, Modifier
+        .rotate(iconRotation).conditional(value.text.isNotEmpty()) {
+            clickable {
+                updateSearch(TextFieldValue(""))
+            }
+        })
 }
