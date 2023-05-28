@@ -13,6 +13,7 @@ fun MainUiViewController(): UIViewController {
         }
 
         override fun reAuthorize() {
+            super.reAuthorize()
             onReauthorization()
         }
     }
