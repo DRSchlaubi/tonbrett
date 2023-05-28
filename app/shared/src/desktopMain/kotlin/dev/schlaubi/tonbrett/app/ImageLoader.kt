@@ -9,6 +9,6 @@ import dev.schlaubi.tonbrett.app.api.AppContext
 import kotlinx.coroutines.CoroutineScope
 
 internal actual fun ComponentRegistryBuilder.registerComponents(appContext: AppContext, coroutineScope: CoroutineScope) {
-    add(SkiaImageDecoder.Factory())
     add(GifDecoder.Factory(coroutineScope))
+    add(SkiaImageDecoder.Factory())
 }

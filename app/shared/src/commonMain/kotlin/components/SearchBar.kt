@@ -95,14 +95,16 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
         ) {
             SearchField(value, onlineMine, updateSounds, ::updateSearch, showSuggestions, ::showSuggestions)
             Spacer(Modifier.padding(horizontal = 5.dp).canClearFocus())
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.canClearFocus()) {
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.canClearFocus().fillMaxWidth()
+            ) {
                 OnlineMineCheckbox(onlineMine, value.text, updateSounds, ::updateOnlineMine)
                 BoxWithConstraints {
                     if (maxWidth >= 30.dp) {
                         Spacer(Modifier.padding(horizontal = 2.dp))
                         Text(strings.onlineMine, color = ColorScheme.textColor)
                     } else {
-                        Icon(Icons.Default.Person, "Only mine", tint = ColorScheme.secondaryContainer)
+                        Icon(Icons.Default.Person, strings.onlineMine, tint = ColorScheme.textColor)
                     }
                 }
             }
@@ -111,7 +113,13 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
             content()
             if (showSuggestions) {
                 ProvideEnterPressFlow(enterPresses) {
-                    SearchSuggestions(value, selectedSuggestion, ::updateSearch, ::showSuggestions, ::updateMaxSuggestionsTo)
+                    SearchSuggestions(
+                        value,
+                        selectedSuggestion,
+                        ::updateSearch,
+                        ::showSuggestions,
+                        ::updateMaxSuggestionsTo
+                    )
                 }
             }
         }
@@ -132,14 +140,14 @@ private fun SearchField(
     val api = LocalContext.current.api
     val focusManager = LocalFocusManager.current
 
-    fun handleInput(input: TextFieldValue) {
+    suspend fun handleInput(input: TextFieldValue) {
         val text = input.text
-        if (!showSuggestions && text.getOrNull(text.lastIndex - 1) == ':') {
+        if (!input.annotatedString.hasStringAnnotations(skipSuggestionProcessing, 0, 0)
+            && !showSuggestions && text.startsWith("tag:")
+        ) {
             updateShowSuggestions(true)
         }
-        scope.launch {
-            updates.emit(input)
-        }
+        updates.emit(input)
     }
 
     LaunchedEffect(onlyMine) {

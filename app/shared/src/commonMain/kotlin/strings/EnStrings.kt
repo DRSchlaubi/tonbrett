@@ -14,5 +14,10 @@ val EnStrings = Strings(
     reAuthorize = "Re-login",
     searchExplainer = "Search for sounds",
     search = "Search",
-    onlineMine = "Only mine"
+    onlineMine = "Only mine",
+    searchByTag = "Search by tag",
+    searchByName = "Search by name",
+    searchByDescription = "Search by description",
+    searchOptions = "Search options",
+    enterToAdd = "Press enter to add"
 )

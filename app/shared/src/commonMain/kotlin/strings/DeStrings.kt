@@ -14,5 +14,10 @@ val DeStrings = Strings(
     reAuthorize = "Neu anmelden",
     searchExplainer = "Nach Sounds suchen",
     search = "Suche",
-    onlineMine = "Nur eigene"
+    onlineMine = "Nur eigene",
+    searchByTag = "Nach Tag suchen",
+    searchByName = "Nach Namen suchen",
+    searchByDescription = "Nach Beschreibung suchen",
+    searchOptions = "Such optionen",
+    enterToAdd = "Drücke Enter um den Filter hinzuzufügen"
 )

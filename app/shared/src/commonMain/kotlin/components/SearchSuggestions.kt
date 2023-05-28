@@ -27,10 +27,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.api.LocalContext
+import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.util.conditional
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
+
+const val skipSuggestionProcessing = "SKIP_SUGGESTION_PROCESSING"
 
 @Composable
 fun SearchSuggestions(
@@ -45,6 +48,7 @@ fun SearchSuggestions(
     var selectedSuggestion by remember { mutableStateOf(-1) }
     var currentTags by remember { mutableStateOf(emptyList<String>()) }
     val api = LocalContext.current.api
+    val strings = LocalStrings.current
     val tagOnlySearch = value.text.startsWith("tag:")
 
     fun selectSuggestion(index: Int) {
@@ -64,7 +68,7 @@ fun SearchSuggestions(
         }
     }
 
-    if(!tagOnlySearch || currentTags.isNotEmpty()) {
+    if (!tagOnlySearch || currentTags.isNotEmpty()) {
         Box(
             modifier = Modifier
                 .padding(vertical = 5.dp, horizontal = 7.dp)
@@ -82,7 +86,7 @@ fun SearchSuggestions(
                     SuggestionScope(selectedSuggestion, selectedKeyboardSuggestion) {
                         if (value.text.isNotBlank() && currentTags.isNotEmpty()) {
                             Text(
-                                "Search by Tag",
+                                strings.searchByTag,
                                 color = ColorScheme.textColor,
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
@@ -103,12 +107,16 @@ fun SearchSuggestions(
                                     Divider(Modifier.fillMaxWidth(), color = Color.DarkGray, thickness = 2.dp)
                                 }
                             }
-                            Text("Options", color = ColorScheme.textColor, modifier = Modifier.padding(horizontal = 5.dp))
+                            Text(
+                                strings.searchOptions,
+                                color = ColorScheme.textColor,
+                                modifier = Modifier.padding(horizontal = 5.dp)
+                            )
                             Column(Modifier.hoverable(interactionSource)) {
                                 val keywords = mapOf(
-                                    "name" to "Search by name",
-                                    "tag" to "Search by tag",
-                                    "description" to "Search by description"
+                                    "name" to strings.searchByName,
+                                    "tag" to strings.searchByTag,
+                                    "description" to strings.searchByDescription
                                 )
 
                                 keywords.forEach { (name, description) ->
@@ -147,6 +155,7 @@ private fun SyntaxSuggestion(
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
     val enterFlow = LocalEnterPressFlow.current
+    val strings = LocalStrings.current
     if (hovered) {
         updateSelected(index)
     }
@@ -161,7 +170,16 @@ private fun SyntaxSuggestion(
 
     fun select() {
         val actualText = value.text.substringAfter(":")
-        updateSearch(TextFieldValue("$name:$actualText", selection = TextRange(name.length + text.lastIndex)))
+        val string = buildAnnotatedString {
+            append("$name:$actualText")
+            addStringAnnotation(skipSuggestionProcessing, "true", 0, 0)
+        }
+        updateSearch(
+            TextFieldValue(
+                string,
+                selection = TextRange(name.length + text.lastIndex),
+            )
+        )
     }
 
     if (selected) {
@@ -191,6 +209,6 @@ private fun SyntaxSuggestion(
     ) {
         Text(text, Modifier.padding(horizontal = 5.dp))
         Spacer(Modifier.weight(100f))
-        Icon(Icons.Default.Add, "Enter to add", tint = Color.LightGray)
+        Icon(Icons.Default.Add, strings.enterToAdd, tint = Color.LightGray)
     }
 }
