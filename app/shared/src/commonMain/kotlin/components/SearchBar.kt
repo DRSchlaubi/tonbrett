@@ -1,5 +1,7 @@
 package dev.schlaubi.tonbrett.app.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
@@ -43,7 +45,7 @@ typealias SoundUpdater = (List<Sound>) -> Unit
 @OptIn(ExperimentalComposeUiApi::class)
 private val protectedKeys = listOf(Key.Enter, Key.DirectionUp, Key.DirectionDown)
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) {
     var onlineMine by remember { mutableStateOf(false) }
@@ -117,15 +119,17 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
         }
         BoxWithConstraints {
             content()
-            if (showSuggestions) {
-                ProvideEnterPressFlow(enterPresses) {
-                    SearchSuggestions(
-                        value,
-                        selectedSuggestion,
-                        ::updateSearch,
-                        ::showSuggestions,
-                        ::updateMaxSuggestionsTo
-                    )
+            AnimatedContent(showSuggestions) { rendering ->
+                if (rendering) {
+                    ProvideEnterPressFlow(enterPresses) {
+                        SearchSuggestions(
+                            value,
+                            selectedSuggestion,
+                            ::updateSearch,
+                            ::showSuggestions,
+                            ::updateMaxSuggestionsTo
+                        )
+                    }
                 }
             }
         }

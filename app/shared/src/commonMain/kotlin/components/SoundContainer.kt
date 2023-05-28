@@ -160,7 +160,6 @@ fun SoundCard(
                 }
             }
         }
-
     }
     if (description != null && hovered && !playing) {
         Box(

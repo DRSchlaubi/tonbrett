@@ -1,5 +1,7 @@
 package dev.schlaubi.tonbrett.app.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,15 +16,8 @@ import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.util.canClearFocus
-import dev.schlaubi.tonbrett.common.Id
-import dev.schlaubi.tonbrett.common.InterfaceAvailabilityChangeEvent
-import dev.schlaubi.tonbrett.common.Sound
-import dev.schlaubi.tonbrett.common.SoundCreatedEvent
-import dev.schlaubi.tonbrett.common.SoundDeletedEvent
-import dev.schlaubi.tonbrett.common.SoundUpdatedEvent
-import dev.schlaubi.tonbrett.common.User
-import dev.schlaubi.tonbrett.common.VoiceStateUpdateEvent
-import io.ktor.client.plugins.ClientRequestException
+import dev.schlaubi.tonbrett.common.*
+import io.ktor.client.plugins.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -32,6 +27,7 @@ import mu.KotlinLogging
 
 private val LOG = KotlinLogging.logger {}
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SoundList(errorReporter: ErrorReporter) {
     var playingSound by remember { mutableStateOf<Id<Sound>?>(null) }
@@ -133,9 +129,13 @@ fun SoundList(errorReporter: ErrorReporter) {
     }
 
     Column {
-        if (!loading && !channelMismatch && !offline) {
-            SoundContainer(sounds, errorReporter, playingSound, !available) {
-                sounds = it
+
+        val renderingSounds = !loading && !channelMismatch && !offline
+        AnimatedContent(renderingSounds) { render ->
+            if (render) {
+                SoundContainer(sounds, errorReporter, playingSound, !available) {
+                    sounds = it
+                }
             }
         }
 
