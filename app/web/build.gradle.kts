@@ -11,7 +11,8 @@ kotlin {
         binaries.executable()
         compilations.all {
             compilerOptions.options.freeCompilerArgs.addAll(
-                "-Xir-per-module", "-Xir-property-lazy-initialization")
+                "-Xir-per-module", "-Xir-property-lazy-initialization"
+            )
         }
     }
 
@@ -35,6 +36,19 @@ kotlin {
                 implementation(compose.components.resources)
             }
         }
+    }
+}
+
+tasks {
+    val copyIcon by creating(Copy::class) {
+        dependsOn("jsBrowserProductionExecutableDistributeResources")
+        from(rootProject.file("icons/logo.ico"))
+        into(buildDir.resolve("distribuions"))
+        rename { "favicon.ico" }
+    }
+
+    named("jsMainClasses") {
+        dependsOn(copyIcon)
     }
 }
 
