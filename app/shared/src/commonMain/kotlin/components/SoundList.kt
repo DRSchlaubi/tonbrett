@@ -129,7 +129,6 @@ fun SoundList(errorReporter: ErrorReporter) {
     }
 
     Column {
-
         val renderingSounds = !loading && !channelMismatch && !offline
         AnimatedContent(renderingSounds) { render ->
             if (render) {
