@@ -74,7 +74,7 @@ public class Route {
         @Serializable
         public enum class Type(public val redirectTo: String) {
             WEB("/soundboard/ui/login?token="),
-            APP("http://localhost:$authServerPort/login?token="),
+            APP("/soundboard/deeplink/login?token="),
             MOBILE_APP("tonbrett://login?token=")
         }
     }
@@ -112,4 +112,7 @@ public class Route {
      */
     @Resource("player/stop")
     public data class StopPlayer(val parent: Route = Route())
+
+    @Resource("deeplink/login")
+    public data class AuthDeepLink(val parent: Route = Route())
 }

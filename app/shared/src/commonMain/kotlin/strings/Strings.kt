@@ -12,9 +12,13 @@ data class Strings(
     val searchExplainer: String,
     val search: String,
     val onlineMine: String,
-    val searchByTag: String, //Search by Tag
-    val searchByName: String, //Search by name
-    val searchByDescription: String, // Search by description
+    val searchByTag: String,
+    val searchByName: String,
+    val searchByDescription: String,
     val searchOptions: String,
-    val enterToAdd: String
+    val enterToAdd: String,
+    val loginSuccessful: String,
+    val logo: String,
+    val loginSuccessfulDescription: String,
+    val starOnGithub: String
 )

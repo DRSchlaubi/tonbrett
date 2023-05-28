@@ -11,6 +11,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(libs.logback)
     implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.cors)
 }
 
 

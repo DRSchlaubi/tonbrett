@@ -19,5 +19,9 @@ val DeStrings = Strings(
     searchByName = "Nach Namen suchen",
     searchByDescription = "Nach Beschreibung suchen",
     searchOptions = "Such optionen",
-    enterToAdd = "Drücke Enter um den Filter hinzuzufügen"
+    enterToAdd = "Drücke Enter um den Filter hinzuzufügen",
+    loginSuccessful = "Anmeldung erfolgreich!",
+    logo = "Stell dir unser logo vor",
+    loginSuccessfulDescription = "Du hast dich erfolgreich angemeldet, hab Spaß und kauf keine Apple Produkte",
+    starOnGithub = "Bewerte uns auf GitHub"
 )

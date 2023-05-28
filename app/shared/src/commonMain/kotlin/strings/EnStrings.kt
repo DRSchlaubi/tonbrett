@@ -19,5 +19,9 @@ val EnStrings = Strings(
     searchByName = "Search by name",
     searchByDescription = "Search by description",
     searchOptions = "Search options",
-    enterToAdd = "Press enter to add"
+    enterToAdd = "Press enter to add",
+    loginSuccessful = "Login Successful",
+    logo = "Imagine our logo being here",
+    loginSuccessfulDescription = "You signed in successfully, you can close this tab now and please don't buy Apple Products",
+    starOnGithub = "Star us on GitHub"
 )

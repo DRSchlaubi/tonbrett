@@ -1,5 +1,6 @@
 package dev.schlaubi.tonbrett.bot.server
 
+import dev.schlaubi.tonbrett.common.Route.AuthDeepLink
 import dev.schlaubi.tonbrett.common.Route.Ui
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -8,7 +9,7 @@ import io.ktor.server.resources.*
 import io.ktor.server.routing.*
 import kotlin.reflect.jvm.javaField
 
-private fun Route.staticUi() {
+private inline fun <reified T : Any> Route.staticUi() = resource<T> {
     intercept(ApplicationCallPipeline.Plugins) {
         call.fixClassLoader()
     }
@@ -16,12 +17,9 @@ private fun Route.staticUi() {
 }
 
 fun Route.ui() {
-    resource<Ui.Login> {
-        staticUi()
-    }
-    resource<Ui> {
-        staticUi()
-    }
+    staticUi<Ui.Login>()
+    staticUi<Ui>()
+    staticUi<AuthDeepLink>()
 }
 
 private fun ApplicationCall.fixClassLoader() {

@@ -20,21 +20,29 @@ private val context = AppContext()
 fun main() {
     val url = Url(window.location.href)
     val path = url.pathSegments.filter(String::isNotBlank)
-    if (path.take(2) != listOf("soundboard", "ui")) error("Invalid path base")
-    if (path.size > 2 && path[2] == "login") {
-        sessionStorage[tokenKey] = url.parameters["token"] ?: error("Missing token")
-        window.location.href = href(Route.Ui())
-    } else {
-        if (sessionStorage[tokenKey] == null) {
-            window.location.href = href(Route.Auth(type = Route.Auth.Type.WEB))
+    if (path.first() != "soundboard" || path.size < 2) error("Invalid path base")
+    if (path[1] == "ui") {
+        if (path.size > 2 && path[2] == "login") {
+            sessionStorage[tokenKey] = url.parameters["token"] ?: error("Missing token")
+            window.location.href = href(Route.Ui())
         } else {
-            onWasmReady {
-                context.resetApi()
-                CanvasBasedWindow(title) {
-                    ProvideContext(context) {
-                        TonbrettApp()
+            if (sessionStorage[tokenKey] == null) {
+                window.location.href = href(Route.Auth(type = Route.Auth.Type.WEB))
+            } else {
+                onWasmReady {
+                    context.resetApi()
+                    CanvasBasedWindow(title) {
+                        ProvideContext(context) {
+                            TonbrettApp()
+                        }
                     }
                 }
+            }
+        }
+    } else if (path.subList(1, 3) == listOf("deeplink", "login")){
+        onWasmReady {
+            CanvasBasedWindow(title) {
+                AuthorizationScreen()
             }
         }
     }
