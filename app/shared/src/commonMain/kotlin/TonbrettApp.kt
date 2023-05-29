@@ -51,8 +51,10 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
         if (!crashed && !sessionExpired) {
             Scaffold(
                 containerColor = ColorScheme.container,
-                snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) }) {
-                SoundList(::reportError)
+                snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) }) { padding ->
+                Column(Modifier.padding(padding)) {
+                    SoundList(::reportError)
+                }
             }
 
             LaunchedEffect(context.getToken()) {

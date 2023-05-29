@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.mdc.android)
     implementation(libs.androidx.constraintlayout)
+    implementation(compose.material3)
 }
 
 android {
