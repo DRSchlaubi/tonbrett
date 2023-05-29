@@ -7,7 +7,6 @@ import kotlinx.serialization.json.JsonNames
 @Serializable
 public data class User(
     val id: SerializableSnowflake,
-    val language: String?,
     val voiceState: VoiceState?
 ) {
     @OptIn(ExperimentalSerializationApi::class)

@@ -48,8 +48,8 @@ class Ktor : KtorExtensionPoint, KordExKoinComponent {
             authenticated {
                 sounds()
                 users()
-                webSocket()
             }
+            webSocket()
 
             get<Route> {
                 call.respondRedirect(application.href(Route.Ui()))

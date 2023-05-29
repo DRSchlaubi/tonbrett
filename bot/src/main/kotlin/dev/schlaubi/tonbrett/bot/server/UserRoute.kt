@@ -10,12 +10,11 @@ import io.ktor.server.routing.*
 
 fun Route.users() {
     get<Me> {
-        val user = call.user
+        val user = call.userId
         val voiceState = user.voiceState
 
         call.respond(User(
-            user.id,
-            user.locale.value,
+            user,
             voiceState
         ))
     }

@@ -13,19 +13,19 @@ repositories {
 
 dependencies {
     implementation(projects.common)
-    implementation(libs.ktor.server.auth) {
-        exclude(module = "ktor-server-core")
-    }
-    implementation(libs.ktor.server.websockets) {
-        exclude(module = "ktor-server-core")
-    }
-    implementation(libs.ktor.server.cors) {
-        exclude(module = "ktor-server-core")
-    }
+    ktorDependency(libs.ktor.server.auth)
+    ktorDependency(libs.ktor.server.websockets)
+    ktorDependency(libs.ktor.server.cors)
+    ktorDependency(libs.ktor.server.auth.jwt)
     implementation(libs.kmongo.id.serialization)
     plugin(libs.mikbot.ktor)
     plugin(libs.mikbot.music)
     ksp(libs.kordex.processor)
+}
+
+fun DependencyHandlerScope.ktorDependency(dependency: ProviderConvertible<*>) = ktorDependency(dependency.asProvider())
+fun DependencyHandlerScope.ktorDependency(dependency: Provider<*>) = implementation(dependency) {
+    exclude(module = "ktor-server-core")
 }
 
 mikbotPlugin {

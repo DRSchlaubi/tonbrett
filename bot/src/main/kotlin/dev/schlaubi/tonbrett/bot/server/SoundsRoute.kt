@@ -27,7 +27,7 @@ fun Route.sounds() {
     val kord by KordExContext.get().inject<Kord>()
 
     post<StopPlayer> {
-        val guild = call.user.voiceState?.guildId ?: badRequest("Not connected to voice channel")
+        val guild = call.userId.voiceState?.guildId ?: badRequest("Not connected to voice channel")
         val player = kord.unsafe.guild(guild).soundPlayer
         if (!player.locked) badRequest("Player not playing")
         player.stop()
@@ -39,18 +39,18 @@ fun Route.sounds() {
     }
 
     get<Sounds.ListSounds> { (onlyMine, queryString) ->
-        call.respond(SoundBoardDatabase.sounds.search(queryString, onlyMine, call.user.id).toList())
+        call.respond(SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId).toList())
     }
 
     authenticated {
         post<Sounds.Sound.Play> { (soundId) ->
             val sound = SoundBoardDatabase.sounds.findById(soundId) ?: soundNotFound()
-            val user = call.user
+            val user = call.userId
             val voiceState = user.voiceState
                 ?: badRequest(call.translate("rest.errors.not_connected_to_vc"))
             val player = kord.unsafe.guild(voiceState.guildId).soundPlayer
 
-            if (player.locked && player.currentUser != user.id) {
+            if (player.locked && player.currentUser != user) {
                 badRequest("You are not permitted to skip a track")
             }
 
@@ -61,7 +61,7 @@ fun Route.sounds() {
                 badRequest(call.translate("rest.errors.vc_mismatch"))
             }
 
-            player.playSound(sound, user.id)
+            player.playSound(sound, user)
             call.respond(HttpStatusCode.Accepted)
         }
     }

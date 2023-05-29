@@ -1,11 +1,19 @@
+@file:OptIn(InternalAPI::class)
+
 package dev.schlaubi.tonbrett.bot.server
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.interfaces.DecodedJWT
 import dev.kord.common.KordConfiguration
 import dev.kord.common.entity.DiscordUser
+import dev.kord.common.entity.Snowflake as snowflake
+import dev.schlaubi.mikbot.plugin.api.InternalAPI
 import dev.schlaubi.mikbot.util_plugins.ktor.api.buildBotUrl
 import dev.schlaubi.tonbrett.bot.config.Config
 import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.common.Route
+import dev.schlaubi.tonbrett.common.Snowflake
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -15,23 +23,30 @@ import io.ktor.http.auth.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
-import io.ktor.util.*
+import kotlinx.datetime.Clock
+import kotlinx.datetime.toJavaInstant
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.days
+import dev.schlaubi.mikbot.util_plugins.ktor.api.Config as KtorConfig
 import io.ktor.server.routing.Route as KtorRoute
 
 private const val discordAuth = "discord"
-private const val sessionAuth = "session"
-
-private val sessionCache = mutableMapOf<String, DiscordUser>()
+private const val jwtAuth = "jwt"
 
 data class Session(val type: Route.Auth.Type)
 
-private class DiscordPrincipal(val user: DiscordUser) : Principal
+private val jwtVerifier = JWT
+    .require(Algorithm.HMAC256(Config.JWT_SECRET))
+    .withIssuer(KtorConfig.WEB_SERVER_URL.toString())
+    .build()
+
+fun verifyJwt(jwt: String): DecodedJWT = jwtVerifier.verify(jwt)
 
 private val httpClient = HttpClient {
     install(ContentNegotiation) {
@@ -47,7 +62,6 @@ fun Application.installAuth() {
         cookie<Session>("AUTH_SESSION")
     }
     authentication {
-        register(TokenAuthentication(TokenAuthentication.Config(sessionAuth)))
         oauth(discordAuth) {
             urlProvider = { this@installAuth.buildBotUrl(Route.Auth.Callback()) }
             providerLookup = {
@@ -62,6 +76,15 @@ fun Application.installAuth() {
                 )
             }
             client = httpClient
+        }
+
+        jwt(jwtAuth) {
+            realm = "Soundboard UI Access"
+            verifier(jwtVerifier)
+
+            validate {credential ->
+                JWTPrincipal(credential.payload)
+            }
         }
     }
 
@@ -83,54 +106,37 @@ fun Application.installAuth() {
 
                 val type = call.sessions.get<Session>()?.type ?: badRequest("Missing type")
 
-                val id = generateNonce()
 
-                val discordUser =
+                val discordUserResponse =
                     httpClient.get("https://discord.com/api/v${KordConfiguration.REST_VERSION}/users/@me") {
                         bearerAuth(oauth.accessToken)
                     }
 
-                if (!discordUser.status.isSuccess()) {
-                    throw BadRequestException("Got unexpected response code: ${discordUser.status}")
+                if (!discordUserResponse.status.isSuccess()) {
+                    throw BadRequestException("Got unexpected response code: ${discordUserResponse.status}")
                 }
-                sessionCache[id] = discordUser.body()
 
-                call.respondRedirect(type.redirectTo + id)
+                val discordUser  =discordUserResponse.body<DiscordUser>()
+                val key = newKey(discordUser.id)
+
+                call.respondRedirect(type.redirectTo + key)
             }
         }
     }
 }
 
 fun KtorRoute.authenticated(block: KtorRoute.() -> Unit) = authenticate(
-    sessionAuth, build = block
+    jwtAuth, build = block
 )
 
-private class TokenAuthentication(config: Config) : AuthenticationProvider(config) {
-    class Config(name: String) : AuthenticationProvider.Config(name)
-
-    override suspend fun onAuthenticate(context: AuthenticationContext) {
-        val authToken = context.call.request.parseAuthorizationHeader() ?: run {
-            context.error("MISSING_TOKEN", AuthenticationFailedCause.NoCredentials)
-            return
-        }
-        if (authToken !is HttpAuthHeader.Single || authToken.authScheme != "Bearer" || authToken.blob !in sessionCache) {
-            context.error("WRONG_TOKEN", AuthenticationFailedCause.InvalidCredentials)
-            return
-        }
-        val session = sessionCache[authToken.blob]!!
-
-        context.principal(DiscordPrincipal(session))
-    }
-
-}
-
-fun findSession(id: String) = sessionCache[id]
-
-val ApplicationCall.user: DiscordUser
+val ApplicationCall.userId: Snowflake
     get() {
-        if (authentication.allFailures.isNotEmpty()) {
-            throw OAuth2Exception.MissingAccessToken()
-        }
-
-        return principal<DiscordPrincipal>()!!.user
+        val idRaw = principal<JWTPrincipal>()!!.payload.getClaim("userId")
+        return snowflake(idRaw.asLong())
     }
+
+private fun newKey(userId: Snowflake) = JWT.create()
+    .withIssuer(KtorConfig.WEB_SERVER_URL.toString())
+    .withClaim("userId", userId.value.toLong())
+    .withExpiresAt((Clock.System.now() + 7.days).toJavaInstant())
+    .sign(Algorithm.HMAC256(Config.JWT_SECRET))

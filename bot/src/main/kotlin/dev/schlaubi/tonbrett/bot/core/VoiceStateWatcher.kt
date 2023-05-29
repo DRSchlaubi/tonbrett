@@ -20,8 +20,8 @@ import dev.schlaubi.tonbrett.common.VoiceStateUpdateEvent as APIVoiceStateUpdate
 
 private val kord: Kord by KordExContext.get().inject<Kord>()
 
-val DiscordUser.voiceState: User.VoiceState?
-    get() = runBlocking { findVoiceState(id) }
+val Snowflake.voiceState: User.VoiceState?
+    get() = runBlocking { findVoiceState(this@voiceState) }
 
 @OptIn(KordUnsafe::class, KordExperimental::class)
 suspend fun findVoiceState(userId: Snowflake): User.VoiceState? {

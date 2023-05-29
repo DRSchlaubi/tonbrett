@@ -11,4 +11,5 @@ object Config : EnvironmentConfig() {
     val MAX_SOUND_LENGTH by getEnv(30.seconds) { it.toInt().toDuration(DurationUnit.SECONDS) }
     val DISCORD_CLIENT_ID by environment
     val DISCORD_CLIENT_SECRET by environment
+    val JWT_SECRET by getEnv("verrysecurenonsense")
 }
