@@ -53,9 +53,10 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
 
     suspend fun play(soundId: String): Unit = client.post(Route.Sounds.Sound.Play(soundId)).body()
 
-    suspend fun getTags(query: String? = null, limit: Int? = 0): List<String> = client.get(Route.Tags(query, limit)).body()
+    suspend fun getTags(query: String? = null, limit: Int? = 0): List<String> =
+        client.get(Route.Tags(query, limit)).body()
 
-    suspend fun stop() = client.post(Route.StopPlayer()).body<Unit>()
+    suspend fun stop(): Unit = client.post(Route.StopPlayer()).body()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun connect() {
