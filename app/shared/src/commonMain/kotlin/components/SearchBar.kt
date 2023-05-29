@@ -6,12 +6,14 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -251,6 +253,7 @@ private fun TrailingIcon(value: TextFieldValue, updateSearch: (TextFieldValue) -
     val iconRotation by transition.animateFloat { searching ->
         if (searching) 90f else 0f
     }
+    val interactionSource = remember { MutableInteractionSource() }
 
     val icon = if (value.text.isEmpty()) {
         Icons.Default.Search
@@ -260,7 +263,7 @@ private fun TrailingIcon(value: TextFieldValue, updateSearch: (TextFieldValue) -
 
     Icon(icon, null, Modifier
         .rotate(iconRotation).conditional(value.text.isNotEmpty()) {
-            clickable {
+            clickable(interactionSource, indication = rememberRipple()) {
                 updateSearch(TextFieldValue(""))
             }
         })
