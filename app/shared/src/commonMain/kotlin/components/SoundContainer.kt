@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -136,7 +137,7 @@ fun SoundCard(
                 modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
             ) {
                 OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
-                Text(name, color = ColorScheme.textColor, fontSize = 16.sp)
+                Text(name, color = ColorScheme.textColor, fontSize = 16.sp, textAlign = TextAlign.Center)
             }
             if (playing && hovered && !disabled) {
                 Box(Modifier.zIndex(1f).background(ColorScheme.secondaryContainer)) {
