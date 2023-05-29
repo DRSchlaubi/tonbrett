@@ -59,7 +59,7 @@ fun SoundList(errorReporter: ErrorReporter) {
             available = voiceState.playerAvailable
             playingSound = voiceState.playingSound
             offline = false
-            channelMismatch = voiceState.channelMisMatch
+            channelMismatch = voiceState.channelMismatch
         }
         if (didUpdate && !loading && !channelMismatch && !offline && sounds.isEmpty()) {
             reload()
@@ -114,8 +114,8 @@ fun SoundList(errorReporter: ErrorReporter) {
                     available = state.playerAvailable
                     playingSound = state.playingSound
                     offline = false
-                    channelMismatch = state.channelMisMatch
-                    if (!state.channelMisMatch) {
+                    channelMismatch = state.channelMismatch
+                    if (!state.channelMismatch) {
                         sounds = api.getSounds()
                     }
                 }
