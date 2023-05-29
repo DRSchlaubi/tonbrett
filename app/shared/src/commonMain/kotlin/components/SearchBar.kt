@@ -33,7 +33,6 @@ import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.util.canClearFocus
-import dev.schlaubi.tonbrett.app.util.conditional
 import dev.schlaubi.tonbrett.common.Sound
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -262,9 +261,9 @@ private fun TrailingIcon(value: TextFieldValue, updateSearch: (TextFieldValue) -
     }
 
     Icon(icon, null, Modifier
-        .rotate(iconRotation).conditional(value.text.isNotEmpty()) {
-            clickable(interactionSource, indication = rememberRipple()) {
-                updateSearch(TextFieldValue(""))
-            }
-        })
+        .rotate(iconRotation)
+        .clickable(interactionSource, indication = rememberRipple(), enabled = value.text.isNotEmpty()) {
+            updateSearch(TextFieldValue(""))
+        }
+    )
 }
