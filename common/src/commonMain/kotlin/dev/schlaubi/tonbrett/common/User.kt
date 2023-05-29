@@ -14,8 +14,8 @@ public data class User(
     @Serializable
     public data class VoiceState(
         // legacy
-        @JsonNames("channelMissMatch")
-        val channelMisMatch: Boolean,
+        @JsonNames("channelMissMatch", "channelMisMatch")
+        val channelMismatch: Boolean,
         val channelId: SerializableSnowflake,
         val guildId: SerializableSnowflake,
         val playerAvailable: Boolean,
