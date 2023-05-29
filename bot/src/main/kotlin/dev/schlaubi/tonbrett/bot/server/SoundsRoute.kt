@@ -38,7 +38,7 @@ fun Route.sounds() {
         call.respond(SoundBoardDatabase.sounds.findAllTags(query, limit).toList())
     }
 
-    get<Sounds> { (onlyMine, queryString) ->
+    get<Sounds.ListSounds> { (onlyMine, queryString) ->
         call.respond(SoundBoardDatabase.sounds.search(queryString, onlyMine, call.user.id).toList())
     }
 

@@ -22,18 +22,24 @@ public class Route {
     public data class Tags(val query: String? = null, val limit: Int? = null, val parent: Route = Route())
 
     /**
-     * /soundboard/sounds - endpoint for listing/modifying all sounds.
-     *
-     * @property onlyMine only list my sounds (only for GET)
-     * @property query filter sounds for a query (only for GET)
+     * /soundboard/sounds - Parent for sound endpoints.
      */
     @Resource("sounds")
-    public data class Sounds(
-        @SerialName("only_mine")
-        val onlyMine: Boolean = false,
-        val query: String? = null,
-        val parent: Route = Route()
-    ) {
+    public data class Sounds(val parent: Route = Route()) {
+        /**
+         * /soundboard/sounds - endpoint for listing/modifying all sounds.
+         *
+         * @property onlyMine only list my sounds (only for GET)
+         * @property query filter sounds for a query (only for GET)
+         */
+        @Resource("sounds")
+        public data class ListSounds(
+            @SerialName("only_mine")
+            val onlyMine: Boolean = false,
+            val query: String? = null,
+            val parent: Route = Route()
+        )
+
         /**
          * /soundsboard/sounds/[id] - Endpoint for modifying/retrieving a specific sound.
          */
