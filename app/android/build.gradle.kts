@@ -33,6 +33,9 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = true
+            proguardFile("proguard-rules.pro")
+
             applicationVariants.all {
                 outputs.all {
                     archivesName = "tonbrett-app"
