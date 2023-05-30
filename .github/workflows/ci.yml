@@ -151,6 +151,7 @@ jobs:
           packageName: dev.schlaubi.tonbrett.android
           status: draft
           releaseFiles: app/android/build/outputs/bundle/release/tonbrett-app-release.aab
+          mappingFile: app/android/build/outputs/mapping/release/mapping.txt
           track: internal
 
   create_release:
