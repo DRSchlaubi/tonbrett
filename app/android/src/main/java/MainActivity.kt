@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun AuthorizationScreen() {
-        SideEffect { launchAuthorization() }
+        LaunchedEffect(Unit) { launchAuthorization() }
 
         MaterialTheme {
             Scaffold(containerColor = MaterialTheme.colorScheme.primaryContainer) { padding ->
