@@ -81,7 +81,6 @@ kotlin {
         named("jvmMain") {
             dependencies {
                 implementation(libs.kmongo.id.serialization)
-                implementation(libs.kord.common)
                 implementation(libs.imageloader)
             }
         }
@@ -91,6 +90,12 @@ kotlin {
                 api(libs.kvault)
             }
         }
+    }
+}
+
+dependencies {
+    "jvmMainImplementation"(libs.kord.common) {
+        exclude(group = "io.ktor")
     }
 }
 
