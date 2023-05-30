@@ -20,7 +20,6 @@ import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.Route
-import kotlinx.coroutines.flow.toList
 
 @OptIn(KordUnsafe::class, KordExperimental::class)
 fun Route.sounds() {
@@ -35,11 +34,11 @@ fun Route.sounds() {
     }
 
     get<Tags> { (query, limit) ->
-        call.respond(SoundBoardDatabase.sounds.findAllTags(query, limit).toList())
+        call.respond(SoundBoardDatabase.sounds.findAllTags(query, limit))
     }
 
     get<Sounds.ListSounds> { (onlyMine, queryString) ->
-        call.respond(SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId).toList())
+        call.respond(SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId))
     }
 
     authenticated {
