@@ -38,12 +38,15 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
     val context = LocalContext.current
 
     val lyricist = rememberStrings()
-    fun reportError(exception: ClientRequestException) {
+    suspend fun reportError(exception: ClientRequestException) {
         if (exception.response.status == HttpStatusCode.Unauthorized) {
             sessionExpired = true
             crashed = false
         } else if (exception.message.isBlank()) {
             LOG.error(exception) { "An error happened during a rest request" }
+        } else {
+            scaffoldState.snackbarHostState.showSnackbar(exception.message)
+            LOG.warn(exception) { "An error occurred" }
         }
     }
 
