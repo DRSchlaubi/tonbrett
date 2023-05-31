@@ -200,4 +200,4 @@ jobs:
             pkg/*.pkg
             msi/*.msi
             *.zip
-            *.apk
+            *-signed.apk
