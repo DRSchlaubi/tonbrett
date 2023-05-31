@@ -128,11 +128,6 @@ jobs:
           SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         with:
           arguments: :app:android:bundleRelease :app:android:assembleRelease
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-app
-          path: app/android/build/outputs/apk/release/*.apk
       - uses: r0adkll/sign-android-release@v1
         id: sign_bundle
         name: Sign AAB
@@ -143,7 +138,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
       - uses: r0adkll/sign-android-release@v1
-        id: sign_bundle
+        id: sign_apk
         name: Sign APK
         with:
           releaseDirectory: app/android/build/outputs/apk/release/
@@ -151,6 +146,11 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-app
+          path: app/android/build/outputs/apk/release/*.apk
       - uses: r0adkll/upload-google-play@v1
         name: Release on Play Store
         if: startsWith(github.ref, 'refs/tags/')
