@@ -135,13 +135,21 @@ jobs:
           path: app/android/build/outputs/apk/release/*.apk
       - uses: r0adkll/sign-android-release@v1
         id: sign_bundle
-        name: Sign app APK
+        name: Sign AAB
         with:
           releaseDirectory: app/android/build/outputs/bundle/release/
           signingKeyBase64: ${{ secrets.KEYSTORE }}
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - uses: r0adkll/sign-android-release@v1
+        id: sign_bundle
+        name: Sign APK
+        with:
+          releaseDirectory: app/android/build/outputs/apk/release/
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
       - uses: r0adkll/upload-google-play@v1
         name: Release on Play Store
