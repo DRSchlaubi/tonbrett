@@ -60,7 +60,7 @@ fun SoundContainer(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(ColorScheme.disabled.copy(alpha = .4f))
-                        .zIndex(100f)
+                        .zIndex(1f)
                 ) {}
             }
         }
@@ -167,6 +167,7 @@ fun SoundCard(
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
                 .shadow(2.dp)
+                .zIndex(2f)
                 .background(ColorScheme.secondaryContainer)
                 .padding(8.dp),
         ) {
