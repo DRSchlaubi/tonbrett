@@ -32,6 +32,7 @@ import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
+import dev.schlaubi.tonbrett.app.util.ReverseRow
 import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.common.Sound
 import kotlinx.coroutines.Dispatchers
@@ -96,27 +97,22 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
         }
         true
     }) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround,
+        ReverseRow(
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp)
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp).fillMaxWidth()
         ) {
-            SearchField(value, onlineMine, updateSounds, ::updateSearch, showSuggestions, ::showSuggestions)
-            Spacer(Modifier.padding(horizontal = 5.dp).canClearFocus())
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.canClearFocus().fillMaxWidth()
-            ) {
-                OnlineMineCheckbox(onlineMine, value.text, updateSounds, ::updateOnlineMine)
-                BoxWithConstraints {
-                    if (maxWidth >= 30.dp) {
-                        Spacer(Modifier.padding(horizontal = 2.dp))
-                        Text(strings.onlineMine, color = ColorScheme.textColor)
-                    } else {
-                        Icon(Icons.Default.Person, strings.onlineMine, tint = ColorScheme.textColor)
-                    }
+            BoxWithConstraints {
+                if (maxWidth >= 400.dp) {
+                    Spacer(Modifier.padding(horizontal = 2.dp))
+                    Text(strings.onlineMine, color = ColorScheme.textColor)
+                } else {
+                    Icon(Icons.Default.Person, strings.onlineMine, tint = ColorScheme.textColor)
                 }
             }
+            OnlineMineCheckbox(onlineMine, value.text, updateSounds, ::updateOnlineMine)
+            Spacer(Modifier.padding(horizontal = 5.dp).canClearFocus())
+            SearchField(value, onlineMine, updateSounds, ::updateSearch, showSuggestions, ::showSuggestions)
         }
         BoxWithConstraints {
             content()
@@ -201,7 +197,8 @@ private fun SearchField(
         },
         singleLine = true,
         visualTransformation = SyntaxHighlightingTextTransformation,
-        modifier = Modifier.fillMaxWidth(.8f)
+        modifier = Modifier
+            .fillMaxWidth()
             .onFocusChanged { updateShowSuggestions(it.hasFocus) }
             .focusRequester(remember { FocusRequester() })
             .background(color = Color.Companion.Transparent, shape = RoundedCornerShape(25.dp))
