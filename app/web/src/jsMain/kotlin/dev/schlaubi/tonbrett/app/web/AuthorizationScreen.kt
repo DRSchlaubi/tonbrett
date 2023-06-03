@@ -73,7 +73,7 @@ fun AuthorizationScreen(cli: Boolean) {
                         Spacer(Modifier.padding(vertical = 15.dp))
                         Text(strings.logo, modifier = Modifier.width(64.dp), fontSize = 16.sp)
                         Spacer(Modifier.padding(vertical = 7.dp))
-                        val text = if(cli) {
+                        val text = if (cli) {
                             strings.cliLoginExplainer
                         } else {
                             strings.loginSuccessfulDescription
@@ -87,12 +87,13 @@ fun AuthorizationScreen(cli: Boolean) {
                                     .height(32.dp)
                                     .padding(horizontal = 15.dp)
                             ) {
+                                val command = remember { "tonbrett-cli login --auth-token=$token" }
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.fillMaxHeight()
                                 ) {
                                     Text(
-                                        token,
+                                        command,
                                         maxLines = 1,
                                         modifier = Modifier.horizontalScroll(rememberScrollState())
                                     )
@@ -101,7 +102,7 @@ fun AuthorizationScreen(cli: Boolean) {
                                     horizontalArrangement = Arrangement.End,
                                     modifier = Modifier.zIndex(2f).fillMaxWidth()
                                 ) {
-                                    CopyButton("tonbrett-cli login --auth-token=token")
+                                    CopyButton(command)
                                 }
                             }
                         }
