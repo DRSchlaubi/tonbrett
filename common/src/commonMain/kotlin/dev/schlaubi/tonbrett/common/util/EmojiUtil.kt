@@ -5,7 +5,7 @@ package dev.schlaubi.tonbrett.common.util
 import kotlin.jvm.JvmName
 import dev.schlaubi.tonbrett.common.util.codePoints as commonCodePoints
 
-internal expect fun String.codePoints(): Sequence<Int>
+public expect fun String.codePoints(): Sequence<Int>
 internal fun formatEmojiUnicode(input: String) = input.commonCodePoints()
     // twemoji seems to use variant selectors weirdly
     .filterIndexed { index, it ->

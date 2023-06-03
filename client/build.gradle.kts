@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    `published-module`
 }
 
 repositories {
@@ -34,6 +35,9 @@ kotlin {
     iosSimulatorArm64()
     iosX64()
     iosArm64()
+    macosArm64()
+    macosX64()
+    mingwX64()
 
     sourceSets {
         commonMain {
@@ -62,6 +66,12 @@ kotlin {
         named("jvmSharedMain") {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
+            }
+        }
+
+        named("mingwMain") {
+            dependencies {
+                implementation(libs.ktor.client.winhttp)
             }
         }
     }

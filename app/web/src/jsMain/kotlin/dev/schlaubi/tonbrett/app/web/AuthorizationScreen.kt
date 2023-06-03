@@ -2,16 +2,16 @@ package dev.schlaubi.tonbrett.app.web
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,28 +19,33 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.common.authServerPort
 import io.ktor.client.fetch.*
 import kotlinx.browser.window
 import kotlinx.coroutines.await
+import kotlinx.coroutines.delay
 import mu.KotlinLogging
 import org.w3c.dom.url.URLSearchParams
+import kotlin.time.Duration.Companion.seconds
 
 private val LOG = KotlinLogging.logger { }
 
 @Composable
-fun AuthorizationScreen() {
+fun AuthorizationScreen(cli: Boolean) {
     val strings = LocalStrings.current
-    LaunchedEffect(Unit) {
-        val token = URLSearchParams(window.location.search).get("token") ?: error("Missing token")
-        try {
-            fetch("http://localhost:$authServerPort/login?token=$token", object : RequestInit {
-                override var method: String? = "POST"
-            }).await()
-        } catch (e: Throwable) {
-            LOG.error(e) { "Could not propagate token" }
+    val token = remember { URLSearchParams(window.location.search).get("token") ?: error("Missing token") }
+    if (!cli) {
+        LaunchedEffect(Unit) {
+            try {
+                fetch("http://localhost:$authServerPort/login?token=$token", object : RequestInit {
+                    override var method: String? = "POST"
+                }).await()
+            } catch (e: Throwable) {
+                LOG.error(e) { "Could not propagate token" }
+            }
         }
     }
     BoxWithConstraints(Modifier.fillMaxSize().background(ColorScheme.container)) {
@@ -68,10 +73,38 @@ fun AuthorizationScreen() {
                         Spacer(Modifier.padding(vertical = 15.dp))
                         Text(strings.logo, modifier = Modifier.width(64.dp), fontSize = 16.sp)
                         Spacer(Modifier.padding(vertical = 7.dp))
-                        Text(
-                            strings.loginSuccessfulDescription,
-                            fontSize = 24.sp
-                        )
+                        val text = if(cli) {
+                            strings.cliLoginExplainer
+                        } else {
+                            strings.loginSuccessfulDescription
+                        }
+                        Text(text, fontSize = 24.sp)
+                        Spacer(Modifier.padding(vertical = 7.dp))
+                        if (cli) {
+                            BoxWithConstraints(
+                                Modifier.background(ColorScheme.container, RoundedCornerShape(4.dp))
+                                    .fillMaxWidth()
+                                    .height(32.dp)
+                                    .padding(horizontal = 15.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    Text(
+                                        token,
+                                        maxLines = 1,
+                                        modifier = Modifier.horizontalScroll(rememberScrollState())
+                                    )
+                                }
+                                Row(
+                                    horizontalArrangement = Arrangement.End,
+                                    modifier = Modifier.zIndex(2f).fillMaxWidth()
+                                ) {
+                                    CopyButton("tonbrett-cli login --auth-token=token")
+                                }
+                            }
+                        }
                         Divider(Modifier.padding(vertical = 15.dp).fillMaxWidth(), thickness = 2.dp)
                         Text(
                             strings.starOnGithub,
@@ -79,10 +112,44 @@ fun AuthorizationScreen() {
                             color = Color.Blue,
                             modifier = Modifier.clickable {
                                 window.location.href = "https://github.com/DRSchlaubi/Tonbrett"
-                            })
+                            }
+                        )
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun CopyButton(text: String) {
+    var copied by remember { mutableStateOf(false) }
+
+    if (copied) {
+        LaunchedEffect(copied) {
+            delay(3.seconds)
+            copied = false
+        }
+    }
+
+    Surface(
+        color = ColorScheme.secondaryContainer, shape = RoundedCornerShape(4.dp),
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(vertical = 3.dp)
+    ) {
+        IconButton(
+            {
+                window.navigator.clipboard.writeText(text)
+                copied = true
+            }
+        ) {
+            val icon = if (copied) {
+                Icons.Default.Check
+            } else {
+                Icons.Default.ContentCopy
+            }
+            Icon(icon, null, tint = ColorScheme.textColor)
         }
     }
 }

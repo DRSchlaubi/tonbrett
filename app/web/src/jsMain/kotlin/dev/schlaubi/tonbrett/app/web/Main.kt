@@ -42,7 +42,7 @@ fun main() {
     } else if (path.subList(1, 3) == listOf("deeplink", "login")){
         onWasmReady {
             CanvasBasedWindow(title) {
-                AuthorizationScreen()
+                AuthorizationScreen(url.parameters["cli"]?.toBoolean() ?: false)
             }
         }
     }

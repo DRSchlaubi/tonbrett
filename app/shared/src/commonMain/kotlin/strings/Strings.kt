@@ -20,5 +20,6 @@ data class Strings(
     val loginSuccessful: String,
     val logo: String,
     val loginSuccessfulDescription: String,
+    val cliLoginExplainer: String,
     val starOnGithub: String
 )

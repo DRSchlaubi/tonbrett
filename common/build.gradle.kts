@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+    `published-module`
 }
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -24,6 +25,9 @@ kotlin {
     iosSimulatorArm64()
     iosX64()
     iosArm64()
+    macosArm64()
+    macosX64()
+    mingwX64()
 
     sourceSets {
         commonMain {

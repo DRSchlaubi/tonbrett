@@ -23,5 +23,6 @@ val EnStrings = Strings(
     loginSuccessful = "Login Successful",
     logo = "Imagine our logo being here",
     loginSuccessfulDescription = "You signed in successfully, you can close this tab now and please don't buy Apple Products",
-    starOnGithub = "Star us on GitHub"
+    starOnGithub = "Star us on GitHub",
+    cliLoginExplainer = "Please run this command to log in"
 )

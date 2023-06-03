@@ -23,5 +23,6 @@ val DeStrings = Strings(
     loginSuccessful = "Anmeldung erfolgreich!",
     logo = "Stell dir unser logo vor",
     loginSuccessfulDescription = "Du hast dich erfolgreich angemeldet, hab Spaß und kauf keine Apple Produkte",
-    starOnGithub = "Bewerte uns auf GitHub"
+    starOnGithub = "Bewerte uns auf GitHub",
+    cliLoginExplainer = "Bitte führe diesen Befehl aus um dich anzumelden"
 )
