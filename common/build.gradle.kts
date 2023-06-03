@@ -11,7 +11,7 @@ kotlin {
     targetHierarchy.default {
         common {
             group("nonJvm") {
-                withApple()
+                withNative()
                 withJs()
             }
         }
