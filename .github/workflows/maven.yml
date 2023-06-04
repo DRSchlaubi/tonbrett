@@ -2,8 +2,8 @@ name: Maven CI
 
 on:
   push:
-    tags:
-      - '**'
+#    tags:
+#      - '**'
 
 jobs:
   publish:
