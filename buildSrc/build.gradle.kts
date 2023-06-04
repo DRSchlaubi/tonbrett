@@ -6,11 +6,13 @@ plugins {
 }
 
 repositories {
+    gradlePluginPortal()
     mavenCentral()
 }
 
 dependencies {
     compileOnly(kotlin("gradle-plugin"))
+    implementation(libs.google.artifactregistry)
 }
 
 java {
@@ -20,7 +22,7 @@ java {
 tasks {
     withType<KotlinCompile> {
         compilerOptions {
-            //jvmTarget = JvmTarget.JVM_19
+            jvmTarget = JvmTarget.JVM_19
         }
     }
 }

@@ -53,6 +53,9 @@ androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.10.1"
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.5.0" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.4" }
 mdc-android = { group = "com.google.android.material", name = "material", version = "1.9.0" }
+
+google-artifactregistry = { group = "gradle.plugin.com.google.cloud.artifactregistry", name = "artifactregistry-gradle-plugin", version = "2.2.1" }
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

@@ -5,16 +5,12 @@ import java.util.Base64
 plugins {
     `maven-publish`
     signing
+    com.google.cloud.artifactregistry.`gradle-plugin`
 }
 
 publishing {
     repositories {
-        maven("https://schlaubi.jfrog.io/artifactory/mikbot/") {
-            credentials {
-                username = System.getenv("JFROG_USER")
-                password = System.getenv("JFROG_PASSWORD")
-            }
-        }
+        maven("artifactregistry://europe-west3-maven.pkg.dev/mik-music/mikbot")
     }
 }
 
