@@ -25,6 +25,7 @@ jobs:
           service_account: 'gh-actions@mik-music.iam.gserviceaccount.com'
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
+      - run: gcloud auth list --filter=status:ACTIVE --format="value(account)"
       - name: Build plugin
         uses: gradle/gradle-build-action@v2
         env:
