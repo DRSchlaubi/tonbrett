@@ -18,20 +18,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 19
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          workload_identity_provider: 'projects/576023676253/locations/global/workloadIdentityPools/gh-actions'
-          service_account: 'gh-actions@mik-music.iam.gserviceaccount.com'
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-      - run: gcloud auth list --filter=status:ACTIVE --format="value(account)"
       - name: Build plugin
         uses: gradle/gradle-build-action@v2
         env:
-          JFROG_USER: ${{ secrets.JFROG_USER }}
-          JFROG_PASSWORD: ${{ secrets.JFROG_PASSWORD }}
           SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
+          GOOGLE_KEY: ${{ secrets.GOOGLE_KEY }}
         with:
           arguments: publish

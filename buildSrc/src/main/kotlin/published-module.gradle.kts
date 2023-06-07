@@ -10,7 +10,16 @@ plugins {
 
 publishing {
     repositories {
-        maven("artifactregistry://europe-west3-maven.pkg.dev/mik-music/mikbot")
+        maven("artifactregistry://europe-west3-maven.pkg.dev/mik-music/mikbot") {
+            credentials {
+                username = "_json_key_base64"
+                password = System.getenv("GOOGLE_KEY")
+            }
+
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
     }
 }
 
