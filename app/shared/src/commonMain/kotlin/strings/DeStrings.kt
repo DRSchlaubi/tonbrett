@@ -24,5 +24,7 @@ val DeStrings = Strings(
     logo = "Stell dir unser logo vor",
     loginSuccessfulDescription = "Du hast dich erfolgreich angemeldet, hab Spaß und kauf keine Apple Produkte",
     starOnGithub = "Bewerte uns auf GitHub",
-    cliLoginExplainer = "Bitte führe diesen Befehl aus um dich anzumelden"
+    cliLoginExplainer = "Bitte führe diesen Befehl aus um dich anzumelden",
+    needsUpdate = "Es scheint als würde die App ein Update benötigen",
+    update = "Aktualisieren"
 )

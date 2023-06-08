@@ -24,5 +24,7 @@ val EnStrings = Strings(
     logo = "Imagine our logo being here",
     loginSuccessfulDescription = "You signed in successfully, you can close this tab now and please don't buy Apple Products",
     starOnGithub = "Star us on GitHub",
-    cliLoginExplainer = "Please run this command to log in"
+    cliLoginExplainer = "Please run this command to log in",
+    needsUpdate = "It seems like this app requires an update",
+    update = "Update"
 )

@@ -136,7 +136,7 @@ fun SoundCard(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
             ) {
-                val url = (emoji as? Sound.Emoji.HasUrl)?.url ?: error("This emoji is invalid: $emoji")
+                val url = requireNotNull((emoji as? Sound.Emoji.HasUrl)?.url) { "This emoji is invalid: $emoji" }
                 OptionalWebImage(url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
                 Text(name, color = ColorScheme.textColor, fontSize = 16.sp, textAlign = TextAlign.Center)
             }

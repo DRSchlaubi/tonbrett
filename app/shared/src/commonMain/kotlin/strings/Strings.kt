@@ -24,5 +24,6 @@ data class Strings(
     val starOnGithub: String,
     val update: String,
     val appCrash: String,
+    val needsUpdate: String,
     val unknownError: String
 )
