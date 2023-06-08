@@ -9,13 +9,16 @@ kordex = "1.5.7-SNAPSHOT"
 android = "8.0.2"
 compose = "1.4.0-dev-wasm06"
 lyricist = "1.4.1"
+google-play = "2.1.0"
+coroutines = "1.7.1"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.5.1" }
 kmongo-id-serialization = { group = "org.litote.kmongo", name = "kmongo-id-serialization", version.ref = "kmongo" }
 kord-common = { group = "dev.kord", name = "kord-common", version.ref = "kord" }
 kordex-processor = { group = "com.kotlindiscord.kord.extensions", name = "annotation-processor", version.ref = "kordex" }
-kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.7.1" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
 
 ktor-resources = { group = "io.ktor", name = "ktor-resources", version.ref = "ktor" }
 ktor-client-resources = { group = "io.ktor", name = "ktor-client-resources", version.ref = "ktor" }
@@ -53,6 +56,8 @@ androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.10.1"
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.5.0" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.4" }
 mdc-android = { group = "com.google.android.material", name = "material", version = "1.9.0" }
+google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
+google-play-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "google-play" }
 
 google-artifactregistry = { group = "gradle.plugin.com.google.cloud.artifactregistry", name = "artifactregistry-gradle-plugin", version = "2.2.1" }
 

@@ -17,7 +17,10 @@ dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.mdc.android)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.google.play)
+    implementation(libs.google.play.ktx)
     implementation(compose.material3)
+    implementation(libs.kotlinx.coroutines.play.services)
 }
 
 android {

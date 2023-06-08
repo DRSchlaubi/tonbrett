@@ -21,5 +21,8 @@ data class Strings(
     val logo: String,
     val loginSuccessfulDescription: String,
     val cliLoginExplainer: String,
-    val starOnGithub: String
+    val starOnGithub: String,
+    val update: String,
+    val appCrash: String,
+    val unknownError: String
 )
