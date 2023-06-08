@@ -14,6 +14,7 @@ import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.server.broadcastEvent
 import dev.schlaubi.tonbrett.common.Sound
 import dev.schlaubi.tonbrett.common.SoundUpdatedEvent
+import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
 
@@ -76,6 +77,6 @@ fun SubCommandModule.updateCommand() = ephemeralSubCommand(::UpdateSoundArgument
             content = translate("commands.update_sound.success")
         }
 
-        broadcastEvent(SoundUpdatedEvent(newSound))
+        broadcastEvent(SoundUpdatedEvent(newSound.convertForNonJvmPlatforms()))
     }
 }

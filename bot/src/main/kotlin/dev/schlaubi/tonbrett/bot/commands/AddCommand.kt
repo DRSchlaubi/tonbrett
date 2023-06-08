@@ -17,6 +17,7 @@ import dev.schlaubi.tonbrett.bot.server.broadcastEvent
 import dev.schlaubi.tonbrett.bot.util.player
 import dev.schlaubi.tonbrett.common.Sound
 import dev.schlaubi.tonbrett.common.SoundCreatedEvent
+import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -113,6 +114,6 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
             content = translate("commands.add_sound.success")
         }
 
-        broadcastEvent(SoundCreatedEvent(sound))
+        broadcastEvent(SoundCreatedEvent(sound.convertForNonJvmPlatforms()))
     }
 }

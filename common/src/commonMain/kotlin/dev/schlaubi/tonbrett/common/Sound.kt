@@ -2,6 +2,10 @@ package dev.schlaubi.tonbrett.common
 
 import dev.schlaubi.tonbrett.common.util.formatEmojiUnicode
 import kotlinx.serialization.*
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonClassDiscriminator
 
 /**
@@ -35,13 +39,18 @@ public data class Sound(
 
     /**
      * Representation of either a [GuildEmoji] or a [DiscordEmoji].
-     *
-     * @property url the URL to the image file of this emoji
      */
     @Serializable
     @JsonClassDiscriminator("type")
     public sealed interface Emoji {
-        public val url: String
+        /**
+         * Subinterface of [Emoji] specifying this emoji has an image url.
+         *
+         * @property url a CDN url to this emojis image file
+         */
+        public sealed interface HasUrl {
+            public val url: String
+        }
     }
 
     /**
@@ -51,9 +60,26 @@ public data class Sound(
      */
     @Serializable
     @SerialName("discord")
-    public data class DiscordEmoji(val value: String) : Emoji {
-        override val url: String get() =
-            "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${formatEmojiUnicode(value)}.png"
+    public data class DiscordEmoji(val value: String) : Emoji
+
+    /**
+     * Representation of a Twemoji
+     *
+     * @property codePoints a [Sequence] of all code points
+     * @property length the length of the string
+     */
+    @Serializable
+    @SerialName("twemoji")
+    public data class Twemoji(
+        val value: String,
+        val codePoints: @Serializable(with = SequenceSerializer::class) Sequence<Int>,
+        val length: Int
+    ) : Emoji, Emoji.HasUrl {
+        override val url: String
+            get() {
+                val name = formatEmojiUnicode(codePoints, length)
+                return "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/$name.png"
+            }
     }
 
     /**
@@ -63,19 +89,31 @@ public data class Sound(
      */
     @Serializable
     @SerialName("guild")
-    public data class GuildEmoji(val id: SerializableSnowflake, val isAnimated: Boolean = false) : Emoji {
-        override val url: String get() = buildString {
-            append("https://cdn.discordapp.com/emojis/")
-            if (isAnimated) {
-                append("a_")
+    public data class GuildEmoji(val id: SerializableSnowflake, val isAnimated: Boolean = false) : Emoji, Emoji.HasUrl {
+        override val url: String
+            get() = buildString {
+                append("https://cdn.discordapp.com/emojis/")
+                if (isAnimated) {
+                    append("a_")
+                }
+                append(id)
+                append('.')
+                if (isAnimated) {
+                    append("gif")
+                } else {
+                    append("png")
+                }
             }
-            append(id)
-            append('.')
-            if (isAnimated) {
-                append("gif")
-            } else {
-                append("png")
-            }
-        }
     }
+}
+
+internal class SequenceSerializer<T>(childSerializer: KSerializer<T>) : KSerializer<Sequence<T>> {
+    private val delegate = ListSerializer(childSerializer)
+    override val descriptor: SerialDescriptor
+        get() = delegate.descriptor
+
+    override fun serialize(encoder: Encoder, value: Sequence<T>): Unit = delegate.serialize(encoder, value.toList())
+
+    override fun deserialize(decoder: Decoder): Sequence<T> =
+        delegate.deserialize(decoder).asSequence()
 }

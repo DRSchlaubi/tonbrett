@@ -15,6 +15,7 @@ import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.bot.util.soundNotFound
 import dev.schlaubi.tonbrett.bot.util.translate
 import dev.schlaubi.tonbrett.common.Route.*
+import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.resources.*
@@ -39,7 +40,9 @@ fun Route.sounds() {
     }
 
     get<Sounds.ListSounds> { (onlyMine, queryString) ->
-        call.respond(SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId).toList())
+        call.respond(
+            SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId).toList().convertForNonJvmPlatforms()
+        )
     }
 
     authenticated {
