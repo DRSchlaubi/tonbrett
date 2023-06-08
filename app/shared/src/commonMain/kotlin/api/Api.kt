@@ -5,8 +5,6 @@ import dev.schlaubi.tonbrett.client.Tonbrett
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlin.experimental.ExperimentalObjCRefinement
-import kotlin.native.HiddenFromObjC
 
 expect fun getUrl(): Url
 
@@ -26,8 +24,8 @@ expect open class AppContext : AppContextBase {
     fun reAuthorize()
 }
 
+@Suppress("KotlinRedundantDiagnosticSuppress", "EXTENSION_SHADOWED_BY_MEMBER")
 expect val Dispatchers.IO: CoroutineDispatcher
-
 
 val LocalContext: ProvidableCompositionLocal<AppContext> =
     compositionLocalOf { error("App context does not have default") }

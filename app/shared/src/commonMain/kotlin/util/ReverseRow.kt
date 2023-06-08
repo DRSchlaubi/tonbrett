@@ -35,6 +35,6 @@ inline fun ReverseRow(
  * Utility function that changes the [LocalLayoutDirection] to [direction].
  */
 @Composable
-inline fun ProvideLayoutDirection(direction: LayoutDirection, noinline content: @Composable () -> Unit) {
+fun ProvideLayoutDirection(direction: LayoutDirection, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalLayoutDirection provides direction, content = content)
 }

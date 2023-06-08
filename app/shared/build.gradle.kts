@@ -54,6 +54,7 @@ kotlin {
     sourceSets {
         all {
             languageSettings.optIn("androidx.compose.material3.ExperimentalMaterial3Api")
+            languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
         }
         commonMain {
             kotlin.srcDir(file("$buildDir/generated/ksp/metadata/commonMain/kotlin"))
