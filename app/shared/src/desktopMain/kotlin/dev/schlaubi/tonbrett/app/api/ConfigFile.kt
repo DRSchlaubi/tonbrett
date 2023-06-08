@@ -44,5 +44,5 @@ fun saveConfig(config: Config) {
         file.parent.createDirectories()
     }
 
-    Json.encodeToStream(config, getConfigFile().outputStream(StandardOpenOption.CREATE))
+    Json.encodeToStream(config, getConfigFile().outputStream(StandardOpenOption.CREATE, StandardOpenOption.WRITE))
 }
