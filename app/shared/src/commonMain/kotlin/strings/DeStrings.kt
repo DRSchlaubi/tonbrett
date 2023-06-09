@@ -26,5 +26,7 @@ val DeStrings = Strings(
     starOnGithub = "Bewerte uns auf GitHub",
     cliLoginExplainer = "Bitte führe diesen Befehl aus um dich anzumelden",
     needsUpdate = "Es scheint als würde die App ein Update benötigen",
-    update = "Aktualisieren"
+    update = "Aktualisieren",
+    appCrash = "Die App ist abgestürzt",
+    unknownError = "Es ist ein unerwarteter Fehler aufgetreten"
 )

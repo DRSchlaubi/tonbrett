@@ -26,5 +26,7 @@ val EnStrings = Strings(
     starOnGithub = "Star us on GitHub",
     cliLoginExplainer = "Please run this command to log in",
     needsUpdate = "It seems like this app requires an update",
-    update = "Update"
+    update = "Update",
+    appCrash = "The App crashed",
+    unknownError = "An unknown error occurred"
 )

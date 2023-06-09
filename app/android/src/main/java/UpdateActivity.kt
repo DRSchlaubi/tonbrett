@@ -1,7 +1,10 @@
 package dev.schlaubi.tonbrett.app.android
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +46,7 @@ fun UpdateScreen(activity: Activity) {
     val appUpdateManager =
         remember(activity) { AppUpdateManagerFactory.create(activity.applicationContext) }
     var updateInfo by remember(appUpdateManager) { mutableStateOf<AppUpdateInfo?>(null) }
+    var renderFallbackUpdate by remember { mutableStateOf(false) }
     val strings = LocalStrings.current
 
     fun showUpdateInfo(updateInfo: AppUpdateInfo) {
@@ -55,7 +59,12 @@ fun UpdateScreen(activity: Activity) {
 
     if (updateInfo == null) {
         LaunchedEffect(appUpdateManager) {
-            updateInfo = appUpdateManager.appUpdateInfo.await()
+            try {
+                updateInfo = appUpdateManager.appUpdateInfo.await()
+            } catch (e: Throwable) {
+                Log.w("Tonbrett", "Could not load Update info", e)
+                renderFallbackUpdate = true
+            }
         }
     } else {
         LaunchedEffect(Unit) { showUpdateInfo(updateInfo!!) }
@@ -72,7 +81,18 @@ fun UpdateScreen(activity: Activity) {
             style = MaterialTheme.typography.headlineMedium
         )
         val currentInfo = updateInfo
-        if (currentInfo == null) {
+        if (renderFallbackUpdate) {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/DRSchlaubi/tonbrett/releases/latest")
+            )
+            Button({
+                activity.startActivity(intent)
+            }) {
+                Icon(Icons.Default.Refresh, null)
+                Text(strings.update)
+            }
+        } else if (currentInfo == null) {
             CircularProgressIndicator()
         } else if (currentInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
             Button({ showUpdateInfo(currentInfo) }) {

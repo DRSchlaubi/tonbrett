@@ -6,6 +6,7 @@
 
     <application
             android:icon="@mipmap/ic_launcher"
+            android:name=".TonbrettApp"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar">
         <activity
                 android:name=".MainActivity"
