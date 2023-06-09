@@ -3,7 +3,7 @@ kotlin = "1.8.20"
 ktor = "2.3.0"
 kmongo = "4.9.0"
 kord = "0.9.0"
-mikbot = "3.17.3"
+mikbot = "3.18.0"
 ksp = "1.8.20-1.0.10"
 kordex = "1.5.7-SNAPSHOT"
 android = "8.0.2"
@@ -37,7 +37,7 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
-mikbot-music = { group = "dev.schlaubi", name = "mikbot-music", version = "2.20.5" }
+mikbot-music = { group = "dev.schlaubi", name = "mikbot-music", version = "2.21.0" }
 
 imageloader = { group = "io.github.qdsfdhvh", name = "image-loader", version = "1.4.2" }
 
