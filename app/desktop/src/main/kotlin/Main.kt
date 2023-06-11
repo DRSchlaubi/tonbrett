@@ -50,9 +50,7 @@ fun main(reAuthorize: Boolean, onAuth: () -> Unit) {
     }
 }
 
-fun startApplication() = application(
-    exitProcessOnExit = false
-) {
+fun startApplication() = application {
     val sessionExpired = remember { mutableStateOf(false) }
     var needsUpdate by remember { mutableStateOf(false) }
     val exceptionHandler = ExceptionHandlerFactory {
