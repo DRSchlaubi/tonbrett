@@ -1,5 +1,7 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
+
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.android) apply false
@@ -14,6 +16,12 @@ allprojects {
     }
 }
 
-kotlin {
-    jvmToolchain(19)
+subprojects {
+    if (name != "app") {
+        afterEvaluate {
+            configure<KotlinTopLevelExtension> {
+                jvmToolchain(19)
+            }
+        }
+    }
 }
