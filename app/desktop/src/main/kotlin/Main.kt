@@ -31,9 +31,12 @@ import dev.schlaubi.tonbrett.app.title
 import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
+import mu.KotlinLogging
 import java.awt.Desktop
 import java.net.URI
 import java.awt.Window as AWTWindow
+
+private val LOG = KotlinLogging.logger { }
 
 fun main() = main(reAuthorize = false) { startApplication() }
 
@@ -52,7 +55,10 @@ fun startApplication() = application(
 ) {
     val sessionExpired = remember { mutableStateOf(false) }
     var needsUpdate by remember { mutableStateOf(false) }
-    val exceptionHandler = ExceptionHandlerFactory { needsUpdate = true }
+    val exceptionHandler = ExceptionHandlerFactory {
+        LOG.error(it) { "An error occurred" }
+        needsUpdate = true
+    }
     val strings = LocalStrings.current
 
     if (needsUpdate) {
@@ -115,12 +121,12 @@ private fun ApplicationScope.TonbrettWindow(content: @Composable FrameWindowScop
     content = content
 )
 
-private class ExceptionHandlerFactory(val handler: () -> Unit) : WindowExceptionHandlerFactory {
+private class ExceptionHandlerFactory(val handler: (Throwable) -> Unit) : WindowExceptionHandlerFactory {
     override fun exceptionHandler(window: AWTWindow): WindowExceptionHandler = ExceptionHandler(window)
     private inner class ExceptionHandler(val window: AWTWindow) : WindowExceptionHandler {
         override fun onException(throwable: Throwable) {
             if (throwable is IllegalArgumentException) {
-                handler()
+                handler(throwable)
             } else {
                 DefaultWindowExceptionHandlerFactory.exceptionHandler(window).onException(throwable)
             }
