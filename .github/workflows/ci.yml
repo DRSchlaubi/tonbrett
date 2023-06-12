@@ -202,9 +202,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            deb/*.deb
+            compose/binaries/main-release/deb/*.deb
             pkg/*.pkg
             msi/*.msi
-            *.tar.gz
+            distributions/*.tar.gz
             *.zip
             *-signed.apk
