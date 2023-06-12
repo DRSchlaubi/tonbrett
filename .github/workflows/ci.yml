@@ -203,8 +203,8 @@ jobs:
         with:
           files: |
             compose/binaries/main-release/deb/*.deb
-            pkg/*.pkg
-            msi/*.msi
+            compose/binaries/main-release/pkg/*.pkg
+            compose/binaries/main-release/msi/*.msi
             distributions/*.tar.gz
             *.zip
             *-signed.apk
