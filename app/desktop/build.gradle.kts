@@ -1,5 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.org.jline.utils.OSUtils
+import kotlin.io.path.pathString
 
 plugins {
     kotlin("jvm")
@@ -69,3 +70,12 @@ compose.desktop {
     }
 }
 
+tasks {
+    register<Tar>("packageDistributable") {
+        from(named("createReleaseDistributable"))
+        archiveBaseName = "tonbrett"
+        archiveClassifier = "linux"
+        compression = Compression.GZIP
+        archiveExtension = "tar.gz"
+    }
+}
