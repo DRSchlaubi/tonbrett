@@ -32,7 +32,6 @@ import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
 import mu.KotlinLogging
-import java.awt.Desktop
 import java.net.URI
 import java.awt.Window as AWTWindow
 
@@ -43,7 +42,7 @@ fun main() = main(reAuthorize = false) { startApplication() }
 fun main(reAuthorize: Boolean, onAuth: () -> Unit) {
     val config = getConfig()
     if (reAuthorize || config.sessionToken == null) {
-        Desktop.getDesktop().browse(href(Route.Auth(Route.Auth.Type.APP), URLBuilder(getUrl())).build().toURI())
+        browseUrl(href(Route.Auth(Route.Auth.Type.APP), URLBuilder(getUrl())).build().toURI())
         startAuthorizationServer(reAuthorize, onAuth)
     } else {
         startApplication()
@@ -68,7 +67,7 @@ fun startApplication() = application {
             ) {
                 Text(strings.needsUpdate, color = ColorScheme.textColor)
                 Button({
-                    Desktop.getDesktop().browse(URI("https://github.com/DRSchlaubi/tonbrett/releases/latest"))
+                    browseUrl(URI("https://github.com/DRSchlaubi/tonbrett/releases/latest"))
                     exitApplication()
                 }) {
                     Icon(Icons.Default.Refresh, null)
