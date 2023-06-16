@@ -17,7 +17,6 @@ import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.common.*
-import io.ktor.client.plugins.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -104,7 +103,7 @@ fun SoundList(errorReporter: ErrorReporter) {
             withContext(Dispatchers.IO) {
                 val state = try {
                     api.getMe().voiceState
-                } catch (e: ClientRequestException) {
+                } catch (e: Exception) {
                     errorReporter(e)
                     return@withContext
                 }

@@ -5,9 +5,15 @@ import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.common.*
 import dev.schlaubi.tonbrett.common.Route.Me
 import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
+import dev.schlaubi.tonbrett.common.Snowflake
+import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.Route
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -49,15 +55,26 @@ suspend fun broadcastEvent(event: Event) = coroutineScope {
     }
 }
 
+private val DISCORD_USER = AttributeKey<Snowflake>("DISCORD_USER")
+
 fun Route.webSocket() {
     resource<Me.Events> {
-        webSocket socket@{
+        intercept(ApplicationCallPipeline.Plugins) {
             val discordUser = try {
                 val sessionId = call.parameters["session_token"] ?: badRequest("Missing auth information")
                 snowflake(verifyJwt(sessionId).getClaim("userId").asLong())
             } catch (e: JWTVerificationException) {
-                return@socket close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, e.message!!))
+                call.respond(HttpStatusCode.Unauthorized)
+                finish()
+                return@intercept
             }
+
+            call.attributes.put(DISCORD_USER, discordUser)
+            proceed()
+        }
+        webSocket {
+            val discordUser = call.attributes[DISCORD_USER]
+
             sessions.remove(discordUser)?.close(
                 CloseReason(
                     CloseReason.Codes.VIOLATED_POLICY,

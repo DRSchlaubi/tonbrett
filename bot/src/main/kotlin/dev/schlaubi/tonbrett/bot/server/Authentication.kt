@@ -11,8 +11,7 @@ import dev.schlaubi.mikbot.plugin.api.InternalAPI
 import dev.schlaubi.mikbot.util_plugins.ktor.api.buildBotUrl
 import dev.schlaubi.tonbrett.bot.config.Config
 import dev.schlaubi.tonbrett.bot.util.badRequest
-import dev.schlaubi.tonbrett.common.Route
-import dev.schlaubi.tonbrett.common.Snowflake
+import dev.schlaubi.tonbrett.common.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -23,14 +22,17 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.*
+import io.ktor.server.request.*
 import io.ktor.server.resources.*
+import io.ktor.server.resources.post
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
 import kotlinx.serialization.json.Json
-import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import dev.kord.common.entity.Snowflake as snowflake
 import dev.schlaubi.mikbot.util_plugins.ktor.api.Config as KtorConfig
 import io.ktor.server.routing.Route as KtorRoute
@@ -105,19 +107,33 @@ fun Application.installAuth() {
 
                 val type = call.sessions.get<Session>()?.type ?: badRequest("Missing type")
 
-                val discordUserResponse =
-                    httpClient.get("https://discord.com/api/v${KordConfiguration.REST_VERSION}/users/@me") {
-                        bearerAuth(oauth.accessToken)
-                    }
-
-                if (!discordUserResponse.status.isSuccess()) {
-                    throw BadRequestException("Got unexpected response code: ${discordUserResponse.status}")
-                }
-
-                val discordUser  =discordUserResponse.body<DiscordUser>()
-                val key = newKey(discordUser.id)
+                val key = httpClient.createJwt(oauth)
 
                 call.respondRedirect(type.redirectTo + key)
+            }
+        }
+
+        post<Route.Auth.Refresh> {
+            val (expiredJwt) = call.receive<AuthRefreshRequest>()
+            val refreshToken = JWT.decode(expiredJwt).getClaim("refreshToken").asString()
+                ?: return@post call.respond(HttpStatusCode.Unauthorized)
+            val response = httpClient.post("https://discord.com/api/oauth2/token") {
+                contentType(ContentType.Application.FormUrlEncoded)
+                setBody(parameters {
+                    append(OAuth2RequestParameters.ClientId, Config.DISCORD_CLIENT_ID)
+                    append(OAuth2RequestParameters.ClientSecret, Config.DISCORD_CLIENT_SECRET)
+                    append(OAuth2RequestParameters.GrantType, "refresh_token")
+                    append("refresh_token", refreshToken)
+                }.formUrlEncode())
+            }
+            if (!response.status.isSuccess()) {
+                call.respond(HttpStatusCode.Unauthorized)
+            } else {
+                val oauth = response.body<DiscordAccessTokenResponse>().let {
+                    OAuthAccessTokenResponse.OAuth2(it.accessToken, it.tokenType, it.expiresIn, it.refreshToken)
+                }
+                val jwt = httpClient.createJwt(oauth)
+                call.respond(AuthRefreshResponse(newJwt = jwt))
             }
         }
     }
@@ -133,8 +149,22 @@ val ApplicationCall.userId: Snowflake
         return snowflake(idRaw.asLong())
     }
 
-private fun newKey(userId: Snowflake) = JWT.create()
+private suspend fun HttpClient.createJwt(oauth: OAuthAccessTokenResponse.OAuth2): String {
+    val discordUserResponse = get("https://discord.com/api/v${KordConfiguration.REST_VERSION}/users/@me") {
+        bearerAuth(oauth.accessToken)
+    }
+
+    if (!discordUserResponse.status.isSuccess()) {
+        throw BadRequestException("Got unexpected response code: ${discordUserResponse.status}")
+    }
+
+    val discordUser = discordUserResponse.body<DiscordUser>()
+    return newKey(discordUser.id, oauth.refreshToken!!, oauth.expiresIn.seconds)
+}
+
+private fun newKey(userId: Snowflake, refreshToken: String, expiresIn: Duration) = JWT.create()
     .withIssuer(KtorConfig.WEB_SERVER_URL.toString())
     .withClaim("userId", userId.value.toLong())
-    .withExpiresAt((Clock.System.now() + 7.days).toJavaInstant())
+    .withClaim("refreshToken", refreshToken)
+    .withExpiresAt((Clock.System.now() + expiresIn).toJavaInstant())
     .sign(Algorithm.HMAC256(Config.JWT_SECRET))

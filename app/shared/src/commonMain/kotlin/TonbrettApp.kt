@@ -20,13 +20,12 @@ import dev.schlaubi.tonbrett.app.components.SoundList
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.strings.ProvideStrings
 import dev.schlaubi.tonbrett.app.strings.rememberStrings
-import io.ktor.client.plugins.*
-import io.ktor.http.*
+import dev.schlaubi.tonbrett.client.ReauthorizationRequiredException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 
-typealias ErrorReporter = suspend (ClientRequestException) -> Unit
+typealias ErrorReporter = suspend (Exception) -> Unit
 
 private val LOG = KotlinLogging.logger {}
 
@@ -38,15 +37,15 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
     val context = LocalContext.current
 
     val lyricist = rememberStrings()
-    suspend fun reportError(exception: ClientRequestException) {
-        if (exception.response.status == HttpStatusCode.Unauthorized) {
+    suspend fun reportError(exception: Exception) {
+        if (exception is ReauthorizationRequiredException) {
             sessionExpired = true
             crashed = false
-        } else if (exception.message.isBlank()) {
+        } else if (exception.message.isNullOrBlank()) {
             LOG.error(exception) { "An error happened during a rest request" }
         } else {
-            scaffoldState.snackbarHostState.showSnackbar(exception.message)
             LOG.warn(exception) { "An error occurred" }
+            scaffoldState.snackbarHostState.showSnackbar(exception.message!!)
         }
     }
 
@@ -60,11 +59,11 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                 }
             }
 
-            LaunchedEffect(context.getToken()) {
+            LaunchedEffect(context.token) {
                 withContext(Dispatchers.IO) {
                     try {
                         context.api.connect()
-                    } catch (e: ClientRequestException) {
+                    } catch (e: Exception) {
                         reportError(e)
                     }
                     crashed = !sessionExpired
