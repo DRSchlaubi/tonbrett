@@ -39,9 +39,9 @@ fun Route.sounds() {
         call.respond(SoundBoardDatabase.sounds.findAllTags(query, limit).toList())
     }
 
-    get<Sounds.ListSounds> { (onlyMine, queryString) ->
+    get<Sounds.ListSounds> { (onlyMine, queryString, useUnicode) ->
         call.respond(
-            SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId).toList().convertForNonJvmPlatforms()
+            SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId).toList().convertForNonJvmPlatforms(useUnicode)
         )
     }
 

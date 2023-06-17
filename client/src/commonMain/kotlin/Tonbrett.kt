@@ -46,8 +46,8 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
     }
     val events = eventFlow.asSharedFlow()
 
-    suspend fun getSounds(onlyMine: Boolean = false, query: String? = null): List<Sound> =
-        client.get(Route.Sounds.ListSounds(onlyMine, query)).body()
+    suspend fun getSounds(onlyMine: Boolean = false, query: String? = null, useUnicode: Boolean = false): List<Sound> =
+        client.get(Route.Sounds.ListSounds(onlyMine, query, useUnicode)).body()
 
     suspend fun getMe(): User = client.get(Route.Me()).body()
 
@@ -59,12 +59,12 @@ class Tonbrett(private val token: String, private val baseUrl: Url) {
     suspend fun stop(): Unit = client.post(Route.StopPlayer()).body()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun connect() {
+    suspend fun connect(useUnicode: Boolean = false) {
         val session = client.webSocketSession {
-            href(Route.Me.Events(token), url)
+            href(Route.Me.Events(token, useUnicode), url)
             url {
                 protocol = if (baseUrl.protocol.isSecure()) URLProtocol.WSS else URLProtocol.WS
-                port = protocol.defaultPort
+                port = baseUrl.port
             }
         }
 

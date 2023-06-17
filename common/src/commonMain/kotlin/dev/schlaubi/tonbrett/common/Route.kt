@@ -3,6 +3,7 @@ package dev.schlaubi.tonbrett.common
 import io.ktor.resources.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import dev.schlaubi.tonbrett.common.Sound as SoundEntity
 
 public const val authServerPort: Int = 12548
 
@@ -31,12 +32,15 @@ public class Route {
          *
          * @property onlyMine only list my sounds (only for GET)
          * @property query filter sounds for a query (only for GET)
+         * @property useUnicode whether to use [SoundEntity.DiscordEmoji] or [SoundEntity.Twemoji]
          */
         @Resource("sounds")
         public data class ListSounds(
             @SerialName("only_mine")
             val onlyMine: Boolean = false,
             val query: String? = null,
+            @SerialName("use_unicode")
+            val useUnicode: Boolean = false,
             val parent: Route = Route()
         )
 
@@ -95,9 +99,15 @@ public class Route {
          * /soundboard/users/@me/events - websocket entrypoint for live updates
          *
          * @property sessionToken the session token
+         * @property useUnicode whether to use [SoundEntity.DiscordEmoji] or [SoundEntity.Twemoji]
          */
         @Resource("events")
-        public data class Events(@SerialName("session_token") val sessionToken: String, val parent: Me = Me())
+        public data class Events(
+            @SerialName("session_token") val sessionToken: String,
+            @SerialName("use_unicode")
+            val useUnicode: Boolean = false,
+            val parent: Me = Me()
+        )
     }
 
     /**

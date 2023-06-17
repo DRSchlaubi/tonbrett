@@ -10,6 +10,12 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 @Serializable
 public sealed interface Event
 
+public sealed interface SoundEvent : Event {
+    public val sound: Sound
+
+    public fun withSound(sound: Sound): SoundEvent
+}
+
 @Serializable
 @SerialName("interface_availability_change")
 public data class InterfaceAvailabilityChangeEvent(val available: Boolean, val playingSongId: Id<Sound>?) : Event
@@ -20,7 +26,9 @@ public data class VoiceStateUpdateEvent(val voiceState: User.VoiceState?) : Even
 
 @Serializable
 @SerialName("sound_create")
-public data class SoundCreatedEvent(val sound: Sound) : Event
+public data class SoundCreatedEvent(override val sound: Sound) : SoundEvent {
+    override fun withSound(sound: Sound): SoundEvent = copy(sound = sound)
+}
 
 @Serializable
 @SerialName("sound_delete")
@@ -28,4 +36,6 @@ public data class SoundDeletedEvent(val id: Id<Sound>) : Event
 
 @Serializable
 @SerialName("sound_update")
-public data class SoundUpdatedEvent(val sound: Sound) : Event
+public data class SoundUpdatedEvent(override val sound: Sound) : SoundEvent {
+    override fun withSound(sound: Sound): SoundEvent = copy(sound = sound)
+}

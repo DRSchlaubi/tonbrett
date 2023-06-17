@@ -106,7 +106,6 @@ fun Application.installAuth() {
 
                 val type = call.sessions.get<Session>()?.type ?: badRequest("Missing type")
 
-
                 val discordUserResponse =
                     httpClient.get("https://discord.com/api/v${KordConfiguration.REST_VERSION}/users/@me") {
                         bearerAuth(oauth.accessToken)

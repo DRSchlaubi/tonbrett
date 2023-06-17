@@ -2,21 +2,39 @@ package dev.schlaubi.tonbrett.bot.server
 
 import com.auth0.jwt.exceptions.JWTVerificationException
 import dev.schlaubi.tonbrett.bot.util.badRequest
-import dev.schlaubi.tonbrett.common.Event
+import dev.schlaubi.tonbrett.common.*
 import dev.schlaubi.tonbrett.common.Route.Me
-import dev.schlaubi.tonbrett.common.Snowflake
+import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import io.ktor.server.resources.*
-import io.ktor.server.routing.*
+import io.ktor.server.routing.Route
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 import dev.kord.common.entity.Snowflake as snowflake
 
 private val LOG = KotlinLogging.logger { }
 
-private val sessions = mutableMapOf<Snowflake, DefaultWebSocketServerSession>()
+class WebSocketSession(
+    val useUnicode: Boolean,
+    val delegate: DefaultWebSocketServerSession
+) : DefaultWebSocketServerSession by delegate {
+    suspend inline fun <reified T : Event> sendEvent(event: T) {
+        val updatedEvent = if (event is SoundEvent && useUnicode) {
+            event.withSound(event.sound.convertForNonJvmPlatforms())
+        } else {
+            event
+        }
+
+        sendSerialized(updatedEvent)
+    }
+}
+
+private val sessions = mutableMapOf<Snowflake, WebSocketSession>()
 
 suspend fun sendEvent(id: Snowflake, event: Event) {
     val session = sessions[id] ?: return
@@ -26,7 +44,7 @@ suspend fun sendEvent(id: Snowflake, event: Event) {
 suspend fun broadcastEvent(event: Event) = coroutineScope {
     sessions.forEach { (_, session) ->
         launch {
-            session.sendSerialized(event)
+            session.sendEvent(event)
         }
     }
 }
@@ -46,7 +64,8 @@ fun Route.webSocket() {
                     "Connected from another location"
                 )
             )
-            sessions[discordUser] = this
+            val useUnicode = call.parameters["use_unicode"].toBoolean()
+            sessions[discordUser] = WebSocketSession(useUnicode, this)
 
             for (message in incoming) {
                 LOG.warn { "Received unexpected message: ${message.data.contentToString()}" }
