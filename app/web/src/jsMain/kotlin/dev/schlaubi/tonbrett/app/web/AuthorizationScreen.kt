@@ -87,6 +87,7 @@ fun AuthorizationScreen(cli: Boolean) {
                                     .height(32.dp)
                                     .padding(horizontal = 15.dp)
                             ) {
+                                val command = "tonbrett-cli login --auth-token=$token"
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.fillMaxHeight()
@@ -101,7 +102,7 @@ fun AuthorizationScreen(cli: Boolean) {
                                     horizontalArrangement = Arrangement.End,
                                     modifier = Modifier.zIndex(2f).fillMaxWidth()
                                 ) {
-                                    CopyButton("tonbrett-cli login --auth-token=token")
+                                    CopyButton(command)
                                 }
                             }
                         }
