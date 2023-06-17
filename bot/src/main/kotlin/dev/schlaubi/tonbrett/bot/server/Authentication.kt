@@ -7,7 +7,6 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import dev.kord.common.KordConfiguration
 import dev.kord.common.entity.DiscordUser
-import dev.kord.common.entity.Snowflake as snowflake
 import dev.schlaubi.mikbot.plugin.api.InternalAPI
 import dev.schlaubi.mikbot.util_plugins.ktor.api.buildBotUrl
 import dev.schlaubi.tonbrett.bot.config.Config
@@ -19,7 +18,6 @@ import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.http.auth.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -33,6 +31,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.days
+import dev.kord.common.entity.Snowflake as snowflake
 import dev.schlaubi.mikbot.util_plugins.ktor.api.Config as KtorConfig
 import io.ktor.server.routing.Route as KtorRoute
 
