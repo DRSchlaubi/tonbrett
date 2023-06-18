@@ -24,7 +24,7 @@ class WebSocketSession(
     val delegate: DefaultWebSocketServerSession
 ) : DefaultWebSocketServerSession by delegate {
     suspend inline fun <reified T : Event> sendEvent(event: T) {
-        val updatedEvent = if (event is SoundEvent && useUnicode) {
+        val updatedEvent = if (event is HasSound && useUnicode) {
             event.withSound(event.sound.convertForNonJvmPlatforms())
         } else {
             event
