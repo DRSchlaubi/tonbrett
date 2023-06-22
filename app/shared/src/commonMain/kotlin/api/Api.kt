@@ -9,14 +9,14 @@ import kotlinx.coroutines.Dispatchers
 expect fun getUrl(): Url
 
 abstract class AppContextBase {
-    abstract fun getToken(): String
+    abstract var token: String
 
     private val apiState = mutableStateOf<Tonbrett?>(null)
 
     val api: Tonbrett get() = apiState.value ?: error("App not initialized")
 
     fun resetApi() {
-        apiState.value = Tonbrett(getToken(), getUrl())
+        apiState.value = Tonbrett(token, getUrl(), onTokenRefresh = { token = it })
     }
 }
 

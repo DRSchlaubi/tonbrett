@@ -19,7 +19,11 @@ fun setToken(token: String) = vault.set(tokenKey, token)
 fun getAuthUrl(): String = href(Route.Auth(Route.Auth.Type.MOBILE_APP), getUrl())
 
 abstract class AppleAppContext : AppContext() {
-    override fun getToken(): String = getTokenOrNull() ?: error("Please sign in")
+    override var token: String
+        get() = getTokenOrNull() ?: error("Please sign in")
+        set(value) {
+            setToken(value)
+        }
 
     override fun reAuthorize() {
         vault.deleteObject(tokenKey)

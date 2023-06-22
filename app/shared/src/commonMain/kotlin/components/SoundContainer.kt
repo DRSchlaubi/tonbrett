@@ -34,7 +34,6 @@ import dev.schlaubi.tonbrett.app.util.conditional
 import dev.schlaubi.tonbrett.app.util.isMobile
 import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.Sound
-import io.ktor.client.plugins.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -87,7 +86,7 @@ fun SoundCard(
     fun request(block: suspend CoroutineScope.() -> Unit) = coroutineScope.launch(Dispatchers.IO) {
         try {
             block()
-        } catch (e: ClientRequestException) {
+        } catch (e: Exception) {
             reportError(e)
         }
     }

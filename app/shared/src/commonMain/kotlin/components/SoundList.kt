@@ -17,7 +17,6 @@ import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.common.*
-import io.ktor.client.plugins.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -29,13 +28,13 @@ private val LOG = KotlinLogging.logger {}
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun SoundList(errorReporter: ErrorReporter) {
+fun SoundList(errorReporter: ErrorReporter, voiceState: User.VoiceState?) {
     var playingSound by remember { mutableStateOf<Id<Sound>?>(null) }
     var sounds by remember { mutableStateOf<List<Sound>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
-    var available by remember { mutableStateOf(true) }
-    var channelMismatch by remember { mutableStateOf(false) }
-    var offline by remember { mutableStateOf(false) }
+    var available by remember { mutableStateOf(voiceState?.playerAvailable ?: false) }
+    var channelMismatch by remember { mutableStateOf(voiceState?.channelMismatch ?: false) }
+    var offline by remember { mutableStateOf(voiceState == null) }
     val coroutineScope = rememberCoroutineScope()
     val api = LocalContext.current.api
 
@@ -102,22 +101,8 @@ fun SoundList(errorReporter: ErrorReporter) {
     if (loading) {
         LaunchedEffect(Unit) {
             withContext(Dispatchers.IO) {
-                val state = try {
-                    api.getMe().voiceState
-                } catch (e: ClientRequestException) {
-                    errorReporter(e)
-                    return@withContext
-                }
-                if (state == null) {
-                    offline = true
-                } else {
-                    available = state.playerAvailable
-                    playingSound = state.playingSound
-                    offline = false
-                    channelMismatch = state.channelMismatch
-                    if (!state.channelMismatch) {
-                        sounds = api.getSounds()
-                    }
+                if (voiceState?.channelMismatch == false) {
+                    sounds = api.getSounds()
                 }
                 loading = false
             }

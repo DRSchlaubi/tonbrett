@@ -81,6 +81,12 @@ public class Route {
         @Resource("callback")
         public data class Callback(val parent: Auth = Auth())
 
+        /**
+         * /soundboard/auth/refresh - refresh JWTs
+         */
+        @Resource("refresh")
+        public data class Refresh(val parent: Auth = Auth())
+
         @Serializable
         public enum class Type(public val redirectTo: String) {
             WEB("/soundboard/ui/login?token="),

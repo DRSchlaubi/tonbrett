@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -20,13 +21,13 @@ import dev.schlaubi.tonbrett.app.components.SoundList
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.strings.ProvideStrings
 import dev.schlaubi.tonbrett.app.strings.rememberStrings
-import io.ktor.client.plugins.*
-import io.ktor.http.*
+import dev.schlaubi.tonbrett.client.ReauthorizationRequiredException
+import dev.schlaubi.tonbrett.common.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 
-typealias ErrorReporter = suspend (ClientRequestException) -> Unit
+typealias ErrorReporter = suspend (Exception) -> Unit
 
 private val LOG = KotlinLogging.logger {}
 
@@ -36,59 +37,83 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
     var sessionExpired by sessionExpiredState
     var crashed by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    var initialUser: User? by remember { mutableStateOf(null) }
 
     val lyricist = rememberStrings()
-    suspend fun reportError(exception: ClientRequestException) {
-        if (exception.response.status == HttpStatusCode.Unauthorized) {
+    suspend fun reportError(exception: Exception) {
+        if (exception is ReauthorizationRequiredException) {
             sessionExpired = true
             crashed = false
-        } else if (exception.message.isBlank()) {
+        } else if (exception.message.isNullOrBlank()) {
             LOG.error(exception) { "An error happened during a rest request" }
         } else {
-            scaffoldState.snackbarHostState.showSnackbar(exception.message)
             LOG.warn(exception) { "An error occurred" }
+            scaffoldState.snackbarHostState.showSnackbar(exception.message!!)
+        }
+    }
+
+    if (initialUser == null) {
+        LaunchedEffect(Unit) {
+            withContext(Dispatchers.Default) {
+                try {
+                    initialUser = context.api.getMe()
+                } catch (e: Exception) {
+                    reportError(e)
+                }
+            }
         }
     }
 
     ProvideStrings(lyricist) {
-        if (!crashed && !sessionExpired) {
+        val user = initialUser
+        if (!crashed && !sessionExpired && user != null) {
             Scaffold(
                 containerColor = ColorScheme.container,
                 snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) }) { padding ->
                 Column(Modifier.padding(padding)) {
-                    SoundList(::reportError)
+                    SoundList(::reportError, user.voiceState)
                 }
             }
 
-            LaunchedEffect(context.getToken()) {
+            LaunchedEffect(context.token) {
                 withContext(Dispatchers.IO) {
                     try {
                         context.api.connect()
-                    } catch (e: ClientRequestException) {
+                    } catch (e: Exception) {
                         reportError(e)
                     }
                     crashed = !sessionExpired
                 }
             }
         } else {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.background(ColorScheme.container)
-                    .fillMaxSize()
-            ) {
-                if (sessionExpired) {
-                    CrashErrorScreen(LocalStrings.current.sessionExpiredExplainer) {
-                        Button({ context.reAuthorize() }) {
-                            Icon(Icons.Default.Refresh, LocalStrings.current.reAuthorize)
-                            Text(LocalStrings.current.reAuthorize, color = ColorScheme.textColor)
+            if (user == null) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.background(ColorScheme.container)
+                        .fillMaxSize()
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.background(ColorScheme.container)
+                        .fillMaxSize()
+                ) {
+                    if (sessionExpired) {
+                        CrashErrorScreen(LocalStrings.current.sessionExpiredExplainer) {
+                            Button({ context.reAuthorize() }) {
+                                Icon(Icons.Default.Refresh, LocalStrings.current.reAuthorize)
+                                Text(LocalStrings.current.reAuthorize, color = ColorScheme.textColor)
+                            }
                         }
-                    }
-                } else {
-                    CrashErrorScreen(LocalStrings.current.crashedExplainer) {
-                        Button({ crashed = false }) {
-                            Icon(Icons.Default.Refresh, LocalStrings.current.reload)
-                            Text(LocalStrings.current.reload, color = ColorScheme.textColor)
+                    } else if (crashed) {
+                        CrashErrorScreen(LocalStrings.current.crashedExplainer) {
+                            Button({ crashed = false }) {
+                                Icon(Icons.Default.Refresh, LocalStrings.current.reload)
+                                Text(LocalStrings.current.reload, color = ColorScheme.textColor)
+                            }
                         }
                     }
                 }

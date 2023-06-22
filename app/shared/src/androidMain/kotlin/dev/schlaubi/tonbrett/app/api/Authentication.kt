@@ -16,7 +16,11 @@ actual open class AppContext(val androidContext: Context) : AppContextBase() {
 
     fun getTokenOrNull() = vault.string(tokenKey)
 
-    override fun getToken(): String = getTokenOrNull() ?: error("Please sign in")
+    override var token
+        get() = getTokenOrNull() ?: error("Please sign in")
+        set(value) {
+            vault.set(tokenKey, value)
+        }
 
     actual open fun reAuthorize() = Unit
 }
