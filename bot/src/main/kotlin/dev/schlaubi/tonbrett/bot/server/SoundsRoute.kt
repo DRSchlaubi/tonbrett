@@ -41,7 +41,7 @@ fun Route.sounds() {
 
     get<Sounds.ListSounds> { (onlyMine, queryString, useUnicode) ->
         call.respond(
-            SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId).toList().convertForNonJvmPlatforms(useUnicode)
+            SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId).toList().convertForNonJvmPlatforms(!useUnicode)
         )
     }
 
