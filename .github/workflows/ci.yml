@@ -94,6 +94,11 @@ jobs:
           New-Item -ItemType directory -Path certificate
           Set-Content -Path certificate\certificate.txt -Value '${{ secrets.WINDOWS_CERTIFICATE }}'
           certutil -decode certificate\certificate.txt certificate\certificate.pfx
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v1.11
+        name: Setup Windows SDK
+        if: matrix.os == 'windows-latest'
+        with:
+          sdk-version: 22621
       - name: Build MSIX
         if: matrix.os == 'windows-latest'
         run: |
