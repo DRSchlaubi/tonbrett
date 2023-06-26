@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+        xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+        xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+        xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+        xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10">
+    <Identity Name="dev.schlaubi.Tonbrett" Version="1.10.2.0" Publisher="CN=Michael Rittmeister, O=Michael Rittmeister, S=Bayern, C=DE"
+              ProcessorArchitecture="x64"/>
+    <Properties>
+        <DisplayName>Tonbrett</DisplayName>
+        <PublisherDisplayName>Schlaubi</PublisherDisplayName>
+        <Description>Companion app for Discord soundboard bot</Description>
+        <Logo>logo.png</Logo>
+    </Properties>
+    <Resources>
+        <Resource Language="en-us"/>
+        <Resource Language="de-de"/>
+    </Resources>
+    <Dependencies>
+        <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14316.0" MaxVersionTested="10.0.15063.0"/>
+    </Dependencies>
+    <Capabilities>
+        <Capability Name="internetClient" />
+    </Capabilities>
+    <Applications>
+        <Application Id="Tonbrett" Executable="Tonbrett.exe"
+                     EntryPoint="Windows.PartialTrustApplication"
+                     uap10:RuntimeBehavior="packagedClassicApp"
+                     >
+            <uap:VisualElements DisplayName="Tonbrett"
+                                Description="Companion" Square150x150Logo="logo.png"
+                                Square44x44Logo="logo.png" BackgroundColor="#111214"/>
+            <Extensions>
+                <uap5:Extension Category="windows.appExecutionAlias">
+                    <uap5:AppExecutionAlias>
+                        <uap5:ExecutionAlias Alias="Tonbrett.exe"/>
+                    </uap5:AppExecutionAlias>
+                </uap5:Extension>
+                <uap:Extension Category="windows.protocol">
+                    <uap:Protocol Name="tonbrett">
+                        <uap:DisplayName>Tonbrett Protocol</uap:DisplayName>
+                    </uap:Protocol>
+                </uap:Extension>
+            </Extensions>
+        </Application>
+    </Applications>
+</Package>

@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.desktop.application.tasks.AbstractJPackageTask
 import org.jetbrains.kotlin.org.jline.utils.OSUtils
 import kotlin.io.path.pathString
 
@@ -25,7 +26,7 @@ compose.desktop {
                 "java.naming" // required by logback
             )
             when {
-                OSUtils.IS_WINDOWS -> targetFormats(TargetFormat.Msi)
+                OSUtils.IS_WINDOWS -> targetFormats(TargetFormat.AppImage)
                 OSUtils.IS_OSX -> targetFormats(TargetFormat.Pkg)
                 else -> targetFormats(TargetFormat.Deb)
             }
@@ -77,5 +78,37 @@ tasks {
         archiveClassifier = "linux"
         compression = Compression.GZIP
         archiveExtension = "tar.gz"
+    }
+
+    val buildUwpHelper by creating(Exec::class) {
+        inputs.dir("uwp_helper/src")
+        outputs.dir("uwp_helper/target")
+
+        workingDir = file("uwp_helper")
+        commandLine("cargo", "build", "--release")
+    }
+
+    val prepareUwpWorkspace by creating(Copy::class) {
+        dependsOn(buildUwpHelper)
+        afterEvaluate {
+            from(named("packageReleaseAppImage")) {
+                eachFile {
+                    path = path.substringAfter("Tonbrett")
+                }
+            }
+        }
+        from(file("uwp_helper/target/release")) {
+            include("*.exe")
+        }
+        from(file("msix"))
+        into(buildDir.resolve("msix-workspace"))
+    }
+
+    afterEvaluate {
+        "packageReleaseDistributionForCurrentOS" {
+            if (OSUtils.IS_WINDOWS) {
+                dependsOn(prepareUwpWorkspace)
+            }
+        }
     }
 }

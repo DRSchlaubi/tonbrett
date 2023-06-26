@@ -22,14 +22,9 @@ import androidx.compose.ui.window.*
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.TonbrettApp
-import dev.schlaubi.tonbrett.app.api.AppContext
-import dev.schlaubi.tonbrett.app.api.ProvideContext
-import dev.schlaubi.tonbrett.app.api.getConfig
-import dev.schlaubi.tonbrett.app.api.getUrl
+import dev.schlaubi.tonbrett.app.api.*
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.title
-import dev.schlaubi.tonbrett.client.href
-import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
 import mu.KotlinLogging
 import java.net.URI
@@ -37,12 +32,31 @@ import java.awt.Window as AWTWindow
 
 private val LOG = KotlinLogging.logger { }
 
-fun main() = main(reAuthorize = false) { startApplication() }
+fun main(args: Array<String>) {
+    if (windowsAppDataFolder != null) {
+        System.setProperty("user.home", windowsAppDataFolder!!)
+    }
+
+    val argsString = args.joinToString(" ")
+    if (argsString.startsWith("tonbrett://login")) {
+        try {
+            LOG.info { "Launched App with $argsString saving token now" }
+            val token = Url(argsString).parameters["token"]
+            saveConfig(Config(token))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Thread.sleep(50000)
+        }
+        startApplication()
+    } else {
+        main(reAuthorize = false) { startApplication() }
+    }
+}
 
 fun main(reAuthorize: Boolean, onAuth: () -> Unit) {
     val config = getConfig()
-    if (reAuthorize || config.sessionToken == null) {
-        browseUrl(href(Route.Auth(Route.Auth.Type.APP), URLBuilder(getUrl())).build().toURI())
+    if (true && config.sessionToken == null) {
+        //browseUrl(href(Route.Auth(Route.Auth.Type.APP), URLBuilder(getUrl())).build().toURI())
         startAuthorizationServer(reAuthorize, onAuth)
     } else {
         startApplication()

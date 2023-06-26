@@ -45,6 +45,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{env.JAVA_VERSION}}
+      - uses: actions-rs/toolchain@v1
+        if: matrix.os == 'windows-latest'
+        with:
+          toolchain: 'stable'
       - name: Setup MacOS signing
         if: matrix.os == 'macos-latest'
         env:
@@ -90,10 +94,14 @@ jobs:
           New-Item -ItemType directory -Path certificate
           Set-Content -Path certificate\certificate.txt -Value '${{ secrets.WINDOWS_CERTIFICATE }}'
           certutil -decode certificate\certificate.txt certificate\certificate.pfx
+      - name: Build MSIX
+        if: matrix.os == 'windows-latest'
+        run: |
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' pack /d app/desktop/build/msix-workspace /p Tonbrett.msix
       - name: Code Sign 2021
         if: matrix.os == 'windows-latest'
         run: |
-          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /f certificate\certificate.pfx /p '${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}' /t http://timestamp.sectigo.com/ /d Tonbrett app/desktop/build/compose/binaries/main-release/msi/*.msi
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /f certificate\certificate.pfx /p '${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}' /t http://timestamp.sectigo.com/ /d Tonbrett Tonbrett.msix
       - name: Notarize MacOS installer
         #if: matrix.os == 'macos-latest'
         # waiting for https://github.com/JetBrains/compose-multiplatform/issues/3208
@@ -108,9 +116,8 @@ jobs:
         with:
           name: desktopapp-${{ matrix.os }}
           path: |
+            *.msix
             app/desktop/build/compose/binaries/main-release/deb/*.deb
-            app/desktop/build/compose/binaries/main-release/msi/*.msi
-            app/desktop/build/compose/binaries/main-release/pkg/*.pkg
             app/desktop/build/compose/binaries/main-release/pkg/*.pkg
             app/desktop/build/distributions/*.tar.gz
   build_android_app:
@@ -206,7 +213,7 @@ jobs:
           files: |
             compose/binaries/main-release/deb/*.deb
             compose/binaries/main-release/pkg/*.pkg
-            compose/binaries/main-release/msi/*.msi
+            *.msix
             distributions/*.tar.gz
             *.zip
             *-signed.apk
