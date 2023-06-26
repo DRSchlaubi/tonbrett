@@ -88,11 +88,9 @@ tasks {
 
     val prepareUwpWorkspace by registering(Copy::class) {
         dependsOn(buildUwpHelper)
-        afterEvaluate {
-            from(named("packageReleaseAppImage")) {
-                eachFile {
-                    path = path.substringAfter("Tonbrett")
-                }
+        from(named("packageReleaseAppImage")) {
+            eachFile {
+                path = path.substringAfter("Tonbrett")
             }
         }
         from(file("uwp_helper/target/release")) {
