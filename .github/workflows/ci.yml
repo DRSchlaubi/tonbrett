@@ -211,8 +211,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            compose/binaries/main-release/deb/*.deb
-            compose/binaries/main-release/pkg/*.pkg
+            app/desktop/build/compose/binaries/main-release/deb/*.deb
+            app/desktop/build/compose/binaries/main-release/pkg/*.pkg
             *.msix
             distributions/*.tar.gz
             *.zip

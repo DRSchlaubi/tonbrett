@@ -4,7 +4,7 @@
         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
         xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
         xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10">
-    <Identity Name="dev.schlaubi.Tonbrett" Version="1.10.3.0" Publisher="CN=Michael Rittmeister, O=Michael Rittmeister, S=Bayern, C=DE"
+    <Identity Name="dev.schlaubi.Tonbrett" Version="1.10.4.0" Publisher="CN=Michael Rittmeister, O=Michael Rittmeister, S=Bayern, C=DE"
               ProcessorArchitecture="x64"/>
     <Properties>
         <DisplayName>Tonbrett</DisplayName>
