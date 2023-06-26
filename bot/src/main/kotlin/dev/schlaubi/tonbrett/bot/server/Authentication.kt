@@ -115,7 +115,7 @@ fun Application.installAuth() {
 
         post<Route.Auth.Refresh> {
             val (expiredJwt) = call.receive<AuthRefreshRequest>()
-            val refreshToken = JWT.decode(expiredJwt).getClaim("refreshToken").asString()
+            val refreshToken = runCatching { JWT.decode(expiredJwt).getClaim("refreshToken").asString() }.getOrNull()
                 ?: return@post call.respond(HttpStatusCode.Unauthorized)
             val response = httpClient.post("https://discord.com/api/oauth2/token") {
                 contentType(ContentType.Application.FormUrlEncoded)

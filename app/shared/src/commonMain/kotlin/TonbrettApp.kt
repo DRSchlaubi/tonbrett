@@ -86,7 +86,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                 }
             }
         } else {
-            if (user == null) {
+            if (user == null && !sessionExpired) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.background(ColorScheme.container)

@@ -26,16 +26,18 @@ import dev.schlaubi.tonbrett.app.api.*
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.title
 import dev.schlaubi.tonbrett.client.href
-import io.ktor.http.*
 import dev.schlaubi.tonbrett.common.Route
+import io.ktor.http.*
 import mu.KotlinLogging
 import java.net.URI
+import kotlin.system.exitProcess
 import java.awt.Window as AWTWindow
 
 private val LOG = KotlinLogging.logger { }
 
 fun main(args: Array<String>) {
-    if (windowsAppDataFolder != null) {
+    val uwp = windowsAppDataFolder != null
+    if (uwp) {
         System.setProperty("user.home", windowsAppDataFolder!!)
     }
 
@@ -49,16 +51,16 @@ fun main(args: Array<String>) {
             e.printStackTrace()
             Thread.sleep(50000)
         }
-        startApplication()
+        startApplication(uwp)
     } else {
-        main(reAuthorize = false, uwp = windowsAppDataFolder != null) { startApplication() }
+        main(reAuthorize = false, uwp = uwp) { startApplication(uwp) }
     }
 }
 
 fun main(reAuthorize: Boolean, uwp: Boolean = false, onAuth: () -> Unit) {
     val config = getConfig()
-    if (reAuthorize && config.sessionToken == null) {
-        val protocol = if(uwp) {
+    if (reAuthorize || config.sessionToken == null) {
+        val protocol = if (uwp) {
             Route.Auth.Type.PROTOCOL
         } else {
             Route.Auth.Type.APP
@@ -66,13 +68,15 @@ fun main(reAuthorize: Boolean, uwp: Boolean = false, onAuth: () -> Unit) {
         browseUrl(href(Route.Auth(protocol), URLBuilder(getUrl())).build().toURI())
         if (!uwp) {
             startAuthorizationServer(reAuthorize, onAuth)
+        } else {
+            exitProcess(0)
         }
     } else {
-        startApplication()
+        startApplication(uwp)
     }
 }
 
-fun startApplication() = application {
+fun startApplication(uwp: Boolean) = application {
     val sessionExpired = remember { mutableStateOf(false) }
     var needsUpdate by remember { mutableStateOf(false) }
     val exceptionHandler = ExceptionHandlerFactory {
@@ -99,13 +103,14 @@ fun startApplication() = application {
             }
         }
     } else {
-        startActualApplication(exceptionHandler, sessionExpired)
+        startActualApplication(uwp, exceptionHandler, sessionExpired)
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun ApplicationScope.startActualApplication(
+    uwp: Boolean,
     exceptionHandler: ExceptionHandlerFactory, sessionExpired: MutableState<Boolean>
 ) {
     CompositionLocalProvider(LocalWindowExceptionHandlerFactory provides exceptionHandler) {
@@ -114,7 +119,7 @@ private fun ApplicationScope.startActualApplication(
                 object : AppContext() {
                     override fun reAuthorize() {
                         window.isMinimized = true
-                        main(reAuthorize = true) {
+                        main(reAuthorize = true, uwp = uwp) {
                             resetApi()
                             window.isMinimized = false
                             sessionExpired.value = false
