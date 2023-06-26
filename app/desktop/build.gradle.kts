@@ -78,7 +78,7 @@ tasks {
         archiveExtension = "tar.gz"
     }
 
-    val buildUwpHelper by creating(Exec::class) {
+    val buildUwpHelper by registering(Exec::class) {
         inputs.dir("uwp_helper/src")
         outputs.dir("uwp_helper/target")
 
@@ -86,7 +86,7 @@ tasks {
         commandLine("cargo", "build", "--release")
     }
 
-    val prepareUwpWorkspace by creating(Copy::class) {
+    val prepareUwpWorkspace by registering(Copy::class) {
         dependsOn(buildUwpHelper)
         afterEvaluate {
             from(named("packageReleaseAppImage")) {
