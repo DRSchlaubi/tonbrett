@@ -91,6 +91,7 @@ public class Route {
         public enum class Type(public val redirectTo: String) {
             WEB("/soundboard/ui/login?token="),
             APP("/soundboard/deeplink/login?token="),
+            PROTOCOL("/soundboard/deeplink/login?protocol=true&token="),
             CLI("/soundboard/deeplink/login?cli=true&token="),
             MOBILE_APP("tonbrett://login?token=")
         }

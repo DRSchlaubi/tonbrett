@@ -39,10 +39,13 @@ fun main() {
                 }
             }
         }
-    } else if (path.subList(1, 3) == listOf("deeplink", "login")){
+    } else if (path.subList(1, 3) == listOf("deeplink", "login")) {
         onWasmReady {
             CanvasBasedWindow(title) {
-                AuthorizationScreen(url.parameters["cli"]?.toBoolean() ?: false)
+                AuthorizationScreen(
+                    url.parameters["cli"]?.toBoolean() ?: false,
+                    url.parameters["protocol"]?.toBoolean() ?: false
+                )
             }
         }
     }

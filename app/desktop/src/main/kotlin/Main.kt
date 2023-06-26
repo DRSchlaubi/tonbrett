@@ -25,7 +25,9 @@ import dev.schlaubi.tonbrett.app.TonbrettApp
 import dev.schlaubi.tonbrett.app.api.*
 import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.title
+import dev.schlaubi.tonbrett.client.href
 import io.ktor.http.*
+import dev.schlaubi.tonbrett.common.Route
 import mu.KotlinLogging
 import java.net.URI
 import java.awt.Window as AWTWindow
@@ -55,8 +57,8 @@ fun main(args: Array<String>) {
 
 fun main(reAuthorize: Boolean, onAuth: () -> Unit) {
     val config = getConfig()
-    if (true && config.sessionToken == null) {
-        //browseUrl(href(Route.Auth(Route.Auth.Type.APP), URLBuilder(getUrl())).build().toURI())
+    if (reAuthorize && config.sessionToken == null) {
+        browseUrl(href(Route.Auth(Route.Auth.Type.PROTOCOL), URLBuilder(getUrl())).build().toURI())
         startAuthorizationServer(reAuthorize, onAuth)
     } else {
         startApplication()
@@ -94,6 +96,7 @@ fun startApplication() = application {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun ApplicationScope.startActualApplication(
     exceptionHandler: ExceptionHandlerFactory,

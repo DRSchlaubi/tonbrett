@@ -34,15 +34,19 @@ import kotlin.time.Duration.Companion.seconds
 private val LOG = KotlinLogging.logger { }
 
 @Composable
-fun AuthorizationScreen(cli: Boolean) {
+fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
     val strings = LocalStrings.current
     val token = remember { URLSearchParams(window.location.search).get("token") ?: error("Missing token") }
     if (!cli) {
         LaunchedEffect(Unit) {
             try {
-                fetch("http://localhost:$authServerPort/login?token=$token", object : RequestInit {
-                    override var method: String? = "POST"
-                }).await()
+                if (protocol) {
+                    window.location.href = "tonbrett://login?token=$token"
+                } else {
+                    fetch("http://localhost:$authServerPort/login?token=$token", object : RequestInit {
+                        override var method: String? = "POST"
+                    }).await()
+                }
             } catch (e: Throwable) {
                 LOG.error(e) { "Could not propagate token" }
             }
