@@ -51,15 +51,22 @@ fun main(args: Array<String>) {
         }
         startApplication()
     } else {
-        main(reAuthorize = false) { startApplication() }
+        main(reAuthorize = false, uwp = windowsAppDataFolder != null) { startApplication() }
     }
 }
 
-fun main(reAuthorize: Boolean, onAuth: () -> Unit) {
+fun main(reAuthorize: Boolean, uwp: Boolean = false, onAuth: () -> Unit) {
     val config = getConfig()
     if (reAuthorize && config.sessionToken == null) {
-        browseUrl(href(Route.Auth(Route.Auth.Type.PROTOCOL), URLBuilder(getUrl())).build().toURI())
-        startAuthorizationServer(reAuthorize, onAuth)
+        val protocol = if(uwp) {
+            Route.Auth.Type.PROTOCOL
+        } else {
+            Route.Auth.Type.APP
+        }
+        browseUrl(href(Route.Auth(protocol), URLBuilder(getUrl())).build().toURI())
+        if (!uwp) {
+            startAuthorizationServer(reAuthorize, onAuth)
+        }
     } else {
         startApplication()
     }
@@ -99,8 +106,7 @@ fun startApplication() = application {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun ApplicationScope.startActualApplication(
-    exceptionHandler: ExceptionHandlerFactory,
-    sessionExpired: MutableState<Boolean>
+    exceptionHandler: ExceptionHandlerFactory, sessionExpired: MutableState<Boolean>
 ) {
     CompositionLocalProvider(LocalWindowExceptionHandlerFactory provides exceptionHandler) {
         TonbrettWindow {
