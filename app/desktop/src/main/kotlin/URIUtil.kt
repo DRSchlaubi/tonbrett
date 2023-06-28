@@ -9,7 +9,9 @@ fun browseUrl(url: URI) {
     // We use a Rust binary, which calls:
     // https://learn.microsoft.com/de-de/uwp/api/windows.system.launcher.launchuriasync?view=winrt-22621
     if (System.getProperty("os.name").contains("windows", ignoreCase = true) && windowsAppDataFolder != null) {
-        Runtime.getRuntime().exec(arrayOf("url_launcher.exe", "-u", url.toString()))
+        check(Runtime.getRuntime().exec(arrayOf("url_launcher.exe", "-u", url.toString())).waitFor() == 0) {
+            "url_launcher.exe failed"
+        }
     } else {
         val desktop = Desktop.getDesktop()
         if (desktop.isSupported(Desktop.Action.BROWSE)) {
