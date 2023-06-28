@@ -1,4 +1,3 @@
-use std::ops::Not;
 use clap::Parser;
 use windows::{
     core::Result,
