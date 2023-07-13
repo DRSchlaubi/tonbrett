@@ -213,7 +213,7 @@ jobs:
           files: |
             app/desktop/build/compose/binaries/main-release/deb/*.deb
             app/desktop/build/compose/binaries/main-release/pkg/*.pkg
+            app/desktop/build/distributions/*.tar.gz
             *.msix
-            distributions/*.tar.gz
             *.zip
             *-signed.apk
