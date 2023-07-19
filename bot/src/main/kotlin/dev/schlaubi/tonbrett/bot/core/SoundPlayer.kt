@@ -1,5 +1,6 @@
 package dev.schlaubi.tonbrett.bot.core
 
+import dev.arbjerg.lavalink.protocol.v4.Message
 import dev.kord.core.behavior.GuildBehavior
 import dev.schlaubi.lavakord.audio.TrackEndEvent
 import dev.schlaubi.mikbot.util_plugins.ktor.api.buildBotUrl
@@ -75,7 +76,7 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
             // Wait for track to end
             player.player.events
                 .filterIsInstance<TrackEndEvent>()
-                .filter { it.reason != TrackEndEvent.EndReason.REPLACED }
+                .filter { it.reason != Message.EmittedEvent.TrackEndEvent.AudioTrackEndReason.REPLACED }
                 .take(1)
                 .single()
             locked = false

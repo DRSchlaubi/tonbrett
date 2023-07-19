@@ -1,3 +1,4 @@
+import dev.schlaubi.mikbot.gradle.mikbot
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -18,9 +19,8 @@ dependencies {
     ktorDependency(libs.ktor.server.cors)
     ktorDependency(libs.ktor.server.auth.jwt)
     implementation(libs.kmongo.id.serialization)
-    plugin(libs.mikbot.ktor)
+    plugin(mikbot(libs.mikbot.ktor))
     plugin(libs.mikbot.music)
-    ksp(libs.kordex.processor)
 }
 
 fun DependencyHandlerScope.ktorDependency(dependency: ProviderConvertible<*>) = ktorDependency(dependency.asProvider())
@@ -32,6 +32,7 @@ mikbotPlugin {
     provider = "Schlaubi"
     pluginId = "tonbrett"
     license = "MIT"
+    enableKordexProcessor = true
 }
 
 tasks {

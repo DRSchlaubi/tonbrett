@@ -3,8 +3,8 @@ package dev.schlaubi.tonbrett.bot.commands
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.types.respond
+import dev.arbjerg.lavalink.protocol.v4.LoadResult
 import dev.schlaubi.lavakord.rest.loadItem
-import dev.schlaubi.lavakord.rest.models.TrackResponse
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.mikbot.plugin.api.util.kord
 import dev.schlaubi.mikbot.plugin.api.util.safeGuild
@@ -77,13 +77,14 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
 
         @Suppress("INVISIBLE_MEMBER")
         val audioInfo = safeGuild.player.link.loadItem(arguments.sound.url)
-        if (audioInfo.loadType != TrackResponse.LoadType.TRACK_LOADED) {
+        if (audioInfo !is LoadResult.TrackLoaded) {
             respond {
-                content = translate("commands.add_sound.invalid_file", arrayOf(audioInfo.exception?.message))
+                val message = (audioInfo as? LoadResult.LoadFailed)?.data?.message
+                content = translate("commands.add_sound.invalid_file", arrayOf(message))
             }
             return@action
         }
-        if (audioInfo.track.info.length.toDuration(DurationUnit.MILLISECONDS) > Config.MAX_SOUND_LENGTH) {
+        if (audioInfo.data.info.length.toDuration(DurationUnit.MILLISECONDS) > Config.MAX_SOUND_LENGTH) {
             respond {
                 content = translate("commands.add_sound.too_long", arrayOf(Config.MAX_SOUND_LENGTH))
             }
