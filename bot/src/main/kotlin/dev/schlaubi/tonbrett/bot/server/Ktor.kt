@@ -20,6 +20,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import org.litote.kmongo.id.serialization.IdKotlinXSerializationModule
 import org.pf4j.Extension
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 import dev.schlaubi.mikbot.plugin.api.config.Config as BotConfig
 
 @Extension
@@ -29,6 +31,7 @@ class Ktor : KtorExtensionPoint, KordExKoinComponent {
             val json = Json {
                 serializersModule = IdKotlinXSerializationModule
             }
+            pingPeriod = 30.seconds.toJavaDuration()
             contentConverter = KotlinxWebsocketSerializationConverter(json)
         }
         installAuth()

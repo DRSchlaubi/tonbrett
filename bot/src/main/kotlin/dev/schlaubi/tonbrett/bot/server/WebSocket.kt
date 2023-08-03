@@ -11,7 +11,6 @@ import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.Route
 import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.util.*
 import io.ktor.websocket.*
@@ -27,7 +26,7 @@ private val LOG = KotlinLogging.logger { }
 
 class WebSocketSession(
     val useUnicode: Boolean,
-    val delegate: DefaultWebSocketServerSession
+    private val delegate: DefaultWebSocketServerSession
 ) : DefaultWebSocketServerSession by delegate {
     suspend inline fun <reified T : Event> sendEvent(event: T) {
         val updatedEvent = if (event is HasSound && useUnicode) {
