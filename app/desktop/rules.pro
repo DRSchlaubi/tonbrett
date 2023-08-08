@@ -53,3 +53,6 @@
 -keepclassmembers class <1>.<2> {
   <1>.<2>$Companion Companion;
 }
+
+# compose
+-keep class androidx.compose.ui.text.platform.Platform { *; }

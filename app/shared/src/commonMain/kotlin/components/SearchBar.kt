@@ -179,8 +179,11 @@ private fun SearchField(
         placeholder = { Text(strings.searchExplainer) },
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = ColorScheme.searchBarColor,
+            unfocusedContainerColor = ColorScheme.searchBarColor,
             focusedPlaceholderColor = ColorScheme.secondaryContainer,
+            unfocusedPlaceholderColor = ColorScheme.secondaryContainer,
             focusedTextColor = ColorScheme.textColor,
+            unfocusedTextColor = ColorScheme.textColor,
             focusedBorderColor = ColorScheme.searchBarColor,
             disabledBorderColor = ColorScheme.searchBarColor,
             errorBorderColor = ColorScheme.searchBarColor,
