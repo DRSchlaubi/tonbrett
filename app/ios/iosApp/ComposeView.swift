@@ -20,6 +20,7 @@ struct ComposeView: UIViewControllerRepresentable {
 struct ContentView: View {
     var body: some View {
         ComposeView()
-                .ignoresSafeArea(.all) // Compose has own keyboard handler
+            .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+            .preferredColorScheme(.dark) // there is no light theme YET or ever
     }
 }
