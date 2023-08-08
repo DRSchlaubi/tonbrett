@@ -1,4 +1,4 @@
-FROM gradle:jdk20 as builder
+FROM eclipse-temurin:20 as builder
 WORKDIR /usr/app
 COPY . .
 RUN ./gradlew --no-daemon installBotArchive

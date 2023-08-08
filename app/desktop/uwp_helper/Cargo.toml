@@ -16,7 +16,7 @@ version = "4"
 features = ["derive"]
 
 [dependencies.windows]
-version = "0.48.1"
+version = "0.48.0"
 features = ["System", "Foundation", "Storage", "Win32_Foundation"]
 
 [dependencies.tokio]
