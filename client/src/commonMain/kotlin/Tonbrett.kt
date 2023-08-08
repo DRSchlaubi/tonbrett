@@ -20,8 +20,8 @@ import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.*
 import io.ktor.utils.io.core.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import io.ktor.websocket.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
@@ -51,13 +51,17 @@ class Tonbrett(initialToken: String, private val baseUrl: Url, private val onTok
         install(ContentNegotiation) {
             json(json)
         }
+        install(WebSocketRetry) {
+            maxRetries = 5
+            exponentialDelay()
+        }
         install(WebSockets) {
             contentConverter = KotlinxWebsocketSerializationConverter(json)
         }
         install(Resources)
         install(Auth) {
             bearer {
-                loadTokens { BearerTokens(accessToken = initialToken, refreshToken =  initialToken) }
+                loadTokens { BearerTokens(accessToken = initialToken, refreshToken = initialToken) }
                 sendWithoutRequest { it.authorize }
                 refreshTokens {
                     val response = client.post(Route.Auth.Refresh()) {
@@ -80,7 +84,8 @@ class Tonbrett(initialToken: String, private val baseUrl: Url, private val onTok
                 with(builder) {
                     when (url.protocol) {
                         URLProtocol.WSS, URLProtocol.WS -> {
-                            val token = parseAuthorizationHeader(headers[HttpHeaders.Authorization]!!) as HttpAuthHeader.Single
+                            val token =
+                                parseAuthorizationHeader(headers[HttpHeaders.Authorization]!!) as HttpAuthHeader.Single
                             href(Route.Me.Events(token.blob, useUnicode), url)
                             url {
                                 protocol = if (baseUrl.protocol.isSecure()) URLProtocol.WSS else URLProtocol.WS
@@ -111,24 +116,20 @@ class Tonbrett(initialToken: String, private val baseUrl: Url, private val onTok
 
     suspend fun stop(): Unit = client.post(Route.StopPlayer()).body()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class)
     suspend fun connect(useUnicode: Boolean = false) {
-        val session = client.webSocketSession {
-            this.useUnicode = useUnicode
-        }
-        while (!session.incoming.isClosedForReceive) {
-            try {
-                val event = session.receiveDeserialized<Event>()
-                LOG.debug { "Received event: $event" }
-                eventFlow.emit(event)
-            } catch (e: WebsocketDeserializeException) {
-                LOG.warn(e) { "Could not deserialize incoming ws packet" }
-            } catch (e: EOFException) {
-                LOG.warn(e) { "Websocket connection closed unexpectedly" }
-            } catch (e: ClosedReceiveChannelException) {
-                LOG.warn(e) { "Websocket connection closed unexpectedly" }
+        client.retryingWebSocket({ this.useUnicode = useUnicode }) {
+            while (!incoming.isClosedForReceive) {
+                try {
+                    val event = receiveDeserialized<Event>()
+                    LOG.debug { "Received event: $event" }
+                    eventFlow.emit(event)
+                } catch (e: WebsocketDeserializeException) {
+                    LOG.warn(e) { "Could not deserialize incoming ws packet" }
+                }
             }
         }
+        println("ERRROHR")
     }
 }
 

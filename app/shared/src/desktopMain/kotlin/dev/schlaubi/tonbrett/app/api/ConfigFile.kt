@@ -57,7 +57,7 @@ fun getConfigFile() = getAppDataFolder() / "config.json"
 fun getConfig(): Config {
     val file = getConfigFile()
     return if (file.exists()) {
-        Json.decodeFromStream<Config>(file.inputStream())
+        Json.decodeFromStream(file.inputStream())
     } else {
         Config()
     }

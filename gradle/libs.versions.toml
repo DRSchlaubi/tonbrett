@@ -1,19 +1,19 @@
 [versions]
-kotlin = "1.8.20"
-ktor = "2.3.2"
-kmongo = "4.9.0"
-kord = "0.9.0"
-mikbot = "3.20.0"
-ksp = "1.8.20-1.0.10"
-kordex = "1.5.7-SNAPSHOT"
-android = "8.0.2"
-compose = "1.4.0-dev-wasm06"
-lyricist = "1.4.1"
+kotlin = "1.9.0"
+ktor = "2.3.3"
+kmongo = "4.10.0"
+kord = "0.10.0"
+mikbot = "3.23.1"
+ksp = "1.9.0-1.0.11"
+kordex = "1.5.8-SNAPSHOT"
+android = "8.1.0"
+compose = "1.5.0-beta01"
+lyricist = "1.4.2"
 google-play = "2.1.0"
-coroutines = "1.7.1"
+coroutines = "1.7.3"
 
 [libraries]
-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.5.1" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.0-RC" }
 kmongo-id-serialization = { group = "org.litote.kmongo", name = "kmongo-id-serialization", version.ref = "kmongo" }
 kord-common = { group = "dev.kord", name = "kord-common", version.ref = "kord" }
 kordex-processor = { group = "com.kotlindiscord.kord.extensions", name = "annotation-processor", version.ref = "kordex" }
@@ -38,16 +38,16 @@ ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref =
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
-mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.0.0-SNAPSHOT" }
+mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.1.0-SNAPSHOT" }
 
-imageloader = { group = "io.github.qdsfdhvh", name = "image-loader", version = "1.4.2" }
+imageloader = { group = "io.github.qdsfdhvh", name = "image-loader", version = "1.6.4" }
 
 kotlin-logging = { group = "io.github.microutils", name = "kotlin-logging", version = "3.0.5" }
 
 lyricist = { group = "cafe.adriel.lyricist", name = "lyricist", version.ref = "lyricist" }
 lyricist-processor = { group = "cafe.adriel.lyricist", name = "lyricist-processor", version.ref = "lyricist" }
 
-logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.4.7" }
+logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.4.8" }
 
 kvault = { group = "com.liftric", name = "kvault", version = "1.10.0" }
 
@@ -55,7 +55,6 @@ androidx-activity = { group = "androidx.activity", name = "activity-compose", ve
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
 androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.10.1" }
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.5.0" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.4" }
 mdc-android = { group = "com.google.android.material", name = "material", version = "1.9.0" }
 google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
 google-play-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "google-play" }
@@ -72,4 +71,4 @@ android-base = { id = "com.android.base", version.ref = "android" }
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-buildconfig = { id = "com.github.gmazzo.buildconfig", version = "4.0.4" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "4.1.2" }

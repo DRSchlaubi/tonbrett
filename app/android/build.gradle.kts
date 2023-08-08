@@ -1,7 +1,5 @@
 import dev.schlaubi.tonbrett.gradle.sdkInt
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("android")
@@ -16,7 +14,6 @@ dependencies {
     implementation(libs.androidx.core)
     implementation(libs.androidx.browser)
     implementation(libs.mdc.android)
-    implementation(libs.androidx.constraintlayout)
     implementation(libs.google.play)
     implementation(libs.google.play.ktx)
     implementation(compose.material3)
@@ -46,20 +43,15 @@ android {
             }
         }
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-    }
-
     buildFeatures {
         compose = true
     }
-}
-
-tasks {
-    withType<KotlinCompile> {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_1_8
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
+    packaging {
+        resources {
+            pickFirsts.add("META-INF/versions/9/previous-compilation-data.bin")
         }
     }
 }

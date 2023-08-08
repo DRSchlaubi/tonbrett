@@ -6,11 +6,16 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,16 +41,19 @@ private val LOG = KotlinLogging.logger { }
 @Composable
 fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
     val strings = LocalStrings.current
-    val token = remember { URLSearchParams(window.location.search).get("token") ?: error("Missing token") }
+    val token =
+        remember { URLSearchParams(window.location.search).get("token") ?: error("Missing token") }
     if (!cli) {
         LaunchedEffect(Unit) {
             try {
                 if (protocol) {
                     window.location.href = "tonbrett://login?token=$token"
                 } else {
-                    fetch("http://localhost:$authServerPort/login?token=$token", object : RequestInit {
-                        override var method: String? = "POST"
-                    }).await()
+                    fetch(
+                        "http://localhost:$authServerPort/login?token=$token",
+                        object : RequestInit {
+                            override var method: String? = "POST"
+                        }).await()
                 }
             } catch (e: Throwable) {
                 LOG.error(e) { "Could not propagate token" }
@@ -59,14 +67,23 @@ fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
             modifier = Modifier.fillMaxSize()
         ) {
             Column(
-                modifier = Modifier.background(ColorScheme.searchBarColor, shape = RoundedCornerShape(10.dp))
-                    .wrapContentSize().sizeIn(minWidth = 108.dp, minHeight = 256.dp, maxWidth = 512.dp)
+                modifier = Modifier.background(
+                    ColorScheme.searchBarColor,
+                    shape = RoundedCornerShape(10.dp)
+                )
+                    .wrapContentSize()
+                    .sizeIn(minWidth = 108.dp, minHeight = 256.dp, maxWidth = 512.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                 ) {
-                    ProvideTextStyle(TextStyle(textAlign = TextAlign.Center, color = ColorScheme.textColor)) {
+                    ProvideTextStyle(
+                        TextStyle(
+                            textAlign = TextAlign.Center,
+                            color = ColorScheme.textColor
+                        )
+                    ) {
                         Icon(
                             Icons.Filled.CheckCircle,
                             null,
@@ -77,7 +94,7 @@ fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
                         Spacer(Modifier.padding(vertical = 15.dp))
                         Text(strings.logo, modifier = Modifier.width(64.dp), fontSize = 16.sp)
                         Spacer(Modifier.padding(vertical = 7.dp))
-                        val text = if(cli) {
+                        val text = if (cli) {
                             strings.cliLoginExplainer
                         } else {
                             strings.loginSuccessfulDescription

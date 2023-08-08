@@ -2,18 +2,24 @@ package dev.schlaubi.tonbrett.bot.server
 
 import com.auth0.jwt.exceptions.JWTVerificationException
 import dev.schlaubi.tonbrett.bot.util.badRequest
-import dev.schlaubi.tonbrett.common.*
+import dev.schlaubi.tonbrett.common.Event
+import dev.schlaubi.tonbrett.common.HasSound
 import dev.schlaubi.tonbrett.common.Route.Me
-import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import dev.schlaubi.tonbrett.common.Snowflake
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.resources.*
+import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.call
+import io.ktor.server.resources.resource
+import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import io.ktor.server.response.*
-import io.ktor.server.websocket.*
-import io.ktor.util.*
-import io.ktor.websocket.*
+import io.ktor.server.websocket.DefaultWebSocketServerSession
+import io.ktor.server.websocket.sendSerialized
+import io.ktor.server.websocket.webSocket
+import io.ktor.util.AttributeKey
+import io.ktor.utils.io.errors.IOException
+import io.ktor.websocket.CloseReason
+import io.ktor.websocket.close
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
@@ -43,7 +49,13 @@ private val sessions = mutableMapOf<Snowflake, WebSocketSession>()
 
 suspend fun sendEvent(id: Snowflake, event: Event) {
     val session = sessions[id] ?: return
-    session.sendSerialized(event)
+    try {
+        session.sendSerialized(event)
+    } catch (e: IOException) {
+        sessions.remove(id)
+        session.close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, "I/O error"))
+        LOG.warn(e) { "An I/O error occurred in session handling, disconnecting..." }
+    }
 }
 
 suspend fun broadcastEvent(event: Event) = coroutineScope {
@@ -60,7 +72,8 @@ fun Route.webSocket() {
     resource<Me.Events> {
         intercept(ApplicationCallPipeline.Plugins) {
             val discordUser = try {
-                val sessionId = call.parameters["session_token"] ?: badRequest("Missing auth information")
+                val sessionId =
+                    call.parameters["session_token"] ?: badRequest("Missing auth information")
                 snowflake(verifyJwt(sessionId).getClaim("userId").asLong())
             } catch (e: JWTVerificationException) {
                 call.respond(HttpStatusCode.Unauthorized)

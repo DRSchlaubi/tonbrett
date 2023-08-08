@@ -11,7 +11,7 @@ import org.w3c.dom.set
 const val tokenKey = "token"
 
 actual val Dispatchers.IO: CoroutineDispatcher
-    get() = Main
+    get() = Main // JS Is single threaded so not needed
 
 actual open class AppContext : AppContextBase() {
     override var token: String

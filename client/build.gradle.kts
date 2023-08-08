@@ -18,7 +18,7 @@ kotlin {
     targetHierarchy.default {
         common {
             group("jvmShared") {
-                withAndroid()
+                withAndroidTarget()
                 withJvm()
             }
         }
@@ -27,11 +27,7 @@ kotlin {
     js(IR) {
         browser()
     }
-    android {
-        compilations.all {
-            compilerOptions.options.jvmTarget = JvmTarget.JVM_1_8
-        }
-    }
+    androidTarget()
     iosSimulatorArm64()
     iosX64()
     iosArm64()

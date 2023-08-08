@@ -16,9 +16,9 @@ version = "4"
 features = ["derive"]
 
 [dependencies.windows]
-version = "0.48.0"
+version = "0.48.1"
 features = ["System", "Foundation", "Storage", "Win32_Foundation"]
 
 [dependencies.tokio]
-version = "1.25.0"
+version = "1.29.1"
 features = ["macros", "rt-multi-thread"]

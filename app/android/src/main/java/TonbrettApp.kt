@@ -13,7 +13,7 @@ class TonbrettApp : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
-        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             Log.e("Tonbrett", "An error occurred in ${currentActivity!!::class.simpleName}", throwable)
             if (throwable is IllegalArgumentException && currentActivity is AppActivity) {
                 val intent = Intent(applicationContext, UpdateActivity::class.java).apply {

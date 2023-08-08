@@ -23,6 +23,7 @@ import dev.schlaubi.tonbrett.app.strings.ProvideStrings
 import dev.schlaubi.tonbrett.app.strings.rememberStrings
 import dev.schlaubi.tonbrett.client.ReauthorizationRequiredException
 import dev.schlaubi.tonbrett.common.User
+import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
@@ -53,11 +54,15 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
     }
 
     if (initialUser == null) {
-        LaunchedEffect(Unit) {
+        LaunchedEffect(context.api) {
             withContext(Dispatchers.Default) {
                 try {
                     initialUser = context.api.getMe()
-                } catch (e: Exception) {
+                } catch (e: ClientRequestException) {
+                    if (e.response.status.value in 400..499) {
+                      reportError(ReauthorizationRequiredException())
+                    }
+                } catch (e: ReauthorizationRequiredException) {
                     reportError(e)
                 }
             }
@@ -105,7 +110,10 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                         CrashErrorScreen(LocalStrings.current.sessionExpiredExplainer) {
                             Button({ context.reAuthorize() }) {
                                 Icon(Icons.Default.Refresh, LocalStrings.current.reAuthorize)
-                                Text(LocalStrings.current.reAuthorize, color = ColorScheme.textColor)
+                                Text(
+                                    LocalStrings.current.reAuthorize,
+                                    color = ColorScheme.textColor
+                                )
                             }
                         }
                     } else if (crashed) {

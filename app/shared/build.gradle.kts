@@ -1,7 +1,6 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import dev.schlaubi.tonbrett.gradle.apiUrl
 import dev.schlaubi.tonbrett.gradle.androidSdk
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import dev.schlaubi.tonbrett.gradle.apiUrl
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -18,31 +17,28 @@ kotlin {
         common {
             group("nonWeb") {
                 withNative()
-                withAndroid()
+                withAndroidTarget()
                 withJvm()
 
-                group("nonWebSkia") {
-                    withApple()
-                    withJvm()
-                }
+            }
+            group("skia") {
+                withApple()
+                withJvm()
+                withJs()
             }
 
             group("jvm") {
-                withAndroid()
+                withAndroidTarget()
                 withJvm()
             }
 
             group("mobile") {
                 withApple()
-                withAndroid()
+                withAndroidTarget()
             }
         }
     }
-    android {
-        compilations.all {
-            compilerOptions.options.jvmTarget = JvmTarget.JVM_1_8
-        }
-    }
+    androidTarget()
     jvm("desktop")
     js(IR) {
         browser()
@@ -57,8 +53,6 @@ kotlin {
             languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
         }
         commonMain {
-            kotlin.srcDir(file("$buildDir/generated/ksp/metadata/commonMain/kotlin"))
-            kotlin.srcDir(file("$buildDir/generated/buildConfig/metadata/main"))
             dependencies {
                 api(projects.client)
                 api(libs.lyricist)
@@ -70,19 +64,19 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
+                implementation(libs.imageloader)
             }
         }
 
         named("jsMain") {
             dependencies {
-                api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:1.8.20")
+                api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:1.9.0")
             }
         }
 
         named("jvmMain") {
             dependencies {
                 implementation(libs.kmongo.id.serialization)
-                implementation(libs.imageloader)
             }
         }
 
@@ -111,5 +105,16 @@ android {
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+tasks {
+    afterEvaluate {
+        named("lintAnalyzeDebug") {
+            dependsOn(
+                "generateAndroidUnitTestDebugNonAndroidBuildConfig",
+                "generateAndroidUnitTestNonAndroidBuildConfig"
+            )
+        }
     }
 }

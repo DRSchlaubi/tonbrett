@@ -25,15 +25,12 @@ kotlin {
             dependencies {
                 implementation(projects.app.shared)
                 implementation(compose.runtime)
-                implementation(compose.ui) {
-                    version {
-                        strictly("1.4.0-dev-wasm05")
-                    }
-                }
+                implementation(compose.ui)
                 implementation(compose.foundation)
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+                implementation(compose.materialIconsExtended)
             }
         }
     }

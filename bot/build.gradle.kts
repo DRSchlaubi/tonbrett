@@ -8,10 +8,6 @@ plugins {
     alias(libs.plugins.mikbot)
 }
 
-repositories {
-    mavenLocal()
-}
-
 dependencies {
     implementation(projects.common)
     ktorDependency(libs.ktor.server.auth)
@@ -43,7 +39,7 @@ tasks {
     assembleBot {
         bundledPlugins = listOf(
             "ktor@${libs.versions.mikbot.get()}",
-             "music-player@${libs.mikbot.music.get().version}"
+            "music-player@${libs.mikbot.music.get().version}"
         )
     }
 

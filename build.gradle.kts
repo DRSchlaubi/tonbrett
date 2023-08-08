@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     group = "dev.schlaubi.tonbrett"
-    version = "1.11.1"
+    version = "1.12.0"
 
     repositories {
         mavenCentral()
@@ -20,7 +20,7 @@ subprojects {
     if (name != "app") {
         afterEvaluate {
             configure<KotlinTopLevelExtension> {
-                jvmToolchain(19)
+                jvmToolchain(20)
             }
         }
     }
