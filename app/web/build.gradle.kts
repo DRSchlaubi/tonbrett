@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     kotlin("multiplatform")
@@ -10,9 +10,11 @@ kotlin {
         browser()
         binaries.executable()
         compilations.all {
-            compilerOptions.options.freeCompilerArgs.addAll(
-                "-Xir-per-module", "-Xir-property-lazy-initialization"
-            )
+            compilerOptions.configure {
+                freeCompilerArgs.addAll(
+                    "-Xir-per-module", "-Xir-property-lazy-initialization"
+                )
+            }
         }
     }
 
@@ -28,7 +30,7 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                @OptIn(ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
             }
@@ -52,5 +54,3 @@ tasks {
 compose.experimental {
     web.application {}
 }
-
-rootProject.the<NodeJsRootExtension>().versions.webpack.version = "5.76.2"

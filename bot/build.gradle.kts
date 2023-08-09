@@ -1,5 +1,5 @@
 import dev.schlaubi.mikbot.gradle.mikbot
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import kotlin.io.path.div
 
 plugins {
     alias(libs.plugins.ksp)
@@ -17,6 +17,12 @@ dependencies {
     implementation(libs.kmongo.id.serialization)
     plugin(mikbot(libs.mikbot.ktor))
     plugin(libs.mikbot.music)
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-receivers")
+    }
 }
 
 fun DependencyHandlerScope.ktorDependency(dependency: ProviderConvertible<*>) = ktorDependency(dependency.asProvider())
@@ -43,16 +49,10 @@ tasks {
         )
     }
 
-    withType<KotlinCompile> {
-        compilerOptions {
-            freeCompilerArgs.add("-Xcontext-receivers")
-        }
-    }
-
     val buildWebApp = register<Copy>("buildWebApp") {
         val webApp = project(":app:web")
-        from(webApp.tasks.getByName("jsBrowserDistribution"))
-        into(buildDir.resolve("resources").resolve("main").resolve("web"))
+        from(webApp.tasks.named("jsBrowserDistribution"))
+        into(buildDir.toPath() / "resources" / "main" / "web")
     }
 
     classes {

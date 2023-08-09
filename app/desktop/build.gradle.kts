@@ -14,7 +14,6 @@ dependencies {
     implementation(libs.ktor.server.cors)
 }
 
-
 compose.desktop {
     application {
         mainClass = "dev.schlaubi.tonbrett.app.desktop.MainKt"
@@ -38,13 +37,13 @@ compose.desktop {
             packageVersion = project.version.toString()
 
             windows {
-                iconFile.set(rootProject.file("icons/logo.ico"))
+                iconFile = rootProject.file("icons/logo.ico")
                 menuGroup = "Tonbrett"
                 upgradeUuid = "c8bce0ed-113c-4d78-879b-78ed5c7d9f7f"
             }
 
             macOS {
-                iconFile.set(rootProject.file("icons/logo.icns"))
+                iconFile = rootProject.file("icons/logo.icns")
                 bundleID = "dev.schlaubi.tonbrett.app.mac"
                 entitlementsFile.set(file("entitlements.entitlements"))
                 appStore = false
@@ -52,8 +51,8 @@ compose.desktop {
                     identity = "Michael Rittmeister"
                 }
                 notarization {
-                    appleID.set("michael@rittmeister.in")
-                    password.set(System.getenv("NOTARIZATION_PASSWORD"))
+                    appleID = "michael@rittmeister.in"
+                    password = System.getenv("NOTARIZATION_PASSWORD")
                 }
             }
         }
@@ -61,7 +60,7 @@ compose.desktop {
         buildTypes {
             release {
                 proguard {
-                    version = "7.3.2"
+                    version = "7.3.3"
                     configurationFiles.from(files("rules.pro"))
                 }
             }

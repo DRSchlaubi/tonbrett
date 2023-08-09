@@ -1,5 +1,4 @@
 import dev.schlaubi.tonbrett.gradle.sdkInt
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 
 plugins {
     kotlin("android")
@@ -20,6 +19,10 @@ dependencies {
     implementation(libs.kotlinx.coroutines.play.services)
 }
 
+base {
+    archivesName = "tonbrett-app"
+}
+
 android {
     namespace = "dev.schlaubi.tonbrett.app.android"
     compileSdk = sdkInt
@@ -35,12 +38,6 @@ android {
         release {
             isMinifyEnabled = true
             proguardFile("proguard-rules.pro")
-
-            applicationVariants.all {
-                outputs.all {
-                    archivesName = "tonbrett-app"
-                }
-            }
         }
     }
     buildFeatures {
