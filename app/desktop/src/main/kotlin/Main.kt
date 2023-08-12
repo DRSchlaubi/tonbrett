@@ -19,11 +19,11 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import androidx.compose.ui.window.*
+import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.TonbrettApp
 import dev.schlaubi.tonbrett.app.api.*
-import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.title
 import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
@@ -149,6 +149,7 @@ private fun ApplicationScope.TonbrettWindow(content: @Composable FrameWindowScop
 private class ExceptionHandlerFactory(val handler: (Throwable) -> Unit) : WindowExceptionHandlerFactory {
     override fun exceptionHandler(window: AWTWindow): WindowExceptionHandler = ExceptionHandler(window)
     private inner class ExceptionHandler(val window: AWTWindow) : WindowExceptionHandler {
+        @OptIn(ExperimentalComposeUiApi::class)
         override fun onException(throwable: Throwable) {
             if (throwable is IllegalArgumentException) {
                 handler(throwable)

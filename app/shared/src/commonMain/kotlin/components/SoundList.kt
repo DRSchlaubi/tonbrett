@@ -11,10 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ErrorReporter
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
-import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.common.*
 import kotlinx.coroutines.Dispatchers

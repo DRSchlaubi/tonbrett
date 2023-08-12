@@ -23,7 +23,10 @@ val windowsAppDataFolder by lazy {
             .start()
         process.waitFor()
 
-        process.inputStream.readAllBytes().decodeToString().also {
+        // If opening this in Android Studio this is a false positive, since Android doesn't
+        // actually call this
+        @Suppress("NewApi")
+        process.inputStream.bufferedReader().readText().also {
             LOG.debug { "AppData determined to be $it" }
         }
     }.getOrNull()

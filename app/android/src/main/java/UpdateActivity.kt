@@ -25,13 +25,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import cafe.adriel.lyricist.LocalStrings
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import dev.schlaubi.tonbrett.app.ColorScheme
-import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import kotlinx.coroutines.tasks.await
 
 class UpdateActivity : AppCompatActivity() {
@@ -86,9 +86,7 @@ fun UpdateScreen(activity: Activity) {
                 Intent.ACTION_VIEW,
                 Uri.parse("https://github.com/DRSchlaubi/tonbrett/releases/latest")
             )
-            Button({
-                activity.startActivity(intent)
-            }) {
+            Button({ activity.startActivity(intent) }) {
                 Icon(Icons.Default.Refresh, null)
                 Text(strings.update)
             }

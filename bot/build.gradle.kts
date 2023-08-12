@@ -38,10 +38,6 @@ mikbotPlugin {
 }
 
 tasks {
-    installBot {
-        botVersion = "3.17.5"
-    }
-
     assembleBot {
         bundledPlugins = listOf(
             "ktor@${libs.versions.mikbot.get()}",

@@ -34,6 +34,7 @@ fun Application.authModule(onAuth: () -> Unit, scope: CoroutineScope) {
 
             saveConfig(Config(token))
             call.respond(HttpStatusCode.Accepted)
+            // This stops the server, see stopServerOnCancellation above
             scope.cancel()
             onAuth()
         }

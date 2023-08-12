@@ -28,10 +28,10 @@ import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
-import dev.schlaubi.tonbrett.app.strings.LocalStrings
 import dev.schlaubi.tonbrett.app.util.ReverseRow
 import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.common.Sound

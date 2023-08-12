@@ -1,5 +1,6 @@
 import dev.schlaubi.tonbrett.gradle.androidSdk
 import dev.schlaubi.tonbrett.gradle.apiUrl
+import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -53,6 +54,7 @@ kotlin {
             languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
         }
         commonMain {
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
             dependencies {
                 api(projects.client)
                 api(libs.lyricist)
@@ -89,6 +91,7 @@ kotlin {
 }
 
 dependencies {
+    kspCommonMainMetadata(libs.lyricist.processor)
     "jvmMainImplementation"(libs.kord.common) {
         exclude(group = "io.ktor")
     }
@@ -115,6 +118,23 @@ tasks {
                 "generateAndroidUnitTestDebugNonAndroidBuildConfig",
                 "generateAndroidUnitTestNonAndroidBuildConfig"
             )
+        }
+        val compilationTasks = kotlin.targets.flatMap {
+            buildList {
+                if (it.name != "android") {
+                    add("compileKotlin${it.name.capitalized()}")
+                    val sourcesJarName = "${it.name}SourcesJar"
+                    add(sourcesJarName)
+                } else {
+                    add("compileDebugKotlinAndroid")
+                    add("compileReleaseKotlinAndroid")
+                }
+            }
+        }
+        for (task in compilationTasks) {
+            named(task) {
+                dependsOn("kspCommonMainKotlinMetadata")
+            }
         }
     }
 }
