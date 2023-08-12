@@ -11,8 +11,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("gradle-plugin"))
     implementation(libs.google.artifactregistry)
+    implementation(libs.kotlinx.serialization) {
+        version {
+            strictly("1.6.0-RC")
+        }
+    }
 }
 
 java {
@@ -22,7 +26,7 @@ java {
 tasks {
     withType<KotlinCompile> {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8)
+            jvmTarget = JvmTarget.JVM_1_8
         }
     }
 }
