@@ -76,8 +76,4 @@ kotlin {
 android {
     namespace = "dev.schlaubi.tonbrett.client"
     compileSdkVersion = androidSdk
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_19
-        targetCompatibility = JavaVersion.VERSION_19
-    }
 }
