@@ -37,7 +37,7 @@ jobs:
     name: Build Desktop App
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-signing]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -46,7 +46,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{env.JAVA_VERSION}}
       - uses: actions-rs/toolchain@v1
-        if: matrix.os == 'windows-signing'
+        if: matrix.os == 'windows-latest'
         with:
           toolchain: 'stable'
       - name: Setup MacOS signing
@@ -86,16 +86,12 @@ jobs:
         with:
           arguments: packageDistributable
       - name: Setup MSbuild
-        if: matrix.os == 'windows-signing'
+        if: matrix.os == 'windows-latest'
         uses: microsoft/setup-msbuild@v1.3.1
       - name: Build MSIX
-        if: matrix.os == 'windows-signing'
+        if: matrix.os == 'windows-latest'
         run: |
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d app/desktop/build/msix-workspace /p Tonbrett.msix
-      - name: Code Sign 2021
-        if: matrix.os == 'windows-signing'
-        run: |
-          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x86/signtool.exe' sign /fd SHA256 /n "Open Source Developer, Michael Rittmeister" /t http://time.certum.pl/ /d Tonbrett Tonbrett.msix
       - name: Notarize MacOS installer
         #if: matrix.os == 'macos-latest'
         # waiting for https://github.com/JetBrains/compose-multiplatform/issues/3208
@@ -170,11 +166,29 @@ jobs:
           releaseFiles: app/android/build/outputs/bundle/release/tonbrett-app-release.aab
           mappingFile: app/android/build/outputs/mapping/release/mapping.txt
           track: internal
-
+  sign_windows_installer:
+    name: Sign windows installer
+    runs-on: windows-signing
+    needs: build_desktop_app
+#    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v3
+        name: Download Artifacts from Windows
+        with:
+          name: desktopapp-windows-latest
+      - name: Code Sign 2021
+        if: matrix.os == 'windows-latest'
+        run: |
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x86/signtool.exe' sign /fd SHA256 /n "Open Source Developer, Michael Rittmeister" /t http://time.certum.pl/ /d Tonbrett Tonbrett.msix
+      - name: Upload distributions
+        uses: actions/upload-artifact@v3
+        with:
+          name: desktopapp-windows-signed
+          path: "*.msix"
   create_release:
     name: Create Release
-    runs-on: windows-signing # for some weird reason this job does not get picked on ubuntu
-    needs: [build_bot_artifacts, build_desktop_app, build_android_app]
+    runs-on: windows-latest # for some weird reason this job does not get picked on ubuntu
+    needs: [build_bot_artifacts, build_desktop_app, build_android_app, sign_windows_installer]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/download-artifact@v3
@@ -188,7 +202,7 @@ jobs:
       - uses: actions/download-artifact@v3
         name: Download Artifacts from Windows
         with:
-          name: desktopapp-windows-signing
+          name: desktopapp-windows-signed
       - uses: actions/download-artifact@v3
         name: Download Bot
         with:
