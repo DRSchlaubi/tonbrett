@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.intl.Locale
 import cafe.adriel.lyricist.LocalStrings
 import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
@@ -40,7 +41,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
     val context = LocalContext.current
     var initialUser: User? by remember { mutableStateOf(null) }
 
-    val lyricist = rememberStrings()
+    val lyricist = rememberStrings(Locale.current.toLanguageTag())
     suspend fun reportError(exception: Exception) {
         if (exception is ReauthorizationRequiredException) {
             sessionExpired = true
