@@ -6,6 +6,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -113,11 +114,13 @@ fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.fillMaxHeight()
                                 ) {
-                                    Text(
-                                        token,
-                                        maxLines = 1,
-                                        modifier = Modifier.horizontalScroll(rememberScrollState())
-                                    )
+                                    SelectionContainer {
+                                        Text(
+                                            command,
+                                            maxLines = 1,
+                                            modifier = Modifier.horizontalScroll(rememberScrollState())
+                                        )
+                                    }
                                 }
                                 Row(
                                     horizontalArrangement = Arrangement.End,
