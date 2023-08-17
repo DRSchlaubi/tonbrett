@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalSerializationApi::class)
 
-package dev.schlaubi.tonbrett.app.api
+package dev.schlaubi.tonbrett.app.desktop
 
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -15,21 +15,16 @@ import kotlin.io.path.*
 
 private val LOG = KotlinLogging.logger { }
 
-val windowsAppDataFolder by lazy {
-    runCatching {
-        val process = ProcessBuilder()
-            .command("get_appdata_folder.exe")
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
-            .start()
-        process.waitFor()
+val windowsAppDataFolder: String? by lazy {
+    val result = runCatching {
+        NativeUtil.getAppdataFolder()
+    }
 
-        // If opening this in Android Studio this is a false positive, since Android doesn't
-        // actually call this
-        @Suppress("NewApi")
-        process.inputStream.bufferedReader().readText().also {
-            LOG.debug { "AppData determined to be $it" }
-        }
-    }.getOrNull()
+    if (result.isFailure) {
+        result.exceptionOrNull()!!.printStackTrace()
+    }
+
+    result.getOrNull()
 }
 
 @Serializable

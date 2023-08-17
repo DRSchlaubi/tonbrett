@@ -1,8 +1,6 @@
 package dev.schlaubi.tonbrett.app.desktop
 
-import dev.schlaubi.tonbrett.app.api.Config
 import dev.schlaubi.tonbrett.app.api.getUrl
-import dev.schlaubi.tonbrett.app.api.saveConfig
 import dev.schlaubi.tonbrett.common.authServerPort
 import io.ktor.http.*
 import io.ktor.server.application.*

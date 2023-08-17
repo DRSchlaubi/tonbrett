@@ -3,17 +3,11 @@ name = "uwp_helper"
 version = "0.1.0"
 edition = "2021"
 
-[[bin]]
-name = "url_launcher"
-path = "src/bin/url_launcher.rs"
+[lib]
+crate-type = ["cdylib"]
 
-[[bin]]
-name = "get_appdata_folder"
-path = "src/bin/get_appdata_folder.rs"
-
-[dependencies.clap]
-version = "4"
-features = ["derive"]
+[dependencies]
+lazy_static = "1.4.0"
 
 [dependencies.windows]
 version = "0.48.0"

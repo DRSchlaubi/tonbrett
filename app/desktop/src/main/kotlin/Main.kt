@@ -23,7 +23,8 @@ import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.TonbrettApp
-import dev.schlaubi.tonbrett.app.api.*
+import dev.schlaubi.tonbrett.app.api.ProvideContext
+import dev.schlaubi.tonbrett.app.api.getUrl
 import dev.schlaubi.tonbrett.app.title
 import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
@@ -116,7 +117,7 @@ private fun ApplicationScope.startActualApplication(
     CompositionLocalProvider(LocalWindowExceptionHandlerFactory provides exceptionHandler) {
         TonbrettWindow {
             val context = remember {
-                object : AppContext() {
+                object : ConfigBasedAppContext() {
                     override fun reAuthorize() {
                         window.isMinimized = true
                         main(reAuthorize = true, uwp = uwp) {

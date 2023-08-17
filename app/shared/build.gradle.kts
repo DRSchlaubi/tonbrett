@@ -7,7 +7,6 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
-    kotlin("plugin.serialization")
     alias(libs.plugins.buildconfig)
     alias(libs.plugins.ksp)
 }
@@ -20,8 +19,8 @@ kotlin {
                 withNative()
                 withAndroidTarget()
                 withJvm()
-
             }
+
             group("skia") {
                 withApple()
                 withJvm()

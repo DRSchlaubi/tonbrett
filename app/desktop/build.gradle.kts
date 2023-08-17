@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.org.jline.utils.OSUtils
 
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
     id("org.jetbrains.compose")
 }
 
@@ -18,6 +19,7 @@ compose.desktop {
     application {
         mainClass = "dev.schlaubi.tonbrett.app.desktop.MainKt"
 
+        jvmArgs("--enable-native-access=ALL-UNNAMED", "--enable-preview")
         nativeDistributions {
             modules(
                 "java.naming" // required by logback
@@ -93,7 +95,7 @@ tasks {
             }
         }
         from(file("uwp_helper/target/release")) {
-            include("*.exe")
+            include("*.dll")
         }
         from(file("msix"))
         into(buildDir.resolve("msix-workspace"))
@@ -113,6 +115,10 @@ tasks {
     val finalizeMsixWorkspace by registering(Delete::class) {
         dependsOn(updateMsixVersion)
         delete(buildDir.resolve("msix-workspace").resolve("update_msix_version.ps1"))
+    }
+
+    withType<JavaCompile> {
+        options.compilerArgs.add("--enable-preview")
     }
 
     afterEvaluate {
