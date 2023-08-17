@@ -98,23 +98,23 @@ tasks {
             include("*.dll")
         }
         from(file("msix"))
-        into(buildDir.resolve("msix-workspace"))
+        into(layout.buildDirectory.dir("msix-workspace"))
     }
 
     val updateMsixVersion by registering(Exec::class) {
         inputs.property("version", project.version)
-        val dir = buildDir.resolve("msix-workspace")
-        outputs.file(dir.resolve("appxmanifest.xml"))
+        val dir = layout.buildDirectory.dir("msix-workspace").get()
+        outputs.file(dir.file("appxmanifest.xml"))
         dependsOn(prepareUwpWorkspace)
 
-        workingDir = dir
-        val script = dir.resolve("update_msix_version.ps1")
-        commandLine("cmd", "/c", "Powershell -File ${script.absolutePath} -Version ${project.version}.0")
+        workingDir = dir.asFile
+        val script = dir.file("update_msix_version.ps1")
+        commandLine("cmd", "/c", "Powershell -File ${script.asFile.absolutePath} -Version ${project.version}.0")
     }
 
     val finalizeMsixWorkspace by registering(Delete::class) {
         dependsOn(updateMsixVersion)
-        delete(buildDir.resolve("msix-workspace").resolve("update_msix_version.ps1"))
+        delete(layout.buildDirectory.file("msix-workspace/update_msix_version.ps1"))
     }
 
     withType<JavaCompile> {
