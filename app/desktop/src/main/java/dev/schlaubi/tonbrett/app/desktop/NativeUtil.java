@@ -41,7 +41,7 @@ public class NativeUtil {
      * @throws Throwable if an error occurs
      */
     public static void launchUri(@NotNull URI uri) throws Throwable {
-        Objects.requireNonNull(uri, () -> "uri must not be null");
+        Objects.requireNonNull(uri, "uri must not be null");
         try (var arena = Arena.openConfined()) {
             var url = arena.allocateUtf8String(uri.toString());
 
