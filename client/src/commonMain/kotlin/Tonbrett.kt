@@ -19,8 +19,6 @@ import io.ktor.serialization.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.*
-import io.ktor.utils.io.core.*
-import io.ktor.websocket.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -41,7 +39,7 @@ private var HttpRequestBuilder.useUnicode: Boolean
 
 class ReauthorizationRequiredException : Exception()
 
-class Tonbrett(initialToken: String, private val baseUrl: Url, private val onTokenRefresh: (String) -> Unit = {}) {
+class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, private val onTokenRefresh: (String) -> Unit = {}) {
     private val eventFlow = MutableSharedFlow<Event>()
     private val json = Json {
         serializersModule = TonbrettSerializersModule
@@ -115,6 +113,12 @@ class Tonbrett(initialToken: String, private val baseUrl: Url, private val onTok
         client.get(Route.Tags(query, limit)).body()
 
     suspend fun stop(): Unit = client.post(Route.StopPlayer()).body()
+
+    inline fun <reified T> href(resource: T): String {
+        val builder = URLBuilder(baseUrl)
+        href(resource, builder)
+        return builder.toString()
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun connect(useUnicode: Boolean = false) {

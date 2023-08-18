@@ -4,7 +4,7 @@ import java.awt.Desktop
 import java.net.URI
 
 fun browseUrl(url: URI) {
-    if (System.getProperty("os.name").contains("windows", ignoreCase = true)) {
+    if (System.getProperty("os.name").contains("windows", ignoreCase = true) && windowsAppDataFolder != null) {
         NativeUtil.launchUri(url)
     } else {
         val desktop = Desktop.getDesktop()

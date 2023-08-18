@@ -57,7 +57,7 @@ public class NativeUtil {
      * Tries to retrieve the current UWP app data folder.
      *
      * @return the absolute path to the folder
-     * @throws Throwable if an error occurrs
+     * @throws Throwable if an error occurs
      */
     @Nullable
     public static String getAppdataFolder() throws Throwable {
