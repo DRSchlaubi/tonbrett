@@ -8,12 +8,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
-import mu.KotlinLogging
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.*
-
-private val LOG = KotlinLogging.logger { }
 
 val windowsAppDataFolder: String? by lazy {
     val result = runCatching {
