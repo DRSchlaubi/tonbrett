@@ -42,7 +42,7 @@ tasks {
     val copyIcon by creating(Copy::class) {
         dependsOn("jsBrowserProductionExecutableDistributeResources")
         from(rootProject.file("icons/logo.ico"))
-        into(buildDir.resolve("distribuions"))
+        into(layout.buildDirectory.dir("distributions"))
         rename { "favicon.ico" }
     }
 

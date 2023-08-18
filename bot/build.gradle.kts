@@ -48,7 +48,7 @@ tasks {
     val buildWebApp = register<Copy>("buildWebApp") {
         val webApp = project(":app:web")
         from(webApp.tasks.named("jsBrowserDistribution"))
-        into(buildDir.toPath() / "resources" / "main" / "web")
+        into(layout.buildDirectory.dir("resources/main/web"))
     }
 
     classes {
@@ -59,7 +59,7 @@ tasks {
 sourceSets {
     main {
         java {
-            srcDir(file("$buildDir/generated/ksp/metadata/commonMain/kotlin"))
+            srcDir(layout.buildDirectory.dir("/generated/ksp/metadata/commonMain/kotlin"))
         }
     }
 }
