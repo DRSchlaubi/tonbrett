@@ -2,19 +2,19 @@
 extern crate lazy_static;
 
 use std::ffi::{c_char, CStr};
+
 use windows::{
-    core::{Error, HSTRING},
     core::Result,
+    core::{Error, HSTRING},
     Foundation::Uri,
     Storage::ApplicationData,
     System::Launcher,
-    Win32::Foundation::E_FAIL
+    Win32::Foundation::E_FAIL,
 };
 
 lazy_static! {
-    static ref APPDATA_FOLDER: Result<HSTRING> = {
-        ApplicationData::Current()?.RoamingFolder()?.Path()
-    };
+    static ref APPDATA_FOLDER: Result<HSTRING> =
+        ApplicationData::Current()?.RoamingFolder()?.Path();
 }
 
 #[tokio::main]
@@ -26,14 +26,13 @@ pub async unsafe extern "C" fn launch_uri(uri: *const c_char) {
 
 #[no_mangle]
 pub extern "C" fn get_appdata_folder_path_length() -> usize {
-    let result= APPDATA_FOLDER.clone();
-    match result {
-        Ok(value) => value.len(),
-        Err(error) => {
+    APPDATA_FOLDER
+        .clone()
+        .map(|value| value.len())
+        .unwrap_or_else(|error| {
             eprintln!("{}", error);
             0
-        }
-    }
+        })
 }
 
 #[no_mangle]

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * Utility class for calling {@code uwp_helper} functions.
@@ -16,7 +17,7 @@ public class NativeUtil {
 
     private static final NativeUtil instance = new NativeUtil();
     private final Linker linker = Linker.nativeLinker();
-    private final SymbolLookup uwpHelper = SymbolLookup.libraryLookup("uwp_helper", SegmentScope.global());
+    private final SymbolLookup uwpHelper = SymbolLookup.libraryLookup("uwp_helper", SegmentScope.auto());
 
     private final MethodHandle launchUriMethod = linker.downcallHandle(
             uwpHelper.find("launch_uri").orElseThrow(),
@@ -40,6 +41,7 @@ public class NativeUtil {
      * @throws Throwable if an error occurs
      */
     public static void launchUri(@NotNull URI uri) throws Throwable {
+        Objects.requireNonNull(uri, () -> "uri must not be null");
         try (var arena = Arena.openConfined()) {
             var url = arena.allocateUtf8String(uri.toString());
 
@@ -47,7 +49,7 @@ public class NativeUtil {
         }
     }
 
-    private static long getAppdataFolderLength() throws Throwable{
+    private static long getAppdataFolderLength() throws Throwable {
         return (long) instance.getAppdataFolderPathLength.invoke();
     }
 
