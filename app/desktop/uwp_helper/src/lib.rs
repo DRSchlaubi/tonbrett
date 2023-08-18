@@ -27,7 +27,7 @@ pub async unsafe extern "C" fn launch_uri(uri: *const c_char) {
 #[no_mangle]
 pub extern "C" fn get_appdata_folder_path_length() -> usize {
     APPDATA_FOLDER
-        .clone()
+        .as_ref()
         .map(|value| value.len())
         .unwrap_or_else(|error| {
             eprintln!("{}", error);
@@ -37,7 +37,7 @@ pub extern "C" fn get_appdata_folder_path_length() -> usize {
 
 #[no_mangle]
 pub unsafe extern "C" fn get_appdata_folder(buf: *mut u16) {
-    let result = APPDATA_FOLDER.clone().unwrap();
+    let result = APPDATA_FOLDER.as_ref().unwrap();
     buf.copy_from(result.as_ptr(), result.len())
 }
 
