@@ -28,5 +28,6 @@ val EnStrings = Strings(
     needsUpdate = "It seems like this app requires an update",
     update = "Update",
     appCrash = "The App crashed",
-    unknownError = "An unknown error occurred"
+    unknownError = "An unknown error occurred",
+    copyUrl = "Copy Audio-URL"
 )

@@ -35,6 +35,12 @@ kotlin {
             group("mobile") {
                 withApple()
                 withAndroidTarget()
+
+            }
+            group("nonDesktop") {
+                withJs()
+                withApple()
+                withAndroidTarget()
             }
         }
     }

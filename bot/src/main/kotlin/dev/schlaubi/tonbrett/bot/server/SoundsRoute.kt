@@ -45,27 +45,22 @@ fun Route.sounds() {
         )
     }
 
-    authenticated {
-        post<Sounds.Sound.Play> { (soundId) ->
-            val sound = SoundBoardDatabase.sounds.findById(soundId) ?: soundNotFound()
-            val user = call.userId
-            val voiceState = user.voiceState
-                ?: badRequest(call.translate("rest.errors.not_connected_to_vc"))
-            val player = kord.unsafe.guild(voiceState.guildId).soundPlayer
-
-            if (player.locked && player.currentUser != user) {
-                badRequest("You are not permitted to skip a track")
-            }
-
-            @Suppress("INVISIBLE_MEMBER", "EQUALITY_NOT_APPLICABLE")
-            if (player.channelId == null) {
-                player.player.link.connectAudio(voiceState.channelId)
-            } else if (player.channelId != voiceState.channelId) {
-                badRequest(call.translate("rest.errors.vc_mismatch"))
-            }
-
-            player.playSound(sound, user)
-            call.respond(HttpStatusCode.Accepted)
+    post<Sounds.Sound.Play> { (soundId) ->
+        val sound = SoundBoardDatabase.sounds.findById(soundId) ?: soundNotFound()
+        val user = call.userId
+        val voiceState = user.voiceState
+            ?: badRequest(call.translate("rest.errors.not_connected_to_vc"))
+        val player = kord.unsafe.guild(voiceState.guildId).soundPlayer
+        if (player.locked && player.currentUser != user) {
+            badRequest("You are not permitted to skip a track")
         }
+        @Suppress("INVISIBLE_MEMBER", "EQUALITY_NOT_APPLICABLE")
+        if (player.channelId == null) {
+            player.player.link.connectAudio(voiceState.channelId)
+        } else if (player.channelId != voiceState.channelId) {
+            badRequest(call.translate("rest.errors.vc_mismatch"))
+        }
+        player.playSound(sound, user)
+        call.respond(HttpStatusCode.Accepted)
     }
 }

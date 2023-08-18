@@ -28,5 +28,6 @@ val DeStrings = Strings(
     needsUpdate = "Es scheint als würde die App ein Update benötigen",
     update = "Aktualisieren",
     appCrash = "Die App ist abgestürzt",
-    unknownError = "Es ist ein unerwarteter Fehler aufgetreten"
+    unknownError = "Es ist ein unerwarteter Fehler aufgetreten",
+    copyUrl = "Audio-URL kopieren"
 )

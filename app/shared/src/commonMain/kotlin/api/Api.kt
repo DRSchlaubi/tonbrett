@@ -18,6 +18,8 @@ abstract class AppContextBase {
     fun resetApi() {
         apiState.value = Tonbrett(token, getUrl(), onTokenRefresh = { token = it })
     }
+
+    open fun openUrl(url: String) = Unit
 }
 
 expect open class AppContext : AppContextBase {

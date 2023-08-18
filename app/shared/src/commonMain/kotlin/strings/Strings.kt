@@ -25,5 +25,6 @@ data class Strings(
     val update: String,
     val appCrash: String,
     val needsUpdate: String,
-    val unknownError: String
+    val unknownError: String,
+    val copyUrl: String
 )

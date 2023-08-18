@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5" xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10">
   <!-- DO NOT EDIT THIS VERSION IT IS UPDATED AUTOMATICALLY -->
-   <Identity Name="dev.schlaubi.Tonbrett" Version="0.0.0.0" Publisher="E=michael@rittmeister.in, CN=&quot;Open Source Developer, Michael Rittmeister&quot;, O=Open Source Developer, L=Gauting, S=Bavaria, C=DE" ProcessorArchitecture="x64" />
+   <Identity Name="11839Schlaubi.dev.Tonbrett" Version="0.0.0.0" Publisher="CN=4C05965C-D683-4386-B189-07E2E08CAA6C" ProcessorArchitecture="x64" />
   <Properties>
     <DisplayName>Tonbrett</DisplayName>
-    <PublisherDisplayName>Schlaubi</PublisherDisplayName>
+    <PublisherDisplayName>Schlaubi.dev</PublisherDisplayName>
     <Description>Companion app for Discord soundboard bot</Description>
     <Logo>logo.png</Logo>
   </Properties>
@@ -13,7 +13,7 @@
     <Resource Language="de-de" />
   </Resources>
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14316.0" MaxVersionTested="10.0.14316.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.17763.0" />
   </Dependencies>
   <Capabilities>
     <Capability Name="internetClient" />

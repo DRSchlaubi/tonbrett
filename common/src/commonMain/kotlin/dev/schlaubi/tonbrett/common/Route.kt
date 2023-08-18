@@ -1,5 +1,6 @@
 package dev.schlaubi.tonbrett.common
 
+import io.ktor.http.*
 import io.ktor.resources.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -53,12 +54,15 @@ public class Route {
             /**
              * /soundboard/sound/[id][Sound.id]/audio - Retrieves the binary audio data
              * for this sound
+             *
+             * @property contentType the content type you want to request the audio in
              */
             @Resource("audio")
-            public class Audio(public val parent: Sound) {
-                public constructor(id: String) : this(Sound(id))
+            public class Audio(public val parent: Sound, public val contentType: String? = null) {
+                public constructor(id: String, contentType: ContentType? = null) : this(Sound(id), contentType?.toString())
 
                 public operator fun component1(): String = parent.id
+                public operator fun component2(): String? = contentType
             }
 
             @Resource("play")

@@ -66,6 +66,9 @@ fun SoundContainer(
     }
 }
 
+@Composable
+expect fun SoundCardContextMenuArea(sound: Id<Sound>, content: @Composable () -> Unit)
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SoundCard(
@@ -97,65 +100,67 @@ fun SoundCard(
 
     fun stop() = request { api.stop() }
 
-    ElevatedCard(
-        colors = CardDefaults.cardColors(containerColor = ColorScheme.secondaryContainer),
-        shape = corners,
-        modifier = Modifier.size(width = 128.dp, height = 64.dp)
-            .padding(vertical = 3.dp, horizontal = 5.dp)
-            .conditional(playing) {
-                border(BorderStroke(2.dp, ColorScheme.active), corners)
-            }
-            .hoverable(interactionSource)
-            .conditional(isMobile) {
-                combinedClickable(
-                    onClick = {
-                        if (playing) {
-                            stop()
-                        } else {
+    SoundCardContextMenuArea(id) {
+        ElevatedCard(
+            colors = CardDefaults.cardColors(containerColor = ColorScheme.secondaryContainer),
+            shape = corners,
+            modifier = Modifier.size(width = 128.dp, height = 64.dp)
+                .padding(vertical = 3.dp, horizontal = 5.dp)
+                .conditional(playing) {
+                    border(BorderStroke(2.dp, ColorScheme.active), corners)
+                }
+                .hoverable(interactionSource)
+                .conditional(isMobile) {
+                    combinedClickable(
+                        onClick = {
+                            if (playing) {
+                                stop()
+                            } else {
+                                play()
+                            }
+                        },
+                        onDoubleClick = {
+                            if (playing && !disabled) {
+                                play()
+                            }
+                        }
+                    )
+                }.conditional(!isMobile) {
+                    clickable {
+                        if (!disabled) {
                             play()
                         }
-                    },
-                    onDoubleClick = {
-                        if (playing && !disabled) {
-                            play()
-                        }
-                    }
-                )
-            }.conditional(!isMobile) {
-                clickable {
-                    if (!disabled) {
-                        play()
                     }
                 }
-            }
-    ) {
-        BoxWithConstraints {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
-            ) {
-                require(emoji is Sound.Emoji.HasUrl?){ "This emoji is invalid: $emoji" }
-                OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
-                Text(name, color = ColorScheme.textColor, fontSize = 16.sp, textAlign = TextAlign.Center)
-            }
-            if (playing && hovered && !disabled) {
-                Box(Modifier.zIndex(1f).background(ColorScheme.secondaryContainer)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        IconButton({
-                            play()
-                        }) {
-                            Icon(Icons.Default.Refresh, null, tint = ColorScheme.textColor)
-                        }
-                        Divider(Modifier.width(1.dp).height(15.dp))
-                        IconButton({
-                            stop()
-                        }) {
-                            Icon(Icons.Default.Stop, null, tint = ColorScheme.textColor)
+        ) {
+            BoxWithConstraints {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
+                ) {
+                    require(emoji is Sound.Emoji.HasUrl?){ "This emoji is invalid: $emoji" }
+                    OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
+                    Text(name, color = ColorScheme.textColor, fontSize = 16.sp, textAlign = TextAlign.Center)
+                }
+                if (playing && hovered && !disabled) {
+                    Box(Modifier.zIndex(1f).background(ColorScheme.secondaryContainer)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            IconButton({
+                                play()
+                            }) {
+                                Icon(Icons.Default.Refresh, null, tint = ColorScheme.textColor)
+                            }
+                            Divider(Modifier.width(1.dp).height(15.dp))
+                            IconButton({
+                                stop()
+                            }) {
+                                Icon(Icons.Default.Stop, null, tint = ColorScheme.textColor)
+                            }
                         }
                     }
                 }
