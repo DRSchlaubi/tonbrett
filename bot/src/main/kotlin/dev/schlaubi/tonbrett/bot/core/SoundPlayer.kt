@@ -33,7 +33,6 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
     var currentUser: Snowflake? = null
         private set
 
-    @Suppress("INVISIBLE_MEMBER")
     val channelId: Snowflake? get() = player.link.lastChannelId?.let(::Snowflake)
 
     override val coroutineContext: CoroutineContext
@@ -49,6 +48,7 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         channel: Snowflake = channelId ?: error("Cannot use default if not connected")
     ) {
         this.playingSound = playingSound
+        locked = !available
         coroutineScope {
             getUsersInChannel(channel).forEach {
                 sendEvent(it, InterfaceAvailabilityChangeEvent(available || it == user, playingSound?.id))
@@ -56,7 +56,6 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         }
     }
 
-    @Suppress("INVISIBLE_MEMBER")
     suspend fun stop()  {
         updateAvailability(true)
         player.skip()

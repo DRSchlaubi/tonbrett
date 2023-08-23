@@ -14,8 +14,10 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -85,12 +87,16 @@ fun SoundCard(
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
     val api = LocalContext.current.api
+    var waiting by remember { mutableStateOf(false) }
 
     fun request(block: suspend CoroutineScope.() -> Unit) = coroutineScope.launch(Dispatchers.IO) {
+        waiting = true
         try {
             block()
         } catch (e: Exception) {
             reportError(e)
+        } finally {
+            waiting = false
         }
     }
 
@@ -110,7 +116,7 @@ fun SoundCard(
                     border(BorderStroke(2.dp, ColorScheme.active), corners)
                 }
                 .hoverable(interactionSource)
-                .conditional(isMobile) {
+                .conditional(isMobile && !waiting) {
                     combinedClickable(
                         onClick = {
                             if (playing) {
@@ -127,7 +133,7 @@ fun SoundCard(
                     )
                 }.conditional(!isMobile) {
                     clickable {
-                        if (!disabled) {
+                        if (!disabled && !waiting) {
                             play()
                         }
                     }
@@ -143,7 +149,7 @@ fun SoundCard(
                     OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
                     Text(name, color = ColorScheme.textColor, fontSize = 16.sp, textAlign = TextAlign.Center)
                 }
-                if (playing && hovered && !disabled) {
+                if (playing && hovered && !disabled && !waiting) {
                     Box(Modifier.zIndex(1f).background(ColorScheme.secondaryContainer)) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
