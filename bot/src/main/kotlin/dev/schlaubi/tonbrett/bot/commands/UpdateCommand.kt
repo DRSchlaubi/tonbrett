@@ -2,6 +2,7 @@ package dev.schlaubi.tonbrett.bot.commands
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalBoolean
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalInt
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
@@ -43,6 +44,13 @@ class UpdateSoundArguments : Arguments() {
         name = "public"
         description = "commands.update_sound.arguments.public.description"
     }
+
+    val volume by optionalInt {
+        name = "public"
+        description = "commands.update_sound.arguments.volume.description"
+        minValue = 0
+        maxValue = 1000
+    }
 }
 
 fun SubCommandModule.updateCommand() = ephemeralSubCommand(::UpdateSoundArguments) {
@@ -69,7 +77,8 @@ fun SubCommandModule.updateCommand() = ephemeralSubCommand(::UpdateSoundArgument
             description = arguments.description ?: sound.description,
             emoji = arguments.emoji?.toEmoji() ?: sound.emoji,
             public = arguments.public ?: sound.public,
-            tag = arguments.tag ?: sound.tag
+            tag = arguments.tag ?: sound.tag,
+            volume = arguments.volume ?: sound.volume
         )
 
         SoundBoardDatabase.sounds.save(newSound)

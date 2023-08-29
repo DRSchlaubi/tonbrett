@@ -38,7 +38,7 @@ ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref =
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
-mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.1.0-SNAPSHOT" }
+mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.1.8-SNAPSHOT" }
 
 imageloader = { group = "io.github.qdsfdhvh", name = "image-loader", version = "1.6.4" }
 

@@ -30,7 +30,8 @@ public data class Sound(
     val emoji: Emoji? = null,
     @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val public: Boolean = true,
-    val tag: String? = null
+    val tag: String? = null,
+    val volume: Int? = null
 ) {
     /**
      * The file name of this sounds audio file.

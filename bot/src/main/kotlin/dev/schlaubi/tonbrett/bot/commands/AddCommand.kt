@@ -55,6 +55,13 @@ class AddSoundCommandArguments : Arguments() {
         description = "commands.add_sound.arguments.public.description"
         defaultValue = true
     }
+
+    val volume by optionalInt {
+        name = "volume"
+        description = "commands.add_sound.arguments.volume.description"
+        minValue = 0
+        maxValue = 1000
+    }
 }
 
 fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArguments) {
@@ -101,7 +108,8 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
             id, arguments.name, user.id,
             arguments.description, arguments.emoji?.toEmoji(),
             public = arguments.public,
-            tag = arguments.tag
+            tag = arguments.tag,
+            volume = arguments.volume
         )
         val file = Config.SOUNDS_FOLDER / sound.fileName
         val soundsFolder = file.parent

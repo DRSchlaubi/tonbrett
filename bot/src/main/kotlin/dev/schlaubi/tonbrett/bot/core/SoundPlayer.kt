@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
 import kotlin.coroutines.CoroutineContext
+import kotlin.io.path.fileVisitor
 
 private val players = mutableMapOf<Snowflake, SoundPlayer>()
 
@@ -70,7 +71,13 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
             path("soundboard", "sounds", sound.id.toString(), "audio")
         }.toString()
         currentUser = user
-        player.injectTrack(url, noReplace = alreadyLocked)
+        player.injectTrack(url, noReplace = alreadyLocked) {
+            filters {
+                if (sound.volume != null) {
+                    volume = sound.volume!!.toFloat()
+                }
+            }
+        }
         launch {
             // Wait for track to end
             player.player.events
