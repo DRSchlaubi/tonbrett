@@ -29,6 +29,7 @@ import dev.schlaubi.tonbrett.app.title
 import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
+import io.ktor.serialization.ContentConvertException
 import mu.KotlinLogging
 import java.net.URI
 import kotlin.system.exitProcess
@@ -152,7 +153,7 @@ private class ExceptionHandlerFactory(val handler: (Throwable) -> Unit) : Window
     private inner class ExceptionHandler(val window: AWTWindow) : WindowExceptionHandler {
         @OptIn(ExperimentalComposeUiApi::class)
         override fun onException(throwable: Throwable) {
-            if (throwable is IllegalArgumentException) {
+            if (throwable is IllegalArgumentException || throwable is ContentConvertException) {
                 handler(throwable)
             } else {
                 DefaultWindowExceptionHandlerFactory.exceptionHandler(window).onException(throwable)

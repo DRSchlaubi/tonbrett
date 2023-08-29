@@ -1,7 +1,12 @@
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.icons.Icons
@@ -11,7 +16,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.intl.Locale
@@ -61,7 +72,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                     initialUser = context.api.getMe()
                 } catch (e: ClientRequestException) {
                     if (e.response.status.value in 400..499) {
-                      reportError(ReauthorizationRequiredException())
+                        reportError(ReauthorizationRequiredException())
                     }
                 } catch (e: ReauthorizationRequiredException) {
                     reportError(e)

@@ -9,14 +9,17 @@ import dev.schlaubi.tonbrett.bot.util.player
 import dev.schlaubi.tonbrett.common.InterfaceAvailabilityChangeEvent
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.Sound
-import io.ktor.http.*
-import kotlinx.coroutines.*
+import io.ktor.http.path
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
-import kotlin.io.path.fileVisitor
 
 private val players = mutableMapOf<Snowflake, SoundPlayer>()
 
@@ -74,7 +77,7 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         player.injectTrack(url, noReplace = alreadyLocked) {
             filters {
                 if (sound.volume != null) {
-                    volume = sound.volume!!.toFloat()
+                    volume = (sound.volume!!.toFloat() / 2.0f / 100.0f)
                 }
             }
         }

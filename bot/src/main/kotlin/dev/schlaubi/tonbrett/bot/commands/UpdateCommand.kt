@@ -46,7 +46,7 @@ class UpdateSoundArguments : Arguments() {
     }
 
     val volume by optionalInt {
-        name = "public"
+        name = "volume"
         description = "commands.update_sound.arguments.volume.description"
         minValue = 0
         maxValue = 1000
