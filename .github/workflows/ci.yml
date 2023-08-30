@@ -97,7 +97,7 @@ jobs:
       - name: Build App Distribution
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true
+          arguments: packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true --stacktrace
       - name: Package Linux Distribution
         uses: gradle/gradle-build-action@v2
         if: matrix.os == 'ubuntu-latest'
