@@ -185,7 +185,7 @@ jobs:
           name: desktopapp-windows-latest
       - name: Code Sign 2021
         run: |
-          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x86/signtool.exe' sign /fd SHA256 /n "Open Source Developer, Michael Rittmeister" /t http://time.certum.pl/ /d Tonbrett Tonbrett.msix
+          & 'C:\Program Files (x86)\Windows Kits\10\App Certification Kit' sign /fd SHA256 /n "Open Source Developer, Michael Rittmeister" /t http://time.certum.pl/ /d Tonbrett Tonbrett.msix
       - name: Upload distributions
         uses: actions/upload-artifact@v3
         with:
