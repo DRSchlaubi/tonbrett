@@ -18,11 +18,9 @@ allprojects {
 }
 
 subprojects {
-    if (name != "app") {
-        afterEvaluate {
-            configure<KotlinTopLevelExtension> {
-                jvmToolchain(20)
-            }
+    afterEvaluate {
+        extensions.findByType<KotlinTopLevelExtension>()?.apply {
+            jvmToolchain(20)
         }
     }
 }

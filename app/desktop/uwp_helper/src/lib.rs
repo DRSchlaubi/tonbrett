@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate lazy_static;
-
 use std::ffi::{c_char, CStr};
 
 use windows::{
@@ -12,33 +9,11 @@ use windows::{
     Win32::Foundation::E_FAIL,
 };
 
-lazy_static! {
-    static ref APPDATA_FOLDER: Result<HSTRING> =
-        ApplicationData::Current()?.RoamingFolder()?.Path();
-}
-
 #[tokio::main]
 #[no_mangle]
 pub async unsafe extern "C" fn launch_uri(uri: *const c_char) {
     let uri_str = CStr::from_ptr(uri).to_str().unwrap();
     _launch_uri(uri_str).await.unwrap()
-}
-
-#[no_mangle]
-pub extern "C" fn get_appdata_folder_path_length() -> usize {
-    APPDATA_FOLDER
-        .as_ref()
-        .map(|value| value.len())
-        .unwrap_or_else(|error| {
-            eprintln!("{}", error);
-            0
-        })
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn get_appdata_folder(buf: *mut u16) {
-    let result = APPDATA_FOLDER.as_ref().unwrap();
-    buf.copy_from(result.as_ptr(), result.len())
 }
 
 async fn _launch_uri(uri: &str) -> Result<()> {
@@ -47,4 +22,29 @@ async fn _launch_uri(uri: &str) -> Result<()> {
     let result = Launcher::LaunchUriAsync(&actual_uri)?.await?;
 
     result.then(|| {}).ok_or(Error::from(E_FAIL))
+}
+
+#[repr(C)]
+pub struct AppDataRoamingResult {
+    is_error: bool,
+    length: usize,
+    string: HSTRING,
+}
+
+#[no_mangle]
+pub extern "C" fn get_app_data_roaming() -> AppDataRoamingResult {
+    let (string, is_error) = ApplicationData::Current()
+        .and_then(|ad| ad.RoamingFolder())
+        .and_then(|sf| sf.Path())
+        .map(|p| (p, false))
+        .unwrap_or_else(|e| (e.message(), true));
+    AppDataRoamingResult { is_error, length: string.len(), string }
+}
+
+#[no_mangle]
+pub extern "C" fn copy_string_from_get_app_data_roaming_result_into_buffer(
+    result: AppDataRoamingResult,
+    buffer: *mut u16,
+) {
+    unsafe { buffer.copy_from(result.string.as_ptr(), result.length) }
 }

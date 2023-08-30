@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/app/android" />
             <option value="$PROJECT_DIR$/app/desktop" />
+            <option value="$PROJECT_DIR$/app/desktop/uwp_helper" />
             <option value="$PROJECT_DIR$/app/ios" />
             <option value="$PROJECT_DIR$/app/shared" />
             <option value="$PROJECT_DIR$/app/web" />

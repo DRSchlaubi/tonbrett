@@ -22,7 +22,7 @@ include(
     ":app:shared",
     ":app:web",
     ":app:desktop",
+    ":app:desktop:uwp_helper",
     ":app:android",
     ":app:ios"
 )
-

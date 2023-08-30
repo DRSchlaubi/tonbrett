@@ -2,17 +2,18 @@
 name = "uwp_helper"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [lib]
 crate-type = ["cdylib"]
 
-[dependencies]
-lazy_static = "1.4.0"
-
 [dependencies.windows]
-version = "0.48.0"
+version = "0.51.1"
 features = ["System", "Foundation", "Storage", "Win32_Foundation"]
 
 [dependencies.tokio]
 version = "1.29.1"
 features = ["macros", "rt-multi-thread"]
+
+[build-dependencies]
+cbindgen = "0.25.0"

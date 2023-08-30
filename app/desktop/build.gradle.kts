@@ -9,6 +9,7 @@ plugins {
 
 dependencies {
     implementation(projects.app.shared)
+    implementation(projects.app.desktop.uwpHelper)
     implementation(compose.desktop.currentOs)
     implementation(libs.logback)
     implementation(libs.ktor.server.netty)
@@ -79,16 +80,8 @@ tasks {
         archiveExtension = "tar.gz"
     }
 
-    val buildUwpHelper by registering(Exec::class) {
-        inputs.dir("uwp_helper/src")
-        outputs.dir("uwp_helper/target")
-
-        workingDir = file("uwp_helper")
-        commandLine("cargo", "build", "--release")
-    }
-
     val prepareUwpWorkspace by registering(Copy::class) {
-        dependsOn(buildUwpHelper)
+        dependsOn("uwp_helper:compileRust")
         from(named("packageReleaseAppImage")) {
             eachFile {
                 path = path.substringAfter("Tonbrett")
