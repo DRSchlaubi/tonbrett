@@ -62,11 +62,15 @@ jobs:
       - name: Setup jextract
         if: matrix.os != 'windows-latest'
         run: |
-          curl -L https://download.java.net/java/early_access/jextract/1/openjdk-20-jextract+1-2_windows-x64_bin.tar.gz -o jextract.tar.gz
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            curl -L https://download.java.net/java/early_access/jextract/1/openjdk-20-jextract+1-2_macos-x64_bin.tar.gz -o jextract.tar.gz
+          else
+            curl -L https://download.java.net/java/early_access/jextract/1/openjdk-20-jextract+1-2_linux-x64_bin.tar.gz -o jextract.tar.gz
+          fi
 
           tar xzvf jextract.tar.gz
 
-          echo $(realpath jextract-20\bin) >> GITHUB_PATH
+          realpath jextract-20\bin >> $GITHUB_PATH
       - name: Setup MacOS signing
         if: matrix.os == 'macos-latest'
         env:
