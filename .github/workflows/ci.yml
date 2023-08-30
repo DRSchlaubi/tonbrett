@@ -69,8 +69,7 @@ jobs:
           fi
 
           tar xzvf jextract.tar.gz
-
-          realpath jextract-20\bin >> $GITHUB_PATH
+          echo "$(pwd)jextract-20\bin" >> $GITHUB_PATH
       - name: Setup MacOS signing
         if: matrix.os == 'macos-latest'
         env:
