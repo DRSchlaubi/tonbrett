@@ -15,7 +15,11 @@ fn main() {
         .to_string();
 
     let mut config = Config::default();
+
+    // By default it generate a .hpp which jextract cannot parse properly
     config.language = Language::C;
+
+    // This is required to for the AppDataRoamingResult, otherwise jextract wil fail
     config.includes.push(String::from("Hstring.h"));
 
     cbindgen::generate_with_config(&crate_dir, config)
