@@ -16,14 +16,6 @@ pub async unsafe extern "C" fn launch_uri(uri: *const c_char) {
     _launch_uri(uri_str).await.unwrap()
 }
 
-async fn _launch_uri(uri: &str) -> Result<()> {
-    let actual_uri = Uri::CreateUri(&HSTRING::from(uri))?;
-
-    let result = Launcher::LaunchUriAsync(&actual_uri)?.await?;
-
-    result.then(|| {}).ok_or(Error::from(E_FAIL))
-}
-
 #[repr(C)]
 pub struct AppDataRoamingResult {
     is_error: bool,
@@ -38,13 +30,25 @@ pub extern "C" fn get_app_data_roaming() -> AppDataRoamingResult {
         .and_then(|sf| sf.Path())
         .map(|p| (p, false))
         .unwrap_or_else(|e| (e.message(), true));
-    AppDataRoamingResult { is_error, length: string.len(), string }
+    AppDataRoamingResult {
+        is_error,
+        length: string.len(),
+        string,
+    }
 }
 
 #[no_mangle]
-pub extern "C" fn copy_string_from_get_app_data_roaming_result_into_buffer(
+pub unsafe extern "C" fn copy_string_from_get_app_data_roaming_result_into_buffer(
     result: AppDataRoamingResult,
     buffer: *mut u16,
 ) {
-    unsafe { buffer.copy_from(result.string.as_ptr(), result.length) }
+    buffer.copy_from(result.string.as_ptr(), result.length)
+}
+
+async fn _launch_uri(uri: &str) -> Result<()> {
+    let actual_uri = Uri::CreateUri(&HSTRING::from(uri))?;
+
+    let result = Launcher::LaunchUriAsync(&actual_uri)?.await?;
+
+    result.then(|| {}).ok_or(Error::from(E_FAIL))
 }
