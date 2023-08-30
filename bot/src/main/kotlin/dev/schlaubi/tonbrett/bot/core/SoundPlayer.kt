@@ -75,10 +75,8 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         }.toString()
         currentUser = user
         player.injectTrack(url, noReplace = alreadyLocked) {
-            filters {
-                if (sound.volume != null) {
-                    volume = (sound.volume!!.toFloat() / 2.0f / 100.0f)
-                }
+            if (sound.volume != null) {
+                volume = sound.volume
             }
         }
         launch {
