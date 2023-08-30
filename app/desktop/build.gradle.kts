@@ -2,19 +2,42 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.org.jline.utils.OSUtils
 
 plugins {
-    kotlin("jvm")
+    kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("org.jetbrains.compose")
 }
 
-dependencies {
-    implementation(projects.app.shared)
-    implementation(projects.app.desktop.uwpHelper)
-    implementation(compose.desktop.currentOs)
-    implementation(libs.logback)
-    implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.server.cors)
+kotlin {
+    jvm()
+
+    sourceSets {
+        val windowsMain by creating {
+            dependsOn(commonMain.get())
+            dependencies {
+                implementation(projects.app.desktop.uwpHelper)
+            }
+        }
+        val nonWindowsMain by creating {
+            dependsOn(commonMain.get())
+        }
+
+        named("jvmMain") {
+            if (OSUtils.IS_WINDOWS) {
+                dependsOn(windowsMain)
+            } else {
+                dependsOn(nonWindowsMain)
+            }
+            dependencies {
+                implementation(projects.app.shared)
+                implementation(project.dependencies.compose.desktop.currentOs)
+                implementation(libs.logback)
+                implementation(libs.ktor.server.netty)
+                implementation(libs.ktor.server.cors)
+            }
+        }
+    }
 }
+
 
 compose.desktop {
     application {
