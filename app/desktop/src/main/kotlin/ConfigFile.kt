@@ -13,15 +13,9 @@ import java.nio.file.StandardOpenOption
 import kotlin.io.path.*
 
 val windowsAppDataFolder: String? by lazy {
-    val result = runCatching {
-        NativeUtil.getAppdataFolder()
-    }
-
-    if (result.isFailure) {
-        result.exceptionOrNull()!!.printStackTrace()
-    }
-
-    result.getOrNull()
+    runCatching { getAppDataRoaming() }
+        .onFailure(Throwable::printStackTrace)
+        .getOrNull()
 }
 
 @Serializable
