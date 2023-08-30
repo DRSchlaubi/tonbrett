@@ -19,7 +19,7 @@
 -dontwarn ch.qos.logback.**
 -dontwarn okhttp3.**
 -dontwarn io.ktor.**
--dontwarn dev.schlaubi.tonbrett.app.desktop.NativeUtil
+-dontwarn dev.schlaubi.tonbrett.app.desktop.uwp_helper.**
 
 # kmongo
 -keep class org.litote.kmongo.id.UUIDStringIdGeneratorProvider
