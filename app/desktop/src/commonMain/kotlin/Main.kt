@@ -67,7 +67,7 @@ fun main(reAuthorize: Boolean, uwp: Boolean = false, onAuth: () -> Unit) {
         } else {
             Route.Auth.Type.APP
         }
-        browseUrl(href(Route.Auth(protocol), URLBuilder(getUrl())).build().toURI())
+        launchUri(href(Route.Auth(protocol), URLBuilder(getUrl())).build().toURI())
         if (!uwp) {
             startAuthorizationServer(reAuthorize, onAuth)
         } else {
@@ -96,7 +96,7 @@ fun startApplication(uwp: Boolean) = application {
             ) {
                 Text(strings.needsUpdate, color = ColorScheme.textColor)
                 Button({
-                    browseUrl(URI("https://github.com/DRSchlaubi/tonbrett/releases/latest"))
+                    launchUri(URI("https://github.com/DRSchlaubi/tonbrett/releases/latest"))
                     exitApplication()
                 }) {
                     Icon(Icons.Default.Refresh, null)
