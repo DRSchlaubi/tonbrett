@@ -59,6 +59,15 @@ jobs:
 
           $path = (Resolve-Path jextract-20\bin).Path
           echo $path | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Setup jextract
+        if: matrix.os != 'windows-latest'
+        shell: powershell
+        run: |
+          curl -L https://download.java.net/java/early_access/jextract/1/openjdk-20-jextract+1-2_windows-x64_bin.tar.gz -o jextract.tar.gz
+
+          tar xzvf jextract.tar.gz
+
+          echo $(realpath jextract-20\bin) >> GITHUB_PATH
       - name: Setup MacOS signing
         if: matrix.os == 'macos-latest'
         env:
