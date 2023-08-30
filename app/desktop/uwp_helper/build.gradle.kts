@@ -26,7 +26,7 @@ tasks {
 
         // I cannot figure out how to change the path on GitHub Actions
         val command = if(System.getenv("GITHUB_RUN_NUMBER") != null) {
-            rootProject.file("jextract-20/bin/jextract").absolutePath
+            rootProject.file("jextract-20/bin/jextract.bat").absolutePath
         } else {
             "jextract"
         }
