@@ -24,8 +24,15 @@ tasks {
         inputs.file(header)
         outputs.dir(jextractOutput)
 
+        // I cannot figure out how to change the path on GitHub Actions
+        val command = if(System.getenv("GITHUB_RUN_NUMBER") != null) {
+            rootProject.file("jextract-20/bin/jextract").absolutePath
+        } else {
+            "jextract"
+        }
+
         commandLine(
-            "jextract",
+            command,
             "--header-class-name", "UwpHelper",
             "--target-package", "dev.schlaubi.tonbrett.app.desktop.uwp_helper",
             "--library", "uwp_helper",
