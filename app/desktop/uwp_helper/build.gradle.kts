@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.org.jline.utils.OSUtils
+
 plugins {
     java
 }
@@ -28,7 +30,11 @@ tasks {
         val command = if(System.getenv("GITHUB_RUN_NUMBER") != null) {
             rootProject.file("jextract-20/bin/jextract.bat").absolutePath
         } else {
-            "jextract"
+            if (OSUtils.IS_WINDOWS) {
+                "jextract.bat"
+            } else {
+                "jextract"
+            }
         }
 
         commandLine(

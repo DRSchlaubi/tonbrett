@@ -40,7 +40,7 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
 mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.1.8-SNAPSHOT" }
 
-imageloader = { group = "io.github.qdsfdhvh", name = "image-loader", version = "1.6.4" }
+imageloader = { group = "io.github.qdsfdhvh", name = "image-loader", version = "1.6.5" }
 
 kotlin-logging = { group = "io.github.microutils", name = "kotlin-logging", version = "3.0.5" }
 

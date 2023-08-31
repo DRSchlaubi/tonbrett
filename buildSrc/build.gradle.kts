@@ -12,11 +12,7 @@ repositories {
 
 dependencies {
     implementation(libs.google.artifactregistry)
-    implementation(libs.kotlinx.serialization) {
-        version {
-            strictly("1.6.0-RC")
-        }
-    }
+    implementation(libs.kotlinx.serialization)
 }
 
 java {
