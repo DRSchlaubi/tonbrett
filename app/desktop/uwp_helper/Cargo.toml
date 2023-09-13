@@ -12,8 +12,8 @@ version = "0.51.1"
 features = ["System", "Foundation", "Storage", "Win32_Foundation"]
 
 [dependencies.tokio]
-version = "1.29.1"
+version = "1.32.0"
 features = ["macros", "rt-multi-thread"]
 
 [build-dependencies]
-cbindgen = "0.25.0"
+cbindgen = "0.26.0"
