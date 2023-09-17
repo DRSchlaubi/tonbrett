@@ -53,7 +53,7 @@ kvault = { group = "com.liftric", name = "kvault", version = "1.10.0" }
 
 androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.7.2" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
-androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.10.1" }
+androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.12.0" }
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.6.0" }
 mdc-android = { group = "com.google.android.material", name = "material", version = "1.9.0" }
 google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
