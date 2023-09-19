@@ -109,7 +109,7 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
             arguments.description, arguments.emoji?.toEmoji(),
             public = arguments.public,
             tag = arguments.tag,
-            volume = arguments.volume
+            volume = arguments.volume ?: 100
         )
         val file = Config.SOUNDS_FOLDER / sound.fileName
         val soundsFolder = file.parent
