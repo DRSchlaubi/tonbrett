@@ -20,7 +20,7 @@ internal val format = ResourcesFormat(TonbrettSerializersModule)
  */
 @OptIn(ExperimentalSerializationApi::class)
 inline fun <reified R : Any> routeHandler(body: (R) -> Unit) {
-    val serializer = serializer<R>()
+    val serializer = format.serializersModule.serializer<R>()
     check(serializer.descriptor.annotations.any { it is Resource }) {
         "Specified type must be resource"
     }
