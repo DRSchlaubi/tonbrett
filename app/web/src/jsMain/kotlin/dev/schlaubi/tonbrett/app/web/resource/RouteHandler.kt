@@ -25,9 +25,9 @@ inline fun <reified R : Any> routeHandler(body: (R) -> Unit) {
         "Specified type must be resource"
     }
     val pattern = format.encodeToPathPattern(serializer)
-    if (window.location.pathname.replaceLeadingSlash() != pattern) return
+    if (window.location.pathname.dropLeadingSlash() != pattern) return
 
-    val parameters = window.location.search.parseUrlEncodedParameters()
+    val parameters = window.location.search.dropLeadingQuery().parseUrlEncodedParameters()
     val resources = format.decodeFromParameters(serializer, parameters)
 
     body(resources)
@@ -48,8 +48,13 @@ inline fun <reified R : Any> ComposeRouteHandler(crossinline content: @Composabl
 }
 
 @PublishedApi
-internal fun String.replaceLeadingSlash() = replaceFirstChar {
-    if (it == '/') {
+internal fun String.dropLeadingSlash() = dropLeading('/')
+@PublishedApi
+internal fun String.dropLeadingQuery() = dropLeading('?')
+
+@PublishedApi
+internal fun String.dropLeading(char: Char) = replaceFirstChar {
+    if (it == char) {
         ""
     } else {
         it.toString()
