@@ -59,7 +59,10 @@ public class Route {
              */
             @Resource("audio")
             public class Audio(public val parent: Sound, public val contentType: String? = null) {
-                public constructor(id: String, contentType: ContentType? = null) : this(Sound(id), contentType?.toString())
+                public constructor(id: String, contentType: ContentType? = null) : this(
+                    Sound(id),
+                    contentType?.toString()
+                )
 
                 public operator fun component1(): String = parent.id
                 public operator fun component2(): String? = contentType
@@ -141,6 +144,15 @@ public class Route {
     @Resource("player/stop")
     public data class StopPlayer(val parent: Route = Route())
 
+    /**
+     * /soundboard/deeplink/login - Deeplink into the app for authorization.
+     *
+     * @property protocol whether to use the `tonbrett://` protocol to log in
+     * @property cli whether to show the CLI login command
+     */
     @Resource("deeplink/login")
-    public data class AuthDeepLink(val parent: Route = Route())
+    public data class AuthDeepLink(
+        val protocol: Boolean = false,
+        val cli: Boolean = false,
+        val parent: Route = Route())
 }
