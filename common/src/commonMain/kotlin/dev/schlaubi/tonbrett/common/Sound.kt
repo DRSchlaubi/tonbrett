@@ -31,7 +31,7 @@ public data class Sound(
     @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val public: Boolean = true,
     val tag: String? = null,
-    val volume: Int? = null
+    val volume: Int = 100
 ) {
     /**
      * The file name of this sounds audio file.

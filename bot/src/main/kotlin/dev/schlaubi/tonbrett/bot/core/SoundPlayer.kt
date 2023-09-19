@@ -60,7 +60,7 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         }
     }
 
-    suspend fun stop()  {
+    suspend fun stop() {
         updateAvailability(true)
         player.skip()
     }
@@ -75,9 +75,7 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         }.toString()
         currentUser = user
         player.injectTrack(url, noReplace = alreadyLocked) {
-            if (sound.volume != null) {
-                volume = sound.volume
-            }
+            volume = sound.volume
         }
         launch {
             // Wait for track to end
