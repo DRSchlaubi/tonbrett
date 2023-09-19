@@ -163,7 +163,7 @@ jobs:
         with:
           name: android-app
           path: app/android/build/outputs/apk/release/*.apk
-      - uses: r0adkll/upload-google-play@v1
+      - uses: r0adkll/upload-google-play@v1.1.2
         name: Release on Play Store
         if: startsWith(github.ref, 'refs/tags/')
         with:
