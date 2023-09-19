@@ -1,4 +1,4 @@
-FROM gradle:jdk20-alpine as builder
+FROM gradle:jdk20 as builder
 WORKDIR /usr/app
 COPY . .
 RUN ./gradlew --no-daemon installBotArchive
