@@ -26,7 +26,6 @@ import mu.KotlinLogging
 
 private val LOG = KotlinLogging.logger {}
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SoundList(errorReporter: ErrorReporter, voiceState: User.VoiceState?) {
     var playingSound by remember { mutableStateOf<Id<Sound>?>(null) }
