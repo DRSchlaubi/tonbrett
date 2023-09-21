@@ -15,5 +15,6 @@ features = ["System", "Foundation", "Storage", "Win32_Foundation"]
 version = "1.32.0"
 features = ["macros", "rt-multi-thread"]
 
-[build-dependencies]
-cbindgen = "0.26.0"
+[build-dependencies.cbindgen]
+version = "0.26.0"
+default-features = false
