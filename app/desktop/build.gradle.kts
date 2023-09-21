@@ -103,7 +103,23 @@ tasks {
         archiveExtension = "tar.gz"
     }
 
-    val prepareUwpWorkspace by registering(Copy::class) {
+    registerMsixTasks()
+    registerMsixTasks("MSStore", msStore = true)
+
+    withType<JavaCompile> {
+        options.compilerArgs.add("--enable-preview")
+    }
+}
+
+fun TaskContainerScope.registerMsixTasks(prefix: String = "", msStore: Boolean = false) {
+    val dirName = if (prefix.isNotBlank()) {
+        "$prefix-msix-workspace"
+    } else {
+        "msix-workspace"
+    }
+    val targetDir = layout.buildDirectory.dir(dirName)
+
+    val prepareUwpWorkspace = register<Copy>("prepare${prefix}UwpWorkspace") {
         dependsOn("uwp_helper:compileRust")
         from(named("packageReleaseAppImage")) {
             eachFile {
@@ -114,27 +130,29 @@ tasks {
             include("*.dll")
         }
         from(file("msix"))
-        into(layout.buildDirectory.dir("msix-workspace"))
+        into(targetDir)
     }
 
-    val updateMsixVersion by registering(Exec::class) {
+    val updateMsixVersion = register<Exec>("update${prefix}MsixVersion") {
         inputs.property("version", project.version)
-        val dir = layout.buildDirectory.dir("msix-workspace").get()
+        val dir = targetDir.get()
         outputs.file(dir.file("appxmanifest.xml"))
         dependsOn(prepareUwpWorkspace)
 
         workingDir = dir.asFile
         val script = dir.file("update_msix_version.ps1")
-        commandLine("cmd", "/c", "Powershell -File ${script.asFile.absolutePath} -Version ${project.version}.0")
+        val command = buildString {
+            append("Powershell -File ${script.asFile.absolutePath} -Version ${project.version}.0")
+            if (msStore) {
+                append(" -IsMsix true")
+            }
+        }
+        commandLine("cmd", "/c", command)
     }
 
-    val finalizeMsixWorkspace by registering(Delete::class) {
+    val finalizeMsixWorkspace = register<Delete>("finalize${prefix}MsixWorkspace") {
         dependsOn(updateMsixVersion)
-        delete(layout.buildDirectory.file("msix-workspace/update_msix_version.ps1"))
-    }
-
-    withType<JavaCompile> {
-        options.compilerArgs.add("--enable-preview")
+        delete(targetDir.get().file("update_msix_version.ps1"))
     }
 
     afterEvaluate {
