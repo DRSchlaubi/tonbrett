@@ -208,15 +208,31 @@ jobs:
         name: Download Artifacts from Windows
         with:
           name: msstore-workspace
-      - uses: microsoft/setup-msstore-cli@v1
+      - name: Setup MSbuild
+        uses: microsoft/setup-msbuild@v1.3.1
+      - name: Build MSIX
+        run: |
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d . /p Tonbrett.msix
       - name: Configure the Microsoft Store CLI
-        run: msstore reconfigure --tenantId ${{ secrets.MS_TENANT_ID }} --clientId ${{ secrets.MS_CLIENT_ID }} --clientSecret ${{ secrets.MS_CLIENT_SECRET }} --sellerId ${{ secrets.MS_SELLER_ID }}
-      - name: Create manifest
-        run: mv appxmanifest.xml Package.appxmanifest
-      - name: Create MSIX
-        run: msstore package .
-      - name: Publish MSIX to the Microsoft Store
-        run: msstore publish -v
+        run: |
+          Install-PackageProvider -Name NuGet -Force
+          Install-Module -Name StoreBroker -Force
+      - name: Setup MSbuild
+        uses: microsoft/setup-msbuild@v1.3.1
+      - name: Login to MSStore
+        env:
+          CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.MS_CLIENT_SECRET }}
+        run: |
+          $user = $Env:CLIENT_ID
+          $password = ConvertTo-SecureString $Env:CLIENT_SECRET -AsPlainText -Force
+          $Cred = New-Object System.Management.Automation.PSCredential($user, $password)
+          Set-StoreBrokerAuthentication -TenantId ${{ secrets.MS_TENANT_ID }} -Credential $Cred
+      - name: Build MSIX
+        run: |
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d app/desktop/build/msix-workspace /p Tonbrett.msix
+      - name: Upload package to store
+        run:  Update-ApplicationSubmission -AppId 9P61S67DVWM2 -PackagePath ".\Tonbrett.msix" -SubmissionDataPath .\submission.json -AutoCommit -Force
   create_release:
     name: Create Release
     runs-on: windows-latest # for some weird reason this job does not get picked on ubuntu

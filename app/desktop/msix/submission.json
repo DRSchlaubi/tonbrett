@@ -1,0 +1,69 @@
+﻿{
+  "packageParameters": {
+    "PDPRootPath": "",
+    "Release": "",
+    "PDPInclude": [
+    ],
+    "PDPExclude": [
+    ],
+    "LanguageExclude": [
+      "default"
+    ],
+    "ImagesRootPath": "",
+    "MediaFallbackLanguage": "",
+    "AppxPath": [
+    ],
+    "OutPath": "",
+    "OutName": "",
+    "DisableAutoPackageNameFormatting": false
+  },
+    "appSubmission": {
+        "appId": "9P61S67DVWM2",
+        "targetPublishMode": "Immediate",
+        "targetPublishDate": "1601-01-01T01:00:00.0000000+01:00",
+        "visibility": "Public",
+        "pricing": {
+            "priceId": "Free",
+            "trialPeriod": "NoFreeTrial",
+            "marketSpecificPricings": {
+    "LB":  "NotAvailable",
+    "EH":  "NotAvailable"
+},
+            "sales": [ ]
+        },
+        "allowTargetFutureDeviceFamilies": {
+            "Xbox": false,
+            "Team": false,    
+            "Holographic": false,
+            "Desktop": true,
+            "Mobile": false
+        },
+        "allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies": true,
+        "enterpriseLicensing": "Online",
+        "applicationCategory": "Entertainment",
+        "hardwarePreferences": [
+    "Keyboard",
+    "Mouse"
+],
+        "hasExternalInAppProducts": false,
+        "meetAccessibilityGuidelines": false,
+        "canInstallOnRemovableMedia": true,
+        "automaticBackupEnabled": true,
+        "isGameDvrEnabled": false,
+        "gamingOptions": [{
+            "genres": [ ],
+            "isLocalMultiplayer": false,
+            "isLocalCooperative": false,
+            "isOnlineMultiplayer": false,
+            "isOnlineCooperative": false,
+            "localMultiplayerMinPlayers": 0,
+            "localMultiplayerMaxPlayers": 0,
+            "localCooperativeMinPlayers": 0,
+            "localCooperativeMaxPlayers": 0,
+            "isBroadcastingPrivilegeGranted": true,
+            "isCrossPlayEnabled": false,
+            "kinectDataForExternal": "Disabled"
+        }],
+        "notesForCertification": "Due to limitations of the Discord API, you can only use the Soundboard on servers where the bot is on.\n\nRight now you would need to join this server to do so: https:\\\\discord.gg/uNqsSVWU8T"
+    }
+}
