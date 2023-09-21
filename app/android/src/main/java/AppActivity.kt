@@ -23,7 +23,9 @@ class AppActivity : AppCompatActivity() {
             context.resetApi()
             ProvideContext(context) {
                 ProvideImageLoader {
-                    TonbrettApp()
+                    UpdateAwareAppScope(activity = this) {
+                        TonbrettApp()
+                    }
                 }
             }
         }

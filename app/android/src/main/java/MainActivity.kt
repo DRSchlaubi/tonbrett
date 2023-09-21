@@ -43,7 +43,9 @@ class MainActivity : AppCompatActivity() {
         if (context.getTokenOrNull() == null) {
             setContent {
                 TonbrettAuthorizationScreenTheme {
-                    AuthorizationScreen()
+                    UpdateAwareAppScope(activity = this) {
+                        AuthorizationScreen()
+                    }
                 }
             }
         } else {

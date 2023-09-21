@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.google.play)
     implementation(libs.google.play.ktx)
     implementation(compose.material3)
+    implementation(compose.materialIconsExtended)
     implementation(libs.kotlinx.coroutines.play.services)
 }
 
