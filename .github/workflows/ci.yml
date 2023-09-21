@@ -201,6 +201,7 @@ jobs:
   release_to_msstore:
     name: Publish to MSStore
     runs-on: windows-latest
+    needs: [build_desktop_app]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/download-artifact@v3
