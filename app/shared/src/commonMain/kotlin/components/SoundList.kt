@@ -1,7 +1,6 @@
 package dev.schlaubi.tonbrett.app.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,6 @@ import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ErrorReporter
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
-import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.common.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
@@ -100,9 +98,7 @@ fun SoundList(errorReporter: ErrorReporter, voiceState: User.VoiceState?) {
     if (loading) {
         LaunchedEffect(Unit) {
             withContext(Dispatchers.IO) {
-                if (voiceState?.channelMismatch == false) {
-                    sounds = api.getSounds()
-                }
+                sounds = api.getSounds()
                 loading = false
             }
         }
@@ -110,24 +106,22 @@ fun SoundList(errorReporter: ErrorReporter, voiceState: User.VoiceState?) {
         NonListBlock {
             CircularProgressIndicator()
         }
-    }
-
-    Column {
-        val renderingSounds = !loading && !channelMismatch && !offline
-        AnimatedContent(renderingSounds) { render ->
-            if (render) {
-                SoundContainer(sounds, errorReporter, playingSound, !available) {
-                    sounds = it
-                }
-            }
-        }
-
-        NonListBlock(Modifier.canClearFocus()) {
+    } else {
+        Column {
             val strings = LocalStrings.current
-            when {
-                offline -> ErrorText(strings.offline)
-                channelMismatch -> ErrorText(strings.wrongChannelExplainer)
-                !loading && sounds.isEmpty() -> ErrorText(strings.noSounds)
+            val availabilityReason = when {
+                offline -> strings.offline
+                channelMismatch -> strings.wrongChannelExplainer
+                !loading && sounds.isEmpty() -> strings.noSounds
+                !available -> strings.playerBusy
+                else -> null
+            }
+            AnimatedContent(!loading) { render ->
+                if (render) {
+                    SoundContainer(sounds, errorReporter, playingSound, availabilityReason) {
+                        sounds = it
+                    }
+                }
             }
         }
     }

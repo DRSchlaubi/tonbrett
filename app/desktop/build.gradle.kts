@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.internal.utils.localPropertiesFile
 import org.jetbrains.kotlin.org.jline.utils.OSUtils
 
 plugins {
@@ -22,7 +23,7 @@ kotlin {
         }
 
         named("jvmMain") {
-            if (OSUtils.IS_WINDOWS) {
+            if (OSUtils.IS_WINDOWS && System.getenv("GITHUB_REF") != null) {
                 dependsOn(windowsMain)
             } else {
                 dependsOn(nonWindowsMain)

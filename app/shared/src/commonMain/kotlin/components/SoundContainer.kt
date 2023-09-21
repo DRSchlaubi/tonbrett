@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import dev.schlaubi.tonbrett.app.ColorScheme
@@ -45,9 +46,10 @@ fun SoundContainer(
     sounds: List<Sound>,
     errorReporter: ErrorReporter,
     playingSound: Id<Sound>?,
-    disabled: Boolean,
+    unavailableFor: String?,
     soundUpdater: SoundUpdater
 ) {
+    val disabled = unavailableFor != null
     Column {
         SearchBarScope(soundUpdater) {
             LazyVerticalGrid(GridCells.Adaptive(160.dp), Modifier.canClearFocus().fillMaxHeight()) {
@@ -56,13 +58,16 @@ fun SoundContainer(
                 }
             }
 
-            if (disabled) {
+            if (unavailableFor != null) {
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp)
                         .background(ColorScheme.disabled.copy(alpha = .4f))
                         .zIndex(1f)
-                ) {}
+                ) {
+                    Text(unavailableFor, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(), fontSize = 25.sp)
+                }
             }
         }
     }
