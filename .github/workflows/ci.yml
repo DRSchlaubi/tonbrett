@@ -216,7 +216,7 @@ jobs:
       - name: Build MSIX
         run: |
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d . /p Tonbrett.msix
-      - name: Login to MSStore
+      - name: Upload to MSStore
         env:
           CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.MS_CLIENT_SECRET }}
@@ -225,8 +225,9 @@ jobs:
           $password = ConvertTo-SecureString $Env:CLIENT_SECRET -AsPlainText -Force
           $Cred = New-Object System.Management.Automation.PSCredential($user, $password)
           Set-StoreBrokerAuthentication -TenantId ${{ secrets.MS_TENANT_ID }} -Credential $Cred
-          Update-ApplicationSubmission -AppId 9P61S67DVWM2 -PackagePath ".\Tonbrett.msix" -SubmissionDataPath .\submission.json -AutoCommit -Force
-           
+          $sub = Update-ApplicationSubmission -AppId 9P61S67DVWM2 -PackagePath ".\Tonbrett.msix" -SubmissionDataPath .\submission.json -Force
+          $subId = $sub[0];
+          Complete-ApplicationSubmission -AppId 9P61S67DVWM2 -SubmissionId $subId           
 
   create_release:
     name: Create Release
