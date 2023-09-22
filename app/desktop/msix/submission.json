@@ -1,4 +1,4 @@
-﻿{
+{
   "packageParameters": {
     "PDPRootPath": "",
     "Release": "",
@@ -20,14 +20,15 @@
     "appSubmission": {
         "appId": "9P61S67DVWM2",
         "targetPublishMode": "Immediate",
-        "targetPublishDate": "1601-01-01T01:00:00.0000000+01:00",
+        "targetPublishDate": "1601-01-01T00:00:00.0000000Z",
         "visibility": "Public",
         "pricing": {
             "priceId": "Free",
             "trialPeriod": "NoFreeTrial",
             "marketSpecificPricings": {
-    "LB":  "NotAvailable",
-    "EH":  "NotAvailable"
+  "CN": "NotAvailable",
+  "LB": "NotAvailable",
+  "EH": "NotAvailable"
 },
             "sales": [ ]
         },
@@ -42,8 +43,8 @@
         "enterpriseLicensing": "Online",
         "applicationCategory": "Entertainment",
         "hardwarePreferences": [
-    "Keyboard",
-    "Mouse"
+  "Keyboard",
+  "Mouse"
 ],
         "hasExternalInAppProducts": false,
         "meetAccessibilityGuidelines": false,
@@ -51,7 +52,7 @@
         "automaticBackupEnabled": true,
         "isGameDvrEnabled": false,
         "gamingOptions": [{
-            "genres": [ ],
+            "genres": null,
             "isLocalMultiplayer": false,
             "isLocalCooperative": false,
             "isOnlineMultiplayer": false,
