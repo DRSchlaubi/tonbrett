@@ -224,11 +224,11 @@ jobs:
           $user = $Env:CLIENT_ID
           $password = ConvertTo-SecureString $Env:CLIENT_SECRET -AsPlainText -Force
           $Cred = New-Object System.Management.Automation.PSCredential($user, $password)
-          Set-StoreBrokerAuthentication -TenantId ${{ secrets.MS_TENANT_ID }} -Credential $Cred
-          $sub = Update-ApplicationSubmission -AppId 9P61S67DVWM2 -PackagePath ".\Tonbrett.msix" -SubmissionDataPath .\submission.json -ReplacePackages -Force
-          $subId = $sub[0];
-          Complete-ApplicationSubmission -AppId 9P61S67DVWM2 -SubmissionId $subId           
-
+          $sub = New-ApplicationSubmission -AppId 9P61S67DVWM2 -Force
+          $json = (Get-Content .\submission.json -Encoding UTF8) | ConvertFrom-Json
+          Set-ApplicationSubmission -AppId $appId -UpdatedSubmission $sub
+          Set-SubmissionPackage -PackagePath Tonbrett.msix -UploadUrl ($sub.fileUploadUrl)
+          Complete-ApplicationSubmission -AppId $appId -SubmissionId ($sub.id)
   create_release:
     name: Create Release
     runs-on: windows-latest # for some weird reason this job does not get picked on ubuntu
