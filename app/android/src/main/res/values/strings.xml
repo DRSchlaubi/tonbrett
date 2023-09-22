@@ -1,3 +1,7 @@
 <resources>
     <string name="retry">Retry</string>
+    <string name="update_available">Update available</string>
+    <string name="update_pending">Update queued</string>
+    <string name="update_downloading">Downloading: %s</string>
+    <string name="update_download_done">Install Update</string>
 </resources>

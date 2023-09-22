@@ -3,12 +3,7 @@ package dev.schlaubi.tonbrett.app.android
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.OpenInNew
@@ -16,17 +11,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.google.android.play.core.appupdate.AppUpdateInfo
@@ -37,6 +26,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.text.NumberFormat
 
 @Composable
 fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
@@ -50,6 +40,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
     val progressListener = remember {
         InstallStateUpdatedListener {
             when (it.installStatus()) {
+                InstallStatus.PENDING -> progress = -100.0
                 InstallStatus.DOWNLOADING -> {
                     progress =
                         it.bytesDownloaded().toDouble() / it.totalBytesToDownload().toDouble()
@@ -57,6 +48,11 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
 
                 InstallStatus.DOWNLOADED -> {
                     progress = 2.0
+                }
+
+                InstallStatus.FAILED, InstallStatus.CANCELED -> {
+                    progress = null
+                    updateInfo = null
                 }
 
                 else -> {}
@@ -107,7 +103,9 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
 
                     }
 
-                    if (currentProgress < 0) {
+                    if (currentProgress == -100.0) {
+                      Info(stringResource(R.string.update_pending))
+                    } else if (currentProgress < 0) {
                         Button(onClick = { scope.launch {
                             appUpdateManager.startUpdateFlow(
                                 currentUpdateInfo,
@@ -115,10 +113,10 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
                                 AppUpdateOptions.defaultOptions(AppUpdateType.FLEXIBLE)
                             )
                         } }) {
-                            Info("Update Available")
+                            Info(stringResource(R.string.update_available))
                         }
                     } else if (currentProgress in 0.0..1.0) {
-                        Info("Updating")
+                        Info(stringResource(R.string.update_downloading, NumberFormat.getPercentInstance().format(currentProgress)))
                     } else {
                         Button(onClick = {
                             scope.launch {
@@ -126,7 +124,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
                             }
                         }) {
                             Icon(Icons.Default.OpenInNew, null)
-                            Info("Update Available")
+                            Info(stringResource(R.string.update_download_done))
                         }
                     }
                 }
