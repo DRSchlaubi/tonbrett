@@ -224,8 +224,8 @@ jobs:
           $user = $Env:CLIENT_ID
           $password = ConvertTo-SecureString $Env:CLIENT_SECRET -AsPlainText -Force
           $Cred = New-Object System.Management.Automation.PSCredential($user, $password)
-          $sub = New-ApplicationSubmission -AppId 9P61S67DVWM2 -Force
           Set-StoreBrokerAuthentication -TenantId ${{ secrets.MS_TENANT_ID }} -Credential $Cred
+          $sub = New-ApplicationSubmission -AppId 9P61S67DVWM2 -Force
           $sub = New-ApplicationSubmission -AppId 9P61S67DVWM2 -Force
           $json = (Get-Content .\submission.json -Encoding UTF8) | ConvertFrom-Json
           Set-ApplicationSubmission -AppId $appId -UpdatedSubmission $sub
