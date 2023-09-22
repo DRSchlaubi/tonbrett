@@ -225,8 +225,9 @@ jobs:
           $password = ConvertTo-SecureString $Env:CLIENT_SECRET -AsPlainText -Force
           $Cred = New-Object System.Management.Automation.PSCredential($user, $password)
           Set-StoreBrokerAuthentication -TenantId ${{ secrets.MS_TENANT_ID }} -Credential $Cred
-          $sub = New-ApplicationSubmission -AppId 9P61S67DVWM2 -Force
-          $sub = New-ApplicationSubmission -AppId 9P61S67DVWM2 -Force
+          $appId = "9P61S67DVWM2";
+          $sub = New-ApplicationSubmission -AppId $appId -Force
+          $sub = New-ApplicationSubmission -AppId $appId -Force
           $json = (Get-Content .\submission.json -Encoding UTF8) | ConvertFrom-Json
           Set-ApplicationSubmission -AppId $appId -UpdatedSubmission $sub
           Set-SubmissionPackage -PackagePath Tonbrett.msix -UploadUrl ($sub.fileUploadUrl)
