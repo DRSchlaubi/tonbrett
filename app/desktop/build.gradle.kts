@@ -104,8 +104,10 @@ tasks {
         archiveExtension = "tar.gz"
     }
 
-    registerMsixTasks()
-    registerMsixTasks("MSStore", msStore = true)
+    if (OSUtils.IS_WINDOWS) {
+        registerMsixTasks()
+        registerMsixTasks("MSStore", msStore = true)
+    }
 
     withType<JavaCompile> {
         options.compilerArgs.add("--enable-preview")
