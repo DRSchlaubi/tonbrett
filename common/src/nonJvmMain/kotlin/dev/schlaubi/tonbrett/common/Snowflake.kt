@@ -11,6 +11,7 @@ import kotlinx.serialization.internal.InlinePrimitiveDescriptor
 
 @Serializable(with = Snowflake.Serializer::class)
 public actual class Snowflake actual constructor(public actual val value: ULong) {
+    override fun toString(): String = value.toString()
     public companion object Serializer : KSerializer<Snowflake> {
         @OptIn(InternalSerializationApi::class)
         override val descriptor: SerialDescriptor = InlinePrimitiveDescriptor("Snowflake", ULong.serializer())
