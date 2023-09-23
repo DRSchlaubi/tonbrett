@@ -26,6 +26,7 @@ fun main() {
         if (sessionStorage[tokenKey] == null) {
             window.location.href = href(Route.Auth(type = Route.Auth.Type.WEB))
         } else {
+            context.resetApi()
             ProvideContext(context) {
                 TonbrettApp()
             }
