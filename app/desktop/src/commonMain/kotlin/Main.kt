@@ -23,16 +23,13 @@ import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.TonbrettApp
+import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.api.ProvideContext
-import dev.schlaubi.tonbrett.app.api.getUrl
 import dev.schlaubi.tonbrett.app.title
-import dev.schlaubi.tonbrett.client.href
-import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
-import io.ktor.serialization.ContentConvertException
+import io.ktor.serialization.*
 import mu.KotlinLogging
 import java.net.URI
-import kotlin.system.exitProcess
 import java.awt.Window as AWTWindow
 
 private val LOG = KotlinLogging.logger { }
@@ -62,23 +59,13 @@ fun main(args: Array<String>) {
 fun main(reAuthorize: Boolean, uwp: Boolean = false, onAuth: () -> Unit) {
     val config = getConfig()
     if (reAuthorize || config.sessionToken == null) {
-        val protocol = if (uwp) {
-            Route.Auth.Type.PROTOCOL
-        } else {
-            Route.Auth.Type.APP
-        }
-        launchUri(href(Route.Auth(protocol), URLBuilder(getUrl())).build().toURI())
-        if (!uwp) {
-            startAuthorizationServer(reAuthorize, onAuth)
-        } else {
-            exitProcess(0)
-        }
+        startApplication(uwp, true)
     } else {
         startApplication(uwp)
     }
 }
 
-fun startApplication(uwp: Boolean) = application {
+fun startApplication(uwp: Boolean, forAuth: Boolean = false) = application {
     val sessionExpired = remember { mutableStateOf(false) }
     var needsUpdate by remember { mutableStateOf(false) }
     val exceptionHandler = ExceptionHandlerFactory {
@@ -105,7 +92,7 @@ fun startApplication(uwp: Boolean) = application {
             }
         }
     } else {
-        startActualApplication(uwp, exceptionHandler, sessionExpired)
+        startActualApplication(uwp, forAuth, exceptionHandler, sessionExpired)
     }
 }
 
@@ -113,27 +100,34 @@ fun startApplication(uwp: Boolean) = application {
 @Composable
 private fun ApplicationScope.startActualApplication(
     uwp: Boolean,
+    forAuth: Boolean,
     exceptionHandler: ExceptionHandlerFactory, sessionExpired: MutableState<Boolean>
 ) {
+    var needsAuth by remember { mutableStateOf(forAuth) }
+    var firstAuth by remember { mutableStateOf(true) }
     CompositionLocalProvider(LocalWindowExceptionHandlerFactory provides exceptionHandler) {
         TonbrettWindow {
             val context = remember {
                 object : ConfigBasedAppContext() {
                     override fun reAuthorize() {
-                        window.isMinimized = true
-                        main(reAuthorize = true, uwp = uwp) {
-                            resetApi()
-                            window.isMinimized = false
-                            sessionExpired.value = false
-                        }
+                        sessionExpired.value = false
+                        firstAuth = false
+                        needsAuth = true
                     }
                 }
             }
 
-            context.resetApi()
-            ProvideContext(context) {
-                ProvideImageLoader {
-                    TonbrettApp(sessionExpired)
+            if (needsAuth) {
+                AuthorizationScreen(uwp, !firstAuth) {
+                    context.resetApi()
+                    needsAuth = false
+                }
+            } else {
+                context.resetApi()
+                ProvideContext(context) {
+                    ProvideImageLoader {
+                        TonbrettApp(sessionExpired)
+                    }
                 }
             }
         }
@@ -141,7 +135,7 @@ private fun ApplicationScope.startActualApplication(
 }
 
 @Composable
-private fun ApplicationScope.TonbrettWindow(content: @Composable FrameWindowScope.() -> Unit) = Window(
+fun ApplicationScope.TonbrettWindow(content: @Composable FrameWindowScope.() -> Unit) = Window(
     onCloseRequest = ::exitApplication,
     title = title,
     icon = BitmapPainter(useResource("logo.png", ::loadImageBitmap)),

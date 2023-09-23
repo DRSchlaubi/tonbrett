@@ -31,6 +31,8 @@ kotlin {
             dependencies {
                 implementation(projects.app.shared)
                 implementation(project.dependencies.compose.desktop.currentOs)
+                implementation(project.dependencies.compose.materialIconsExtended)
+                implementation(project.dependencies.compose.material3)
                 implementation(libs.logback)
                 implementation(libs.ktor.server.netty)
                 implementation(libs.ktor.server.cors)

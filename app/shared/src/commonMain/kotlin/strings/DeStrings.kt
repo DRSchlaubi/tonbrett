@@ -30,5 +30,7 @@ val DeStrings = Strings(
     appCrash = "Die App ist abgestürzt",
     unknownError = "Es ist ein unerwarteter Fehler aufgetreten",
     copyUrl = "Audio-URL kopieren",
-    playerBusy = "Jemand anders spielt gerade einen Ton ab"
+    playerBusy = "Jemand anders spielt gerade einen Ton ab",
+    pleaseSignIn = "Bitte melde dich an um die APp zu benutzen",
+    signInWithDiscord = "Mit Discord anmelden"
 )

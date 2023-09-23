@@ -30,5 +30,7 @@ val EnStrings = Strings(
     appCrash = "The App crashed",
     unknownError = "An unknown error occurred",
     copyUrl = "Copy Audio-URL",
-    playerBusy = "Someone else is currently playing a sound"
+    playerBusy = "Someone else is currently playing a sound",
+    pleaseSignIn = "Please sign in to use the app",
+    signInWithDiscord = "Sign in with Discord"
 )

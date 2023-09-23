@@ -14,10 +14,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 
-fun startAuthorizationServer(reAuthorize: Boolean, onAuth: () -> Unit) {
+fun startAuthorizationServer(onAuth: () -> Unit) {
     val scope = CoroutineScope(Dispatchers.Default)
     scope.embeddedServer(Netty, port = authServerPort, module = { authModule(onAuth, scope) })
-        .start(wait = !reAuthorize).stopServerOnCancellation()
+        .start().stopServerOnCancellation()
 }
 
 fun Application.authModule(onAuth: () -> Unit, scope: CoroutineScope) {

@@ -27,5 +27,7 @@ data class Strings(
     val needsUpdate: String,
     val unknownError: String,
     val copyUrl: String,
-    val playerBusy: String
+    val playerBusy: String,
+    val pleaseSignIn: String,
+    val signInWithDiscord: String
 )
