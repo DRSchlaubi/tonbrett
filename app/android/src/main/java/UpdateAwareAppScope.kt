@@ -59,14 +59,12 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
 
     val progressListener = remember {
         InstallStateUpdatedListener {
-            Log.e("UPDT", "Got new status: ${it.installStatus()}")
-            Log.e("UPDT", "Got new status: ${it}")
             when (it.installStatus()) {
                 InstallStatus.PENDING -> progress = State.Pending
                 InstallStatus.DOWNLOADING -> {
                     progress =
                         State.UpdateDownloading(
-                            it.bytesDownloaded().toDouble() / it.totalBytesToDownload().toDouble()
+                            it.bytesDownloaded().toDouble() / it.totalBytesToDownload().toDouble().coerceAtLeast(1.0)
                         )
                 }
 
