@@ -24,6 +24,8 @@ import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.NumberFormat
@@ -77,7 +79,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
         content()
 
         val currentUpdateInfo = updateInfo
-        if(currentUpdateInfo != null) {
+        if(currentUpdateInfo != null && currentUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
             Column(
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally,
