@@ -31,7 +31,7 @@ android {
         applicationId = "dev.schlaubi.tonbrett.android"
         minSdk = 26
         targetSdk = sdkInt
-        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()?.plus(931356) ?: 1
+        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()?.plus(931663) ?: 931663
         versionName = rootProject.version.toString()
     }
 

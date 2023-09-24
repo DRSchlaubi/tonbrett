@@ -3,7 +3,12 @@ package dev.schlaubi.tonbrett.app.android
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.OpenInNew
@@ -11,7 +16,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,10 +36,18 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
+import dev.schlaubi.tonbrett.app.ColorScheme
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.NumberFormat
+
+private sealed interface State {
+    data object Waiting : State
+    data object Pending : State
+    data class UpdateAvailable(val info: AppUpdateInfo) : State
+    data object UpdateDownloaded : State
+    data class UpdateDownloading(val percentage: Double) : State
+}
 
 @Composable
 fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
@@ -36,25 +55,27 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
     val scope = rememberCoroutineScope()
     val appUpdateManager =
         remember(context) { AppUpdateManagerFactory.create(context.applicationContext) }
-    var updateInfo by remember(appUpdateManager) { mutableStateOf<AppUpdateInfo?>(null) }
-    var progress by remember(updateInfo) { mutableStateOf<Double?>(null) }
+    var progress by remember(appUpdateManager) { mutableStateOf<State>(State.Waiting) }
 
     val progressListener = remember {
         InstallStateUpdatedListener {
+            Log.e("UPDT", "Got new status: ${it.installStatus()}")
+            Log.e("UPDT", "Got new status: ${it}")
             when (it.installStatus()) {
-                InstallStatus.PENDING -> progress = -100.0
+                InstallStatus.PENDING -> progress = State.Pending
                 InstallStatus.DOWNLOADING -> {
                     progress =
-                        it.bytesDownloaded().toDouble() / it.totalBytesToDownload().toDouble()
+                        State.UpdateDownloading(
+                            it.bytesDownloaded().toDouble() / it.totalBytesToDownload().toDouble()
+                        )
                 }
 
                 InstallStatus.DOWNLOADED -> {
-                    progress = 2.0
+                    progress = State.UpdateDownloaded
                 }
 
-                InstallStatus.FAILED, InstallStatus.CANCELED -> {
-                    progress = null
-                    updateInfo = null
+                InstallStatus.INSTALLED, InstallStatus.FAILED, InstallStatus.CANCELED -> {
+                    progress = State.Waiting
                 }
 
                 else -> {}
@@ -62,12 +83,15 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
         }
     }
 
-    SideEffect { appUpdateManager.registerListener(progressListener) }
+    LaunchedEffect(appUpdateManager) { appUpdateManager.registerListener(progressListener) }
 
-    if (updateInfo == null) {
+    if (progress is State.Waiting) {
         LaunchedEffect(appUpdateManager) {
             try {
-                updateInfo = appUpdateManager.appUpdateInfo.await()
+                val updateInfo = appUpdateManager.appUpdateInfo.await()
+                if (updateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                    progress = State.UpdateAvailable(updateInfo)
+                }
             } catch (e: Throwable) {
                 Log.w("Tonbrett", "Could not load Update info", e)
             }
@@ -78,57 +102,63 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
     Box(Modifier.fillMaxSize()) {
         content()
 
-        val currentUpdateInfo = updateInfo
-        if(currentUpdateInfo != null && currentUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-            Column(
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally,
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 10.dp)
+                .zIndex(10f)
+        ) {
+            Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 10.dp)
-                    .zIndex(10f)
+                    .padding(vertical = 7.dp)
+                    .background(
+                        MaterialTheme.colorScheme.primary,
+                        RoundedCornerShape(50.dp)
+                    )
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 7.dp)
-                        .background(MaterialTheme.colorScheme.onSecondary, RoundedCornerShape(50.dp))
-                ) {
-                    val currentProgress = progress ?: -1.0
+                @Composable
+                fun Info(text: String) {
+                    Text(
+                        text,
+                        style = MaterialTheme.typography.headlineSmall.copy(color = ColorScheme.textColor),
+                        modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
+                    )
 
-                    @Composable
-                    fun Info(text: String) {
-                        Text(
-                            text,
-                            style = MaterialTheme.typography.headlineSmall,
-                            modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
-                        )
+                }
 
-                    }
-
-                    if (currentProgress == -100.0) {
-                      Info(stringResource(R.string.update_pending))
-                    } else if (currentProgress < 0) {
-                        Button(onClick = { scope.launch {
+                when (val currentProgress = progress) {
+                    is State.Pending -> Info(stringResource(R.string.update_pending))
+                    is State.UpdateAvailable -> Button(onClick = {
+                        scope.launch {
                             appUpdateManager.startUpdateFlow(
-                                currentUpdateInfo,
+                                currentProgress.info,
                                 activity,
                                 AppUpdateOptions.defaultOptions(AppUpdateType.FLEXIBLE)
-                            )
-                        } }) {
-                            Info(stringResource(R.string.update_available))
+                            ).await()
                         }
-                    } else if (currentProgress in 0.0..1.0) {
-                        Info(stringResource(R.string.update_downloading, NumberFormat.getPercentInstance().format(currentProgress)))
-                    } else {
-                        Button(onClick = {
-                            scope.launch {
-                                appUpdateManager.completeUpdate().await()
-                            }
-                        }) {
-                            Icon(Icons.Default.OpenInNew, null)
-                            Info(stringResource(R.string.update_download_done))
-                        }
+                    }) {
+                        Info(stringResource(R.string.update_available))
                     }
+
+                    is State.UpdateDownloading -> Info(
+                        stringResource(
+                            R.string.update_downloading,
+                            NumberFormat.getPercentInstance().format(currentProgress.percentage)
+                        )
+                    )
+
+                    is State.UpdateDownloaded -> Button(onClick = {
+                        scope.launch {
+                            appUpdateManager.completeUpdate().await()
+                        }
+                    }) {
+                        Icon(Icons.Default.OpenInNew, null)
+                        Info(stringResource(R.string.update_download_done))
+                    }
+
+                    else -> {} // ignore
                 }
             }
         }

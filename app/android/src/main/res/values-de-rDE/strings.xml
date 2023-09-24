@@ -3,6 +3,6 @@
     <string name="retry">Erneut versuchen</string>
     <string name="update_available">Update verfügbar</string>
     <string name="update_pending">Update begonnen</string>
-    <string name="update_downloading">Update wird hertuntergeladen: %s</string>
+    <string name="update_downloading">Update wird heruntergeladen: %s</string>
     <string name="update_download_done">Update Installieren</string>
 </resources>
