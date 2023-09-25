@@ -23,21 +23,20 @@ import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.TonbrettApp
-import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.api.ProvideContext
 import dev.schlaubi.tonbrett.app.title
 import io.ktor.http.*
 import io.ktor.serialization.*
 import mu.KotlinLogging
 import java.net.URI
+import kotlin.io.path.absolutePathString
 import java.awt.Window as AWTWindow
 
 private val LOG = KotlinLogging.logger { }
 
 fun main(args: Array<String>) {
-    val uwp = windowsAppDataFolder != null
-    if (uwp) {
-        System.setProperty("user.home", windowsAppDataFolder!!)
+    if (isUwp) {
+        System.setProperty("user.home", getAppDataRoaming().absolutePathString())
     }
 
     val argsString = args.joinToString(" ")
@@ -50,9 +49,9 @@ fun main(args: Array<String>) {
             e.printStackTrace()
             Thread.sleep(50000)
         }
-        startApplication(uwp)
+        startApplication(isUwp)
     } else {
-        main(reAuthorize = false, uwp = uwp) { startApplication(uwp) }
+        main(reAuthorize = false, uwp = isUwp) { startApplication(isUwp) }
     }
 }
 

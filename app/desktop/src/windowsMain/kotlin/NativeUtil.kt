@@ -6,6 +6,8 @@ import java.lang.foreign.Arena
 import java.net.URI
 import java.nio.file.Path
 
+actual val isUwp = true
+
 actual fun launchUri(uri: URI): Unit = Arena.openConfined().use { arena ->
     val url = arena.allocateUtf8String(uri.toString())
     launch_uri(url)

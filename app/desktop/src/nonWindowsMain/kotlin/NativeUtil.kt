@@ -6,6 +6,8 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.div
 
+actual val isUwp = false
+
 actual fun launchUri(uri: URI) {
     val desktop = Desktop.getDesktop()
     if (desktop.isSupported(Desktop.Action.BROWSE)) {

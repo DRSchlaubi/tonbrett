@@ -4,6 +4,11 @@ import java.net.URI
 import java.nio.file.Path
 
 /**
+ * Whether the current platform is UWP.
+ */
+expect val isUwp: Boolean
+
+/**
  * Tries to launch the URI using the UWP `Launcher`.
  *
  * @param uri the [URI] to launch
