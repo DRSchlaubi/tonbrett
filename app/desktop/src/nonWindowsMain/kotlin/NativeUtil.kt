@@ -2,6 +2,9 @@ package dev.schlaubi.tonbrett.app.desktop
 
 import java.awt.Desktop
 import java.net.URI
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.div
 
 actual fun launchUri(uri: URI) {
     val desktop = Desktop.getDesktop()
@@ -12,5 +15,13 @@ actual fun launchUri(uri: URI) {
     }
 }
 
-actual fun getAppDataRoaming(): String =
-    throw UnsupportedOperationException("This function is only supported on Windows")
+actual fun getAppDataRoaming(): Path {
+    val os = System.getProperty("os.name")
+    val basePath = when {
+        os.contains("windows", ignoreCase = true) -> Path(System.getenv("APPDATA"))
+        os.contains("mac", ignoreCase = true) ->
+            Path(System.getenv("HOME")) / "Library" / "Application Support"
+        else -> Path(System.getProperty("user.home"))
+    }
+    return basePath / "Tonbrett"
+}

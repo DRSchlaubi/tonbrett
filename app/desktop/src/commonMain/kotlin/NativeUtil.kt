@@ -1,6 +1,7 @@
 package dev.schlaubi.tonbrett.app.desktop
 
 import java.net.URI
+import java.nio.file.Path
 
 /**
  * Tries to launch the URI using the UWP `Launcher`.
@@ -14,4 +15,4 @@ expect fun launchUri(uri: URI)
  *
  * @return the absolute path to the folder
  */
-expect fun getAppDataRoaming(): String
+expect fun getAppDataRoaming(): Path
