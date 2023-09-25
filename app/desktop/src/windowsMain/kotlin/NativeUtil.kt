@@ -2,6 +2,7 @@ package dev.schlaubi.tonbrett.app.desktop
 
 import dev.schlaubi.tonbrett.app.desktop.uwp_helper.AppDataRoamingResult
 import dev.schlaubi.tonbrett.app.desktop.uwp_helper.UwpHelper.*
+import java.lang.String
 import java.lang.foreign.Arena
 import java.net.URI
 import java.nio.file.Path
@@ -26,5 +27,5 @@ actual fun getAppDataRoaming(): Path =
             charArray[index] = short.toInt().toChar()
         }
         val string = String(charArray)
-        if (isError) throw Exception(string) else Path(string)
+        if (isError) throw Exception(string) else Path.of(string)
     }
