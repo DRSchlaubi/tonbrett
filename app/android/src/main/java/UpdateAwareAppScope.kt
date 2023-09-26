@@ -29,25 +29,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.appupdate.AppUpdateOptions
-import com.google.android.play.core.install.InstallStateUpdatedListener
-import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
-import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.AppUpdateResult
+import com.google.android.play.core.ktx.bytesDownloaded
+import com.google.android.play.core.ktx.installStatus
+import com.google.android.play.core.ktx.requestCompleteUpdate
+import com.google.android.play.core.ktx.requestUpdateFlow
+import com.google.android.play.core.ktx.totalBytesToDownload
 import dev.schlaubi.tonbrett.app.ColorScheme
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.text.NumberFormat
-
-private sealed interface State {
-    data object Waiting : State
-    data object Pending : State
-    data class UpdateAvailable(val info: AppUpdateInfo) : State
-    data object UpdateDownloaded : State
-    data class UpdateDownloading(val percentage: Double) : State
-}
 
 @Composable
 fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
@@ -55,40 +47,17 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
     val scope = rememberCoroutineScope()
     val appUpdateManager =
         remember(context) { AppUpdateManagerFactory.create(context.applicationContext) }
-    var progress by remember(appUpdateManager) { mutableStateOf<State>(State.Waiting) }
+    var progress by remember(appUpdateManager) { mutableStateOf<AppUpdateResult?>(null) }
 
-    val progressListener = remember {
-        InstallStateUpdatedListener {
-            when (it.installStatus()) {
-                InstallStatus.PENDING -> progress = State.Pending
-                InstallStatus.DOWNLOADING -> {
-                    progress =
-                        State.UpdateDownloading(
-                            it.bytesDownloaded().toDouble() / it.totalBytesToDownload().toDouble().coerceAtLeast(1.0)
-                        )
-                }
-
-                InstallStatus.DOWNLOADED -> {
-                    progress = State.UpdateDownloaded
-                }
-
-                InstallStatus.INSTALLED, InstallStatus.FAILED, InstallStatus.CANCELED -> {
-                    progress = State.Waiting
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    LaunchedEffect(appUpdateManager) { appUpdateManager.registerListener(progressListener) }
-
-    if (progress is State.Waiting) {
+    if (progress != null) {
         LaunchedEffect(appUpdateManager) {
             try {
-                val updateInfo = appUpdateManager.appUpdateInfo.await()
-                if (updateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                    progress = State.UpdateAvailable(updateInfo)
+                appUpdateManager.requestUpdateFlow().collect {
+                    if (it is AppUpdateResult.Available) {
+                        it.startFlexibleUpdate(activity, 12548)
+                    } else {
+                        progress = it
+                    }
                 }
             } catch (e: Throwable) {
                 Log.w("Tonbrett", "Could not load Update info", e)
@@ -127,29 +96,38 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
                 }
 
                 when (val currentProgress = progress) {
-                    is State.Pending -> Info(stringResource(R.string.update_pending))
-                    is State.UpdateAvailable -> Button(onClick = {
-                        scope.launch {
-                            appUpdateManager.startUpdateFlow(
-                                currentProgress.info,
-                                activity,
-                                AppUpdateOptions.defaultOptions(AppUpdateType.FLEXIBLE)
-                            ).await()
+                    is AppUpdateResult.InProgress -> {
+                        val installState = currentProgress.installState
+                        when (installState.installStatus) {
+                            InstallStatus.CANCELED, InstallStatus.INSTALLED, InstallStatus.FAILED -> {
+                                progress = AppUpdateResult.NotAvailable
+                            }
+
+                            InstallStatus.DOWNLOADING -> {
+                                val ratio = installState.bytesDownloaded.toDouble() /
+                                        installState.totalBytesToDownload.toDouble()
+                                            .coerceAtLeast(1.0) // avoid division by zero
+                                val percentage = NumberFormat.getPercentInstance().format(ratio)
+                                Info(stringResource(R.string.update_downloading, percentage))
+                            }
+
+                            InstallStatus.PENDING -> {
+                                Info(stringResource(R.string.update_pending))
+                            }
+
+                            else -> {} // ignore
                         }
+                    }
+
+                    is AppUpdateResult.Available -> Button(onClick = {
+                        currentProgress.startFlexibleUpdate(activity, 12548)
                     }) {
                         Info(stringResource(R.string.update_available))
                     }
 
-                    is State.UpdateDownloading -> Info(
-                        stringResource(
-                            R.string.update_downloading,
-                            NumberFormat.getPercentInstance().format(currentProgress.percentage)
-                        )
-                    )
-
-                    is State.UpdateDownloaded -> Button(onClick = {
+                    is AppUpdateResult.Downloaded -> Button(onClick = {
                         scope.launch {
-                            appUpdateManager.completeUpdate().await()
+                            appUpdateManager.requestCompleteUpdate()
                         }
                     }) {
                         Icon(Icons.Default.OpenInNew, null)

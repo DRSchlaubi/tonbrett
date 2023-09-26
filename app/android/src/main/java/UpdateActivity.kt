@@ -31,8 +31,8 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.requestAppUpdateInfo
 import dev.schlaubi.tonbrett.app.ColorScheme
-import kotlinx.coroutines.tasks.await
 
 class UpdateActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +60,7 @@ fun UpdateScreen(activity: Activity) {
     if (updateInfo == null) {
         LaunchedEffect(appUpdateManager) {
             try {
-                updateInfo = appUpdateManager.appUpdateInfo.await()
+                updateInfo = appUpdateManager.requestAppUpdateInfo()
             } catch (e: Throwable) {
                 Log.w("Tonbrett", "Could not load Update info", e)
                 renderFallbackUpdate = true
