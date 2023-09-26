@@ -35,11 +35,9 @@ fun AuthorizationScreen(uwp: Boolean, alreadyWaiting: Boolean, onAuth: () -> Uni
             }
 
             launchUri(href(Route.Auth(protocol), URLBuilder(getUrl())).build().toURI())
-        }
-        if (uwp) {
-            exitProcess(0)
-        } else {
-            SideEffect {
+            if (uwp) {
+                exitProcess(0)
+            } else {
                 startAuthorizationServer(onAuth)
             }
         }
