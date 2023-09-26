@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import dev.schlaubi.tonbrett.app.ColorScheme
@@ -49,12 +48,11 @@ fun SoundContainer(
     unavailableFor: String?,
     soundUpdater: SoundUpdater
 ) {
-    val disabled = unavailableFor != null
     Column {
         SearchBarScope(soundUpdater) {
             LazyVerticalGrid(GridCells.Adaptive(160.dp), Modifier.canClearFocus().fillMaxHeight()) {
                 items(sounds) { (id, name, _, description, emoji) ->
-                    SoundCard(id, name, emoji, description, id == playingSound, errorReporter, disabled)
+                    SoundCard(id, name, emoji, description, id == playingSound, errorReporter, unavailableFor != null)
                 }
             }
 
@@ -121,7 +119,7 @@ fun SoundCard(
                     border(BorderStroke(2.dp, ColorScheme.active), corners)
                 }
                 .hoverable(interactionSource)
-                .conditional(isMobile && !waiting) {
+                .conditional(isMobile && !waiting && !disabled) {
                     combinedClickable(
                         onClick = {
                             if (playing) {
