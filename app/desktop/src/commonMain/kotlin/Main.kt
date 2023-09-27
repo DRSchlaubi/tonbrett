@@ -20,11 +20,8 @@ import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import androidx.compose.ui.window.*
 import cafe.adriel.lyricist.LocalStrings
-import dev.schlaubi.tonbrett.app.ColorScheme
-import dev.schlaubi.tonbrett.app.ProvideImageLoader
-import dev.schlaubi.tonbrett.app.TonbrettApp
+import dev.schlaubi.tonbrett.app.*
 import dev.schlaubi.tonbrett.app.api.ProvideContext
-import dev.schlaubi.tonbrett.app.title
 import io.ktor.http.*
 import io.ktor.serialization.*
 import mu.KotlinLogging
@@ -138,8 +135,11 @@ fun ApplicationScope.TonbrettWindow(content: @Composable FrameWindowScope.() -> 
     onCloseRequest = ::exitApplication,
     title = title,
     icon = BitmapPainter(useResource("logo.png", ::loadImageBitmap)),
-    content = content
-)
+) {
+    ProvideLocalWindow(window) {
+        content()
+    }
+}
 
 private class ExceptionHandlerFactory(val handler: (Throwable) -> Unit) : WindowExceptionHandlerFactory {
     override fun exceptionHandler(window: AWTWindow): WindowExceptionHandler = ExceptionHandler(window)

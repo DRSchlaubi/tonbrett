@@ -23,6 +23,9 @@ private val LOG = KotlinLogging.logger { }
 internal expect fun ComponentRegistryBuilder.registerComponents(appContext: AppContext, coroutineScope: CoroutineScope)
 
 @Composable
+internal expect fun isWindowMinimized(): Boolean
+
+@Composable
 fun OptionalWebImage(url: String?, contentDescription: String? = null, modifier: Modifier = Modifier) = OptionalWebImageInternal(url, contentDescription, modifier)
 
 @Composable
@@ -33,7 +36,7 @@ private fun OptionalWebImageInternal(url: String?, contentDescription: String?, 
         val state = action
         if (state is ImageResult.Error) {
             LOG.warn(state.error) { "Could not load image $url" }
-        } else {
+        } else if (!isWindowMinimized()) {
             Image(painter, contentDescription, modifier)
         }
     }
