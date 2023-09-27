@@ -1,4 +1,4 @@
-@file:JvmName("ImageLoaderJvm")
+@file:JvmName("ImageLoaderDesktop")
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.runtime.Composable
