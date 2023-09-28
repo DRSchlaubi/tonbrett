@@ -27,27 +27,34 @@ tasks {
         outputs.dir(jextractOutput)
 
         // I cannot figure out how to change the path on GitHub Actions
-        val command = if(System.getenv("GITHUB_RUN_NUMBER") != null) {
+        val command = if (System.getenv("GITHUB_RUN_NUMBER") != null) {
             rootProject.file("jextract-20/bin/jextract.bat").absolutePath
         } else {
             if (OSUtils.IS_WINDOWS) {
-                "jextract.bat"
+                "C:\\Users\\micha\\.jdks\\jextract-20\\bin\\jextract.bat"
             } else {
                 "jextract"
             }
+        }
+
+        val libraryPath = if (System.getenv("GITHUB_REF") != null) {
+            "uwp_helper"
+        } else {
+            file("target/release/uwp_helper.dll").absolutePath
         }
 
         commandLine(
             command,
             "--header-class-name", "UwpHelper",
             "--target-package", "dev.schlaubi.tonbrett.app.desktop.uwp_helper",
-            "--library", "uwp_helper",
+            "--library", libraryPath,
             "--output", jextractOutput.get().asFile.absolutePath,
             "--source",
             "--include-function", "launch_uri",
-            "--include-function", "get_app_data_roaming",
-            "--include-function", "copy_string_from_get_app_data_roaming_result_into_buffer",
-            "--include-struct", "AppDataRoamingResult",
+            "--include-function", "get_token",
+            "--include-function", "store_token",
+            "--include-function", "copy_string_from_get_string_result_into_buffer",
+            "--include-struct", "StringResult",
             "--include-typedef", "uint16_t",
             header,
         )

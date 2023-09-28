@@ -2,9 +2,6 @@ package dev.schlaubi.tonbrett.app.desktop
 
 import java.awt.Desktop
 import java.net.URI
-import java.nio.file.Path
-import kotlin.io.path.Path
-import kotlin.io.path.div
 
 actual val isUwp = false
 
@@ -27,3 +24,6 @@ actual fun getAppDataRoaming(): Path {
     }
     return basePath / "Tonbrett"
 }
+
+actual fun getToken() = getConfig().sessionToken ?: error("Not signed in")
+actual fun setToken(token: String) = saveConfig(Config((token)))

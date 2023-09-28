@@ -23,7 +23,7 @@ kotlin {
         }
 
         named("jvmMain") {
-            if (OSUtils.IS_WINDOWS && System.getenv("GITHUB_REF") != null) {
+            if (OSUtils.IS_WINDOWS) {
                 dependsOn(windowsMain)
             } else {
                 dependsOn(nonWindowsMain)

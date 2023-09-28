@@ -30,7 +30,7 @@ fun Application.authModule(onAuth: () -> Unit, scope: CoroutineScope) {
         post("login") {
             val token = call.parameters["token"] ?: throw BadRequestException("Missing token")
 
-            saveConfig(Config(token))
+            //saveConfig(Config(token))
             call.respond(HttpStatusCode.Accepted)
             // This stops the server, see stopServerOnCancellation above
             scope.cancel()

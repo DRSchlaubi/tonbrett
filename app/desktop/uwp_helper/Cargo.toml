@@ -9,7 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies.windows]
 version = "0.51.1"
-features = ["System", "Foundation", "Storage", "Win32_Foundation"]
+features = ["System", "Foundation", "Win32_Foundation", "Security_Credentials"]
 
 [dependencies.tokio]
 version = "1.32.0"

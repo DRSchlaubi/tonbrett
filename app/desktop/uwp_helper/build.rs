@@ -19,7 +19,7 @@ fn main() {
     // By default it generate a .hpp which jextract cannot parse properly
     config.language = Language::C;
 
-    // This is required to for the AppDataRoamingResult, otherwise jextract wil fail
+    // This is required to for the StringResult, otherwise jextract wil fail
     config.includes.push(String::from("Hstring.h"));
 
     cbindgen::generate_with_config(&crate_dir, config)

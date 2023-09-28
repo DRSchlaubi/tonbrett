@@ -32,16 +32,12 @@ import java.awt.Window as AWTWindow
 private val LOG = KotlinLogging.logger { }
 
 fun main(args: Array<String>) {
-    if (isUwp) {
-        System.setProperty("user.home", getAppDataRoaming().absolutePathString())
-    }
-
     val argsString = args.joinToString(" ")
     if (argsString.startsWith("tonbrett://login")) {
         try {
             LOG.info { "Launched App with $argsString saving token now" }
-            val token = Url(argsString).parameters["token"]
-            saveConfig(Config(token))
+            val token = Url(argsString).parameters["token"]!!
+            setToken(token)
         } catch (e: Exception) {
             e.printStackTrace()
             Thread.sleep(50000)
@@ -53,8 +49,8 @@ fun main(args: Array<String>) {
 }
 
 fun main(reAuthorize: Boolean, uwp: Boolean = false, onAuth: () -> Unit) {
-    val config = getConfig()
-    if (reAuthorize || config.sessionToken == null) {
+    val token = runCatching { getToken() }.getOrNull()
+    if (reAuthorize || token == null) {
         startApplication(uwp, true)
     } else {
         startApplication(uwp)
@@ -104,7 +100,7 @@ private fun ApplicationScope.startActualApplication(
     CompositionLocalProvider(LocalWindowExceptionHandlerFactory provides exceptionHandler) {
         TonbrettWindow {
             val context = remember {
-                object : ConfigBasedAppContext() {
+                object : TokenStorageAppContext() {
                     override fun reAuthorize() {
                         sessionExpired.value = false
                         firstAuth = false

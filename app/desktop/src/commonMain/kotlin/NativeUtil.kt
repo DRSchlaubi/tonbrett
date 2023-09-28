@@ -15,9 +15,6 @@ expect val isUwp: Boolean
  */
 expect fun launchUri(uri: URI)
 
-/**
- * Tries to retrieve the current UWP app data folder.
- *
- * @return the absolute path to the folder
- */
-expect fun getAppDataRoaming(): Path
+expect fun getToken(): String
+
+expect fun setToken(token: String)
