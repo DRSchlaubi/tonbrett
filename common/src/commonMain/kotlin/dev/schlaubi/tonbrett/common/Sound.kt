@@ -16,6 +16,8 @@ import kotlinx.serialization.json.JsonClassDiscriminator
  * @property owner the id of the user who owns this sound
  * @property description an optional description of this sound
  * @property emoji an optional [Emoji] representing this sound
+ * @property tag an optional tag for this sound
+ * @property volume the volume used to play the sound
  */
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -66,6 +68,7 @@ public data class Sound(
     /**
      * Representation of a Twemoji
      *
+     * @property value the raw value of the emoji (unicode)
      * @property codePoints a [Sequence] of all code points
      * @property length the length of the string
      */
@@ -87,6 +90,7 @@ public data class Sound(
      * Representation of a Guild custom emoji.
      *
      * @property id the id of the emoji
+     * @property isAnimated whether the emoji is animated or not
      */
     @Serializable
     @SerialName("guild")

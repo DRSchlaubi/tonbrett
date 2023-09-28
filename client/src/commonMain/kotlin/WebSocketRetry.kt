@@ -16,11 +16,24 @@ import kotlin.time.toDuration
 
 private val LOG = KotlinLogging.logger {  }
 
+/**
+ * WebSocket version of the [HttpRequestRetry] plugin.
+ *
+ * @see retryingWebSocket
+ */
 val WebSocketRetry = createClientPlugin("WebSocketRetry", { HttpRequestRetry.Configuration() }) {}
 
+/**
+ * Exception used for logging WebSocket connection errors.
+ *
+ * @param protocolCause the [CloseReason] if received.
+ */
 class DisconnectedException(protocolCause: CloseReason?) :
     IllegalStateException("Got disconnected from WebSocket for: $protocolCause")
 
+/**
+ * This works identical to [webSocket] but retries if connection errors occur.
+ */
 suspend fun HttpClient.retryingWebSocket(
     httpRequestBuilder: HttpRequestBuilder.() -> Unit,
     handler: suspend DefaultClientWebSocketSession.() -> Unit

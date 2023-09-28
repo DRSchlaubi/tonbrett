@@ -37,8 +37,19 @@ private var HttpRequestBuilder.useUnicode: Boolean
     get() = attributes[USE_UNICODE]
     set(value) = attributes.put(USE_UNICODE, value)
 
+/**
+ * Exception thrown if the automated token refresh failed and a new authentication is required.
+ */
 class ReauthorizationRequiredException : Exception()
 
+/**
+ * API client for the Tonbrett api.
+ *
+ * @property events a flow of [Events][Event] received
+ * @param initialToken the initial API token to authenticate
+ * @param baseUrl the url of the API
+ * @param onTokenRefresh a callback invoked if the token got refreshed
+ */
 class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, private val onTokenRefresh: (String) -> Unit = {}) {
     private val eventFlow = MutableSharedFlow<Event>()
     private val json = Json {
@@ -102,18 +113,42 @@ class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, pr
     }
     val events = eventFlow.asSharedFlow()
 
+    /**
+     * Retrieves all available sounds.
+     *
+     * @param onlyMine whether to show only the current users sounds
+     * @param query an optional search query
+     * @param useUnicode whether to return the emojis as unicode or Twemoji URLs
+     */
     suspend fun getSounds(onlyMine: Boolean = false, query: String? = null, useUnicode: Boolean = false): List<Sound> =
         client.get(Route.Sounds.ListSounds(onlyMine, query, useUnicode)).body()
 
+    /**
+     * Returns the current [User].
+     */
     suspend fun getMe(): User = client.get(Route.Me()).body()
 
+    /**
+     * Plays the sound by its [id][soundId].
+     */
     suspend fun play(soundId: String): Unit = client.post(Route.Sounds.Sound.Play(soundId)).body()
 
+    /**
+     * Retrieves the tags matching [query].
+     *
+     * @param limit an optional limit
+     */
     suspend fun getTags(query: String? = null, limit: Int? = 0): List<String> =
         client.get(Route.Tags(query, limit)).body()
 
+    /**
+     * Stops playback of the current sound.
+     */
     suspend fun stop(): Unit = client.post(Route.StopPlayer()).body()
 
+    /**
+     * Constructs an URL to [resource].
+     */
     inline fun <reified T> href(resource: T): String {
         val builder = URLBuilder(baseUrl)
         href(resource, builder)
@@ -137,6 +172,9 @@ class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, pr
     }
 }
 
+/**
+ * Updates the [urlBuilder] to [resource].
+ */
 @Suppress("INVISIBLE_MEMBER")
 inline fun <reified T> HttpClient.href(resource: T, urlBuilder: URLBuilder) =
     href(resources().resourcesFormat, resource, urlBuilder)

@@ -4,6 +4,9 @@ package dev.schlaubi.tonbrett.common.util
 
 import kotlin.jvm.JvmName
 
+/**
+ * Formats the sequence of [codePoints] into the format used by Twemoji.
+ */
 internal fun formatEmojiUnicode(codePoints: Sequence<Int>, length: Int) = codePoints
     // twemoji seems to use variant selectors weirdly
     .filterIndexed { index, it ->

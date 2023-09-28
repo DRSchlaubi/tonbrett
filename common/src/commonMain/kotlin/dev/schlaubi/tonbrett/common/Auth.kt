@@ -3,9 +3,19 @@ package dev.schlaubi.tonbrett.common
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Request for a new authentication token.
+ *
+ * @property expiredJwt the old expired JWT (needs to contain a Discord refresh token)
+ */
 @Serializable
 public data class AuthRefreshRequest(val expiredJwt: String)
 
+/**
+ * Response to an authentication refresh request.
+ *
+ * @property newJwt the new JWT
+ */
 @Serializable
 public data class AuthRefreshResponse(val newJwt: String)
 

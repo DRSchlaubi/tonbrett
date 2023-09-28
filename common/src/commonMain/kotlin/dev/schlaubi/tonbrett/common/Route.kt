@@ -68,6 +68,9 @@ public class Route {
                 public operator fun component2(): String? = contentType
             }
 
+            /**
+             * /soundboard/sound/[id][Sound.id]/audio - Plays this sound.
+             */
             @Resource("play")
             public class Play(public val parent: Sound) {
                 public constructor(id: String) : this(Sound(id))
@@ -94,12 +97,34 @@ public class Route {
         @Resource("refresh")
         public data class Refresh(val parent: Auth = Auth())
 
+        /**
+         * Types of authentication flows.
+         */
         @Serializable
         public enum class Type(public val redirectTo: String) {
+            /**
+             * Web app authentication flow.
+             */
             WEB("/soundboard/ui/login?token="),
+
+            /**
+             * Desktop app via localhost callback server.
+             */
             APP("/soundboard/deeplink/login?token="),
+
+            /**
+             * Desktop app via `tonbrett://` protocol (used on UWP).
+             */
             PROTOCOL("/soundboard/deeplink/login?protocol=true&token="),
+
+            /**
+             * CLI login page displaying login command.
+             */
             CLI("/soundboard/deeplink/login?cli=true&token="),
+
+            /**
+             * Mobile app via protocol for in app browser.
+             */
             MOBILE_APP("tonbrett://login?token=")
         }
     }
@@ -154,5 +179,6 @@ public class Route {
     public data class AuthDeepLink(
         val protocol: Boolean = false,
         val cli: Boolean = false,
-        val parent: Route = Route())
+        val parent: Route = Route()
+    )
 }

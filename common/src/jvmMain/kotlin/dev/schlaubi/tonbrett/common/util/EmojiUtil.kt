@@ -19,4 +19,5 @@ public fun Sound.convertForNonJvmPlatforms(): Sound = if (emoji is Sound.Discord
 /**
  * Converts all emojis in this [List] to contain information needed on non JVM Platforms.
  */
-public fun List<Sound>.convertForNonJvmPlatforms(condition: Boolean = true): List<Sound> = if (condition) map(Sound::convertForNonJvmPlatforms) else this
+public fun List<Sound>.convertForNonJvmPlatforms(condition: Boolean = true): List<Sound> =
+    if (condition) map(Sound::convertForNonJvmPlatforms) else this
