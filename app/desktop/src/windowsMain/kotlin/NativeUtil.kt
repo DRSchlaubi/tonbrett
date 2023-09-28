@@ -1,14 +1,11 @@
 package dev.schlaubi.tonbrett.app.desktop
 
-import dev.schlaubi.tonbrett.app.desktop.uwp_helper.PasswordVaultResult
+import dev.schlaubi.tonbrett.app.desktop.uwp_helper.StringResult
 import dev.schlaubi.tonbrett.app.desktop.uwp_helper.UwpHelper.*
 import java.lang.foreign.Arena
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SegmentAllocator
 import java.net.URI
-import java.nio.file.Path
-import kotlin.io.path.Path
-import kotlin.reflect.KFunction
 
 actual val isUwp = true
 
@@ -29,8 +26,8 @@ private fun invokeStringResultFunction(
 ) =
     Arena.openConfined().use { arena ->
         val result = function(arena)
-        val isError = PasswordVaultResult.`is_error$get`(result)
-        val length = PasswordVaultResult.`length$get`(result).coerceAtLeast(0)
+        val isError = StringResult.`is_error$get`(result)
+        val length = StringResult.`length$get`(result).coerceAtLeast(0)
         val buffer = arena.allocateArray(uint16_t, length)
         copy_string_from_get_string_result_into_buffer(result, buffer)
         val shortArray = buffer.toArray(uint16_t)
