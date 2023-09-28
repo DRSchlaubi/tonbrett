@@ -1,12 +1,20 @@
 package dev.schlaubi.tonbrett.app.desktop
 
+import dev.schlaubi.tonbrett.common.Route
 import java.awt.Desktop
 import java.net.URI
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.div
 
-actual val isUwp = false
+actual val loginType = Route.Auth.Type.APP
+
+actual fun start(args: Array<String>) {
+    val needsAuth = runCatching { getToken() }.isFailure
+    startApplication(needsAuth)
+}
+
+actual fun prepareAuthentication(onAuth: () -> Unit) = startAuthorizationServer(onAuth)
 
 actual fun launchUri(uri: URI) {
     val desktop = Desktop.getDesktop()

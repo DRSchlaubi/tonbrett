@@ -20,6 +20,10 @@ kotlin {
         }
         val nonWindowsMain by creating {
             dependsOn(commonMain.get())
+            dependencies {
+                implementation(libs.ktor.server.netty)
+                implementation(libs.ktor.server.cors)
+            }
         }
 
         named("jvmMain") {
@@ -34,8 +38,6 @@ kotlin {
                 implementation(project.dependencies.compose.materialIconsExtended)
                 implementation(project.dependencies.compose.material3)
                 implementation(libs.logback)
-                implementation(libs.ktor.server.netty)
-                implementation(libs.ktor.server.cors)
             }
         }
     }

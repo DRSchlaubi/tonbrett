@@ -21,25 +21,14 @@ import dev.schlaubi.tonbrett.app.api.getUrl
 import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
-import kotlin.system.exitProcess
 
 @Composable
-fun AuthorizationScreen(uwp: Boolean, alreadyWaiting: Boolean, onAuth: () -> Unit) {
+fun AuthorizationScreen(alreadyWaiting: Boolean, onAuth: () -> Unit) {
     var waiting by remember { mutableStateOf(alreadyWaiting) }
     if (waiting) {
         SideEffect {
-            val protocol = if (uwp) {
-                Route.Auth.Type.PROTOCOL
-            } else {
-                Route.Auth.Type.APP
-            }
-
-            launchUri(href(Route.Auth(protocol), URLBuilder(getUrl())).build().toURI())
-            if (uwp) {
-                exitProcess(0)
-            } else {
-                startAuthorizationServer(onAuth)
-            }
+            launchUri(href(Route.Auth(loginType), URLBuilder(getUrl())).build().toURI())
+            prepareAuthentication(onAuth)
         }
     }
     Column(

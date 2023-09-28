@@ -31,7 +31,7 @@ tasks {
             rootProject.file("jextract-20/bin/jextract.bat").absolutePath
         } else {
             if (OSUtils.IS_WINDOWS) {
-                "C:\\Users\\micha\\.jdks\\jextract-20\\bin\\jextract.bat"
+                "jextract.bat"
             } else {
                 "jextract"
             }

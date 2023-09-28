@@ -22,42 +22,16 @@ import androidx.compose.ui.window.*
 import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.*
 import dev.schlaubi.tonbrett.app.api.ProvideContext
-import io.ktor.http.*
 import io.ktor.serialization.*
 import mu.KotlinLogging
 import java.net.URI
-import kotlin.io.path.absolutePathString
 import java.awt.Window as AWTWindow
 
 private val LOG = KotlinLogging.logger { }
 
-fun main(args: Array<String>) {
-    val argsString = args.joinToString(" ")
-    if (argsString.startsWith("tonbrett://login")) {
-        try {
-            LOG.info { "Launched App with $argsString saving token now" }
-            val token = Url(argsString).parameters["token"]!!
-            setToken(token)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Thread.sleep(50000)
-        }
-        startApplication(isUwp)
-    } else {
-        main(reAuthorize = false, uwp = isUwp) { startApplication(isUwp) }
-    }
-}
+fun main(array: Array<String>) = start(array)
 
-fun main(reAuthorize: Boolean, uwp: Boolean = false, onAuth: () -> Unit) {
-    val token = runCatching { getToken() }.getOrNull()
-    if (reAuthorize || token == null) {
-        startApplication(uwp, true)
-    } else {
-        startApplication(uwp)
-    }
-}
-
-fun startApplication(uwp: Boolean, forAuth: Boolean = false) = application {
+fun startApplication(forAuth: Boolean = false) = application {
     val sessionExpired = remember { mutableStateOf(false) }
     var needsUpdate by remember { mutableStateOf(false) }
     val exceptionHandler = ExceptionHandlerFactory {
@@ -84,14 +58,13 @@ fun startApplication(uwp: Boolean, forAuth: Boolean = false) = application {
             }
         }
     } else {
-        startActualApplication(uwp, forAuth, exceptionHandler, sessionExpired)
+        startActualApplication(forAuth, exceptionHandler, sessionExpired)
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun ApplicationScope.startActualApplication(
-    uwp: Boolean,
     forAuth: Boolean,
     exceptionHandler: ExceptionHandlerFactory, sessionExpired: MutableState<Boolean>
 ) {
@@ -110,10 +83,7 @@ private fun ApplicationScope.startActualApplication(
             }
 
             if (needsAuth) {
-                AuthorizationScreen(uwp, !firstAuth) {
-                    context.resetApi()
-                    needsAuth = false
-                }
+                AuthorizationScreen(!firstAuth) { needsAuth = false }
             } else {
                 context.resetApi()
                 ProvideContext(context) {
