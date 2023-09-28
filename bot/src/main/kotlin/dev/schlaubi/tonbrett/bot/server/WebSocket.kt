@@ -60,7 +60,7 @@ suspend fun sendEvent(id: Snowflake, event: Event) {
 
 suspend fun broadcastEvent(event: Event) = coroutineScope {
     sessions.forEach { (user, session) ->
-        if (event !is HasSound || !event.sound.public && event.sound.owner == user) {
+        if (event !is HasSound || event.sound.public || event.sound.owner == user) {
             launch {
                 session.sendEvent(event)
             }
