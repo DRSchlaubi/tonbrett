@@ -2,6 +2,9 @@ package dev.schlaubi.tonbrett.app.desktop
 
 import java.awt.Desktop
 import java.net.URI
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.div
 
 actual val isUwp = false
 
@@ -14,7 +17,7 @@ actual fun launchUri(uri: URI) {
     }
 }
 
-actual fun getAppDataRoaming(): Path {
+fun getAppDataRoaming(): Path {
     val os = System.getProperty("os.name")
     val basePath = when {
         os.contains("windows", ignoreCase = true) -> Path(System.getenv("APPDATA"))
