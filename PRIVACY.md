@@ -26,7 +26,7 @@ The bot only collects the data you directly provide, by adding or modifying soun
 
   Run the `/sound delete` command to delete a particular sound or `/gdpr delete` to delete all sounds.
 
-  # Deutsche Version
+# Deutsche Version
 
 ## Datenerfassung
 
