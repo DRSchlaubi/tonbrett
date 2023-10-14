@@ -53,11 +53,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
         LaunchedEffect(appUpdateManager) {
             try {
                 appUpdateManager.requestUpdateFlow().collect {
-                    if (it is AppUpdateResult.Available) {
-                        it.startFlexibleUpdate(activity, 12548)
-                    } else {
-                        progress = it
-                    }
+                    progress = it
                 }
             } catch (e: Throwable) {
                 Log.w("Tonbrett", "Could not load Update info", e)
