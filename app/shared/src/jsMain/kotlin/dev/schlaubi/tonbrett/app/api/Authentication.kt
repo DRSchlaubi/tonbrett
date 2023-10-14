@@ -13,14 +13,22 @@ const val tokenKey = "token"
 actual val Dispatchers.IO: CoroutineDispatcher
     get() = Main // JS Is single threaded so not needed
 
+actual abstract class AppContextBase : ApiStateHolder() {
+    actual open val isSignedIn: Boolean
+        get() = TODO("Please implement sign in")
+}
+
 actual open class AppContext : AppContextBase() {
+    override val isSignedIn: Boolean
+        get() = sessionStorage[tokenKey] != null
+
     override var token: String
         get() = sessionStorage[tokenKey] ?: error("Please sign in")
         set(value) {
             sessionStorage[tokenKey] = value
         }
 
-    actual fun reAuthorize() {
+    actual open fun reAuthorize() {
         sessionStorage.removeItem(tokenKey)
         window.location.reload()
     }

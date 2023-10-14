@@ -33,7 +33,9 @@ kotlin {
             }
 
             group("mobile") {
-                withApple()
+                group("apple") {
+                    withApple()
+                }
                 withAndroidTarget()
 
             }
@@ -90,6 +92,12 @@ kotlin {
         named("mobileMain") {
             dependencies {
                 api(libs.kvault)
+            }
+        }
+
+        named("androidMain") {
+            dependencies {
+                implementation(libs.androidx.browser)
             }
         }
     }

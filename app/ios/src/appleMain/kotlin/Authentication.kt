@@ -8,8 +8,6 @@ private const val tokenKey = "token"
 
 private val vault = KVault()
 
-fun getTokenOrNull(): String? = vault.string(tokenKey)
-
 // Used from swift
 @Suppress("unused")
 fun setToken(token: String) = vault.set(tokenKey, token)
@@ -19,13 +17,8 @@ fun setToken(token: String) = vault.set(tokenKey, token)
 fun getAuthUrl(): String = href(Route.Auth(Route.Auth.Type.MOBILE_APP), getUrl())
 
 abstract class AppleAppContext : AppContext() {
-    override var token: String
-        get() = getTokenOrNull() ?: error("Please sign in")
-        set(value) {
-            setToken(value)
-        }
-
     override fun reAuthorize() {
         vault.deleteObject(tokenKey)
+        super.reAuthorize()
     }
 }

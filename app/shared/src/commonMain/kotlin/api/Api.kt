@@ -11,15 +11,11 @@ import kotlinx.coroutines.Dispatchers
  */
 expect fun getUrl(): Url
 
-/**
- * This is the base class of [AppContext] so we can have defaults.
- */
-abstract class AppContextBase {
+abstract class ApiStateHolder {
     /**
      * A mutable API token.
      */
     abstract var token: String
-
     private val apiState = mutableStateOf<Tonbrett?>(null)
 
     /**
@@ -36,6 +32,13 @@ abstract class AppContextBase {
 }
 
 /**
+ * This is the base class of [AppContext] so we can have defaults.
+ */
+expect abstract class AppContextBase : ApiStateHolder {
+    val isSignedIn: Boolean
+}
+
+/**
  * Context used for piping platform contexts into a multiplatform app.
  */
 expect open class AppContext : AppContextBase {
@@ -43,7 +46,7 @@ expect open class AppContext : AppContextBase {
     /**
      * Initiates authorization flow for the current platform.
      */
-    fun reAuthorize()
+     fun reAuthorize()
 }
 
 /**

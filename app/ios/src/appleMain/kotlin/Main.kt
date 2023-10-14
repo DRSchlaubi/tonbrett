@@ -1,33 +1,23 @@
 import androidx.compose.ui.window.ComposeUIViewController
-import dev.schlaubi.tonbrett.app.TonbrettApp
+import dev.schlaubi.tonbrett.app.MobileTonbrettApp
 import dev.schlaubi.tonbrett.app.api.ProvideContext
-import platform.UIKit.UIAlertController
 import platform.UIKit.UIViewController
 
 @Suppress("FunctionName", "unused")
-fun MainUiViewController(): UIViewController {
-    var onReauthorization = {}
+fun MainUiViewController(receivedToken: String?): UIViewController {
+    var onPresent: (UIViewController) -> Unit = {}
     val context = object : AppleAppContext() {
-        init {
-            resetApi()
-        }
+        override fun present(viewController: UIViewController) = onPresent(viewController)
 
-        override fun reAuthorize() {
-            super.reAuthorize()
-            onReauthorization()
-        }
     }
     val controller = ComposeUIViewController {
         ProvideContext(context) {
-            TonbrettApp()
+            MobileTonbrettApp(receivedToken)
         }
     }
 
-    onReauthorization = {
-        val alert = UIAlertController("restart", null).apply {
-            title = "Please restart the App"
-        }
-        controller.presentViewController(alert, false, null)
+    onPresent = {
+        controller.presentViewController(it, true, null)
     }
 
     return controller

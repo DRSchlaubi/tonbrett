@@ -17,7 +17,7 @@ kotlin {
         version = project.version.toString()
         summary = "Tonbrett iOS app"
         homepage = "https://github.com/DRSchlaubi/tonbrett"
-        ios.deploymentTarget = "14.1"
+        ios.deploymentTarget = "15.0"
         podfile = project.file("Podfile")
         framework {
             baseName = "shared"

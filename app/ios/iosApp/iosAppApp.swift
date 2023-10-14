@@ -1,6 +1,5 @@
 import SwiftUI
 import shared
-import SafariServices
 import FirebaseCore
 
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -14,54 +13,33 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct TonbrettApp: App {
-    @State private var isShowingLoginView = AuthenticationKt.getTokenOrNull() == nil
-    @State private var renderApp = AuthenticationKt.getTokenOrNull() != nil
+    @State private var loadApp: Bool = true
+    @State private var token: String? = nil
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
             VStack {
-                Button("Retry") {
-                    isShowingLoginView = false
-                    isShowingLoginView = true
-                }
-            }
-            .fullScreenCover(isPresented: $isShowingLoginView) {
-                SafariView(url: URL(string: AuthenticationKt.getAuthUrl())!)
-                    .ignoresSafeArea()
-            }
-            .fullScreenCover(isPresented: $renderApp, content: {
-                ComposeView()
-            })
-            .onOpenURL { incomingUrl in
+                ProgressView()
+            }.fullScreenCover(isPresented: $loadApp, content: {
+                ComposeView(receivedToken: token)
+            }).onOpenURL(perform: { incomingUrl in
                 if(incomingUrl.scheme == "tonbrett" && incomingUrl.host == "login") {
                     let token = incomingUrl.queryParameters!["token"]!
-                    AuthenticationKt.setToken(token: token)
-                    isShowingLoginView = false
-                    renderApp = true
+                    self.loadApp = false
+                    self.token = token
+                    Task {
+                        try? await Task.sleep(nanoseconds: 1_000_000_000)
+                        loadApp = true
+                    }
                 }
-            }
+            })
         }
-    }
-    
-    func navigateBackToAuthorizationView() {
-        renderApp = false
-        isShowingLoginView = true
     }
 }
 
-struct SafariView: UIViewControllerRepresentable {
-    let url: URL
-    
-    func makeUIViewController(context: Context) -> SFSafariViewController {
-        let controller = SFSafariViewController(url: url)
-        controller.modalPresentationCapturesStatusBarAppearance = true
-        return controller
-    }
-    
-    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {
-    }
-}
+
+
 
 extension URL {
     public var queryParameters: [String: String]? {

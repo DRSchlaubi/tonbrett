@@ -32,7 +32,7 @@ import io.ktor.http.URLBuilder
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val context = AppContext(applicationContext)
+        val context = AppContext(this)
         if (intent.data?.scheme == "tonbrett" && intent.data?.host == "login") {
             val token = intent.data?.getQueryParameter("token")
             if (token != null) {

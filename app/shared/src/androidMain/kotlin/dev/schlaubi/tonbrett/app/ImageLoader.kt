@@ -13,5 +13,5 @@ internal actual fun ComponentRegistryBuilder.registerComponents(
     coroutineScope: CoroutineScope
 ) {
     add(GifDecoder.Factory())
-    add(BitmapFactoryDecoder.Factory(appContext.androidContext, Int.MAX_VALUE))
+    add(BitmapFactoryDecoder.Factory(appContext.currentActivity, Int.MAX_VALUE))
 }
