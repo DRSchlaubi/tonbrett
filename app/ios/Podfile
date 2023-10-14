@@ -1,6 +1,6 @@
 target 'iosApp' do
     use_frameworks!
-    platform :ios, '14.1'
+    platform :ios, '15.0'
     pod 'ios', :path => '.'
     pod 'FirebaseCore', '~> 10.9'
 end
