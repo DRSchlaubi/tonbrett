@@ -49,7 +49,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
         remember(context) { AppUpdateManagerFactory.create(context.applicationContext) }
     var progress by remember(appUpdateManager) { mutableStateOf<AppUpdateResult?>(null) }
 
-    if (progress != null) {
+    if (progress == null) {
         LaunchedEffect(appUpdateManager) {
             try {
                 appUpdateManager.requestUpdateFlow().collect {
@@ -92,7 +92,6 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
                         style = MaterialTheme.typography.headlineSmall.copy(color = ColorScheme.textColor),
                         modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
                     )
-
                 }
 
                 when (val currentProgress = progress) {
