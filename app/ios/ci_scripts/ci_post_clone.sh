@@ -8,4 +8,4 @@ sdk install java 20.0.1-tem
 
 # cd into actual project root
 cd ../../../
-./gradlew app:ios:podinstall
+./gradlew app:ios:podinstall :app:ios:linkPodReleaseFrameworkIosArm64
