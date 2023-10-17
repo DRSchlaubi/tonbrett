@@ -1,0 +1,8 @@
+app_identifier("dev.schlaubi.tonbrett.iosApp") # The bundle identifier of your app
+apple_id("michael@rittmeister.in") # Your Apple Developer Portal username
+
+itc_team_id("126395252") # App Store Connect Team ID
+team_id("U5M3TPJ3J7") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
