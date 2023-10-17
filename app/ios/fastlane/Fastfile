@@ -9,6 +9,8 @@ APPLE_ISSUER_ID = ENV["APPLE_ISSUER_ID"]
 APPLE_KEY_ID = ENV["APPLE_KEY_ID"]
 APPLE_KEY_CONTENT = ENV["APPLE_KEY_CONTENT"]
 GIT_AUTHORIZATION = ENV["GIT_AUTHORIZATION"]
+VERSION = ENV["GITHUB_REF_NAME"]
+BUILD_NUMBER = ENV["GITHUB_RUN_NUMBER"]
 
 def delete_temp_keychain(name)
   delete_keychain(
@@ -44,7 +46,15 @@ platform :ios do
       in_house: false
     )
     
-    increment_build_number(xcodeproj: "iosApp.xcodeproj")
+    increment_build_number(
+        build_number: "#{BUILD_NUMER}",
+        xcodeproj: "iosApp.xcodeproj"
+    )
+
+    increment_version_number(
+        version_number: "#{VERSION}",
+        xcodeproj: "iosApp.xcodeproj"
+    )
     
     cocoapods(
       clean_install: true
