@@ -245,10 +245,42 @@ jobs:
           Set-SubmissionPackage -PackagePath out\package.zip -UploadUrl ($sub.fileUploadUrl)
           # Commit changes
           Complete-ApplicationSubmission -AppId $appId -SubmissionId ($sub.id)
+  build_ios_app:
+    name: Deploy to test flight
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Build plugin
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: app:ios:podinstall :app:ios:linkPodReleaseFrameworkIosArm64
+      - name: Deploy iOS Beta to TestFlight via Fastlane
+        uses: maierj/fastlane-action@v1.4.0
+        with:
+          lane: closed_beta
+        env:
+          APP_STORE_CONNECT_TEAM_ID: '${{ secrets.APP_STORE_CONNECT_TEAM_ID }}'
+          DEVELOPER_APP_ID: '${{ secrets.DEVELOPER_APP_ID }}'
+          DEVELOPER_APP_IDENTIFIER: '${{ secrets.DEVELOPER_APP_IDENTIFIER }}'
+          DEVELOPER_PORTAL_TEAM_ID: '${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}'
+          FASTLANE_APPLE_ID: '${{ secrets.FASTLANE_APPLE_ID }}'
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: '${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}'
+          MATCH_PASSWORD: '${{ secrets.MATCH_PASSWORD }}'
+          GIT_AUTHORIZATION: '${{ secrets.GITHUB_TOKEN }}'
+          PROVISIONING_PROFILE_SPECIFIER: '${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}'
+          TEMP_KEYCHAIN_PASSWORD: '${{ secrets.TEMP_KEYCHAIN_PASSWORD }}'
+          TEMP_KEYCHAIN_USER: '${{ secrets.TEMP_KEYCHAIN_USER }}'
+          APPLE_KEY_ID: '${{ secrets.APPLE_KEY_ID }}'
+          APPLE_ISSUER_ID: '${{ secrets.APPLE_ISSUER_ID }}'
+          APPLE_KEY_CONTENT: '${{ secrets.APPLE_KEY_CONTENT }}'
   create_release:
     name: Create Release
     runs-on: windows-latest # for some weird reason this job does not get picked on ubuntu
-    needs: [ build_bot_artifacts, build_desktop_app, build_android_app, sign_windows_installer ]
+    needs: [ build_bot_artifacts, build_desktop_app, build_android_app, sign_windows_installer, build_ios_app ]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/download-artifact@v3
