@@ -255,6 +255,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: olegtarasov/get-tag@v2.1.2
+        id: tagName
       - name: Build iosApp
         uses: gradle/gradle-build-action@v2
         with:
