@@ -87,8 +87,8 @@ platform :ios do
       app_identifier: "#{DEVELOPER_APP_IDENTIFIER}",
       skip_waiting_for_build_processing: true,
       skip_submission: true,
-      distribute_external: false,
-      notify_external_testers: false,
+      distribute_external: true,
+      notify_external_testers: true,
       ipa: "./Tonbrett.ipa"
     )
 
