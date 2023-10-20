@@ -89,7 +89,8 @@ platform :ios do
       skip_submission: true,
       distribute_external: true,
       notify_external_testers: true,
-      ipa: "./Tonbrett.ipa"
+      ipa: "./Tonbrett.ipa",
+      changelog: "New beta build"
     )
 
     delete_temp_keychain(keychain_name)
