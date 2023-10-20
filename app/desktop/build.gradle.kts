@@ -84,6 +84,7 @@ compose.desktop {
                 notarization {
                     appleID = "michael@rittmeister.in"
                     password = System.getenv("NOTARIZATION_PASSWORD")
+                    teamID = "U5M3TPJ3J7"
                 }
             }
         }
