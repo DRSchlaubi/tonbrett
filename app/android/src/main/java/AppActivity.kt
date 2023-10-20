@@ -1,11 +1,16 @@
 package dev.schlaubi.tonbrett.app.android
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import dev.schlaubi.tonbrett.app.MobileTonbrettApp
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.api.AppContext
+import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.api.ProvideContext
 import dev.schlaubi.tonbrett.app.api.tokenKey
 
@@ -28,7 +33,10 @@ class AppActivity : AppCompatActivity() {
             ProvideContext(context) {
                 ProvideImageLoader {
                     UpdateAwareAppScope(activity = this) {
-                        MobileTonbrettApp(token)
+                        MobileTonbrettApp(token) { url ->
+                            val intent = CustomTabsIntent.Builder().build()
+                            intent.launchUrl(this@AppActivity, Uri.parse(url))
+                        }
                     }
                 }
             }

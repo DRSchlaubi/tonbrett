@@ -10,29 +10,27 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.api.getUrl
-import dev.schlaubi.tonbrett.app.util.InAppBrowser
 import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
 
 @Composable
-fun MobileTonbrettApp(receivedToken: String? = null) {
+fun MobileTonbrettApp(receivedToken: String? = null, onAuth: (url: String) -> Unit) {
     val sessionExpired = remember { mutableStateOf(false) }
     val context = LocalContext.current
-    var showLogin by remember { mutableStateOf(false) }
-    if (showLogin) {
-        showLogin = false
+
+    fun authorize() {
         val url = href(Route.Auth(Route.Auth.Type.MOBILE_APP), getUrl())
-        InAppBrowser(url)
-    } else if (receivedToken != null || context.isSignedIn || sessionExpired.value) {
+        onAuth(url)
+    }
+
+    if (receivedToken != null || context.isSignedIn || sessionExpired.value) {
         if (receivedToken != null) {
             sessionExpired.value = false
             context.token = receivedToken
@@ -40,9 +38,7 @@ fun MobileTonbrettApp(receivedToken: String? = null) {
         context.resetApi()
 
         SideEffect {
-            context.withReAuthroize {
-                showLogin = true
-            }
+            context.withReAuthroize(::authorize)
         }
         TonbrettApp(sessionExpired)
     } else {
@@ -57,9 +53,7 @@ fun MobileTonbrettApp(receivedToken: String? = null) {
             } else {
                 Text(strings.pleaseSignIn)
             }
-            Button({
-                showLogin = true
-            }) {
+            Button(::authorize) {
                 Icon(Icons.Default.OpenInBrowser, null)
                 Text(strings.signInWithDiscord)
             }
