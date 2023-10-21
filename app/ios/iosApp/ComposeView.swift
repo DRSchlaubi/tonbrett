@@ -8,6 +8,8 @@
 import UIKit
 import SwiftUI
 import shared
+import AuthenticationServices
+import Foundation
 
 struct ComposeView: UIViewControllerRepresentable {
     let receivedToken: String?
