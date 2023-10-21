@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +39,7 @@ import com.google.android.play.core.ktx.requestCompleteUpdate
 import com.google.android.play.core.ktx.requestUpdateFlow
 import com.google.android.play.core.ktx.totalBytesToDownload
 import dev.schlaubi.tonbrett.app.ColorScheme
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 
@@ -47,23 +49,18 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
     val scope = rememberCoroutineScope()
     val appUpdateManager =
         remember(context) { AppUpdateManagerFactory.create(context.applicationContext) }
-    var progress by remember(appUpdateManager) { mutableStateOf<AppUpdateResult?>(null) }
 
-    if (progress == null) {
-        LaunchedEffect(appUpdateManager) {
-            try {
-                appUpdateManager.requestUpdateFlow().collect {
-                    progress = it
-                }
-            } catch (e: Throwable) {
-                Log.w("Tonbrett", "Could not load Update info", e)
-            }
-        }
+    val progressFlow = remember(appUpdateManager) {
+        appUpdateManager.requestUpdateFlow()
+            .catch { emit(AppUpdateResult.NotAvailable) }
     }
-
+    val progress: AppUpdateResult? by progressFlow.collectAsState(initial = null)
+    var failed by remember(appUpdateManager) { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize()) {
         content()
+
+        if (failed) return
 
         Column(
             verticalArrangement = Arrangement.Bottom,
@@ -95,7 +92,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
                         val installState = currentProgress.installState
                         when (installState.installStatus) {
                             InstallStatus.CANCELED, InstallStatus.INSTALLED, InstallStatus.FAILED -> {
-                                progress = AppUpdateResult.NotAvailable
+                                failed = true
                             }
 
                             InstallStatus.DOWNLOADING -> {
