@@ -259,6 +259,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: app:ios:podinstall :app:ios:linkPodReleaseFrameworkIosArm64
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.0.app
       - name: Deploy iOS Beta to TestFlight via Fastlane
         uses: maierj/fastlane-action@v1.4.0
         with:
