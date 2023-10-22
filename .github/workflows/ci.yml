@@ -255,9 +255,6 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: olegtarasov/get-tag@v2.1.2
         id: tagName
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: 15.0
       - name: Build iosApp
         uses: gradle/gradle-build-action@v2
         with:
