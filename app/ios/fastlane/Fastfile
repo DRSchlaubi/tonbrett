@@ -45,10 +45,6 @@ platform :ios do
       duration: 1200,            
       in_house: false
     )
-    
-    cocoapods(
-      clean_install: true
-    )
 
     match(
       type: 'appstore',
