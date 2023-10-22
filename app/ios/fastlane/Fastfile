@@ -46,16 +46,6 @@ platform :ios do
       in_house: false
     )
     
-=begin     increment_build_number(
-        build_number: "#{BUILD_NUMBER}",
-        xcodeproj: "iosApp.xcodeproj"
-    )
-
-    increment_version_number(
-        version_number: "#{VERSION}",
-        xcodeproj: "iosApp.xcodeproj"
-    ) =end
-    
     cocoapods(
       clean_install: true
     )
