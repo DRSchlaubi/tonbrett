@@ -174,10 +174,10 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: dev.schlaubi.tonbrett.android
-          status: draft
+          status: completed
           releaseFiles: app/android/build/outputs/bundle/release/tonbrett-app-release.aab
           mappingFile: app/android/build/outputs/mapping/release/mapping.txt
-          track: internal
+          track: alpha
   sign_windows_installer:
     name: Sign windows installer
     runs-on: windows-signing
