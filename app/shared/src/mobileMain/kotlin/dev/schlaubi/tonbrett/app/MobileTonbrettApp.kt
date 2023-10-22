@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -48,11 +49,12 @@ fun MobileTonbrettApp(receivedToken: String? = null, onAuth: (url: String) -> Un
             modifier = Modifier.fillMaxSize()
         ) {
             val strings = LocalStrings.current
-            if (sessionExpired.value) {
-                Text(strings.sessionExpiredExplainer)
+            val text = if (sessionExpired.value) {
+                strings.sessionExpiredExplainer
             } else {
-                Text(strings.pleaseSignIn)
+                strings.pleaseSignIn
             }
+            Text(text, color = MaterialTheme.colorScheme.onSecondary)
             Button(::authorize) {
                 Icon(Icons.Default.OpenInBrowser, null)
                 Text(strings.signInWithDiscord)
