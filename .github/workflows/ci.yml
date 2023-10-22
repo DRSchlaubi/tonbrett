@@ -257,7 +257,7 @@ jobs:
         id: tagName
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: 15.0.1
+          xcode-version: 15.0
       - name: Build iosApp
         uses: gradle/gradle-build-action@v2
         with:
