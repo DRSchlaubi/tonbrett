@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">Tonbrett</string>
-    <string name="retry">Retry</string>
-    <string name="update_available">Update available</string>
-    <string name="update_pending">Update queued</string>
-    <string name="update_downloading">Downloading: %s</string>
-    <string name="update_download_done">Install Update</string>
+    <string name="sign_in">Please sign in on your phone</string>
+    <string name="voice_state_offline">You are not connected to a voice channel</string>
+    <string name="voice_state_channel_mismatch">The bot is currently in use</string>
 </resources>

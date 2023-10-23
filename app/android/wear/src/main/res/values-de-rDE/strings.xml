@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="retry">Erneut versuchen</string>
-    <string name="update_available">Update verfügbar</string>
-    <string name="update_pending">Update begonnen</string>
-    <string name="update_downloading">Update wird heruntergeladen: %s</string>
-    <string name="update_download_done">Update Installieren</string>
+    <string name="sign_in">Bitte melde dich auf deinem Mobiltelefon an</string>
+    <string name="voice_state_offline">Du bist in keinem Sprachkanal</string>
+    <string name="voice_state_channel_mismatch">Der Bot wird derzeit benutzt</string>
 </resources>

@@ -16,6 +16,7 @@ play-services-wearable = "18.1.0"
 horologist = "0.5.8"
 protobuf = "3.19.4"
 compose-compiler = "1.5.3"
+coil = "2.4.0"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.0" }
@@ -77,6 +78,8 @@ androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "co
 horologist-auth-data-phone = { group = "com.google.android.horologist", name = "horologist-auth-data-phone", version.ref = "horologist" }
 horologist-auth-data = { group = "com.google.android.horologist", name = "horologist-auth-data", version.ref = "horologist" }
 horologist-datalayer = { group = "com.google.android.horologist", name = "horologist-datalayer", version.ref = "horologist" }
+
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

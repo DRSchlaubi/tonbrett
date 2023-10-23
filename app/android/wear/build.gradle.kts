@@ -18,6 +18,12 @@ dependencies {
 
     implementation(libs.androidx.wear.compose.material)
     implementation(libs.androidx.wear.compose.foundation)
+    implementation(compose.materialIconsExtended)
+
+    implementation(libs.kmongo.id.serialization)
+    implementation(libs.kord.common)
+
+    implementation(libs.coil.compose)
 }
 
 android {
