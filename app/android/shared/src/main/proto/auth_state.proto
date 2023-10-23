@@ -3,6 +3,8 @@ syntax = "proto3";
 option java_package = "dev.schlaubi.tonbrett.app.android.shared";
 option java_multiple_files = true;
 
+// Representation of the apps authentication state
 message AuthState {
+  // The current token if set
   optional string token = 1;
 }
