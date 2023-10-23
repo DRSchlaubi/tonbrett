@@ -31,8 +31,11 @@ class MainActivity : ComponentActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                if (authState.hasToken()) {
-                    WearTonbrettApp(authState.token)
+                val currentAuthState = authState
+                if (currentAuthState == null) {
+                    CircularProgressIndicator()
+                } else if (currentAuthState.hasToken()) {
+                    WearTonbrettApp(currentAuthState.token)
                 } else {
                     Icon(Icons.Default.PhoneAndroid, null)
                     Text(stringResource(R.string.sign_in))

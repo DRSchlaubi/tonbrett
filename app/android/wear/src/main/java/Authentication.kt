@@ -15,7 +15,7 @@ import dev.schlaubi.tonbrett.app.android.shared.AuthStateSerializer
 
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
-fun rememberAuthState(): State<AuthState> {
+fun rememberAuthState(): State<AuthState?> {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val registry = remember(context, coroutineScope) {
@@ -32,5 +32,5 @@ fun rememberAuthState(): State<AuthState> {
         )
     }
 
-    return repository.flow.collectAsState(initial = AuthState.getDefaultInstance())
+    return repository.flow.collectAsState(initial = null)
 }
