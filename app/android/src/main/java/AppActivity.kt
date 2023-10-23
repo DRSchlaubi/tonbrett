@@ -2,19 +2,16 @@ package dev.schlaubi.tonbrett.app.android
 
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import dev.schlaubi.tonbrett.app.MobileTonbrettApp
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.api.AppContext
-import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.api.ProvideContext
 import dev.schlaubi.tonbrett.app.api.tokenKey
 
-class AppActivity : AppCompatActivity() {
+class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val token = if (intent.data?.scheme == "tonbrett" && intent.data?.host == "login") {
@@ -29,6 +26,8 @@ class AppActivity : AppCompatActivity() {
                     super.reAuthorize()
                 }
             }
+
+            WearOSTokenSharing(token = token ?: context.getTokenOrNull())
 
             ProvideContext(context) {
                 ProvideImageLoader {

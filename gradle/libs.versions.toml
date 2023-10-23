@@ -8,9 +8,14 @@ ksp = "1.9.10-1.0.13"
 kordex = "1.5.8-SNAPSHOT"
 android = "8.1.2"
 compose = "1.5.10-rc01"
+compose-wear = "1.2.1"
 lyricist = "1.4.2"
 google-play = "2.1.0"
 coroutines = "1.7.3"
+play-services-wearable = "18.1.0"
+horologist = "0.5.8"
+protobuf = "3.19.4"
+compose-compiler = "1.5.3"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.0" }
@@ -60,6 +65,18 @@ google-play = { group = "com.google.android.play", name = "app-update", version.
 google-play-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "google-play" }
 
 google-artifactregistry = { group = "gradle.plugin.com.google.cloud.artifactregistry", name = "artifactregistry-gradle-plugin", version = "2.2.1" }
+play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
+
+protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
+protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version = "3.24.4" }
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version = "3.24.4" }
+
+androidx-wear-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "compose-wear" }
+androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "compose-wear" }
+
+horologist-auth-data-phone = { group = "com.google.android.horologist", name = "horologist-auth-data-phone", version.ref = "horologist" }
+horologist-auth-data = { group = "com.google.android.horologist", name = "horologist-auth-data", version.ref = "horologist" }
+horologist-datalayer = { group = "com.google.android.horologist", name = "horologist-datalayer", version.ref = "horologist" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -72,3 +89,4 @@ android-application = { id = "com.android.application", version.ref = "android" 
 android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "4.1.2" }
+protobuf = { id = "com.google.protobuf", version = "0.9.4" }
