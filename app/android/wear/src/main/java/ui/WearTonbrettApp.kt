@@ -90,9 +90,15 @@ fun WearTonbrettApp(token: String) {
                         playingSound = it.playingSongId
                     )
                 }
-                is SoundCreatedEvent -> TODO()
-                is SoundDeletedEvent -> TODO()
-                is SoundUpdatedEvent -> TODO()
+
+                is SoundCreatedEvent -> sounds += it.sound
+                is SoundDeletedEvent -> sounds = sounds.filter { sound -> sound.id != it.id }
+                is SoundUpdatedEvent -> {
+                    val copy = sounds.toMutableList()
+                    copy[copy.indexOfFirst { sound -> sound.id == it.sound.id }] = it.sound
+                    sounds = copy
+                }
+
                 is VoiceStateUpdateEvent -> handleVoiceStateUpdate(it.voiceState)
             }
         }
@@ -100,7 +106,7 @@ fun WearTonbrettApp(token: String) {
 
     val currentState = state
     if (currentState is State.Player) {
-       SoundList(api, currentState, sounds)
+        SoundList(api, currentState, sounds)
     } else {
         Column(
             verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
@@ -112,9 +118,11 @@ fun WearTonbrettApp(token: String) {
                 is State.Offline -> {
                     Info(Icons.Default.OfflineBolt, R.string.voice_state_offline)
                 }
+
                 is State.ChannelMismatch -> {
                     Info(Icons.Default.Error, R.string.voice_state_channel_mismatch)
                 }
+
                 else -> error("Impossible branch")
             }
         }
