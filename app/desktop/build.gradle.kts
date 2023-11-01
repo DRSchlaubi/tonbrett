@@ -91,7 +91,7 @@ compose.desktop {
         buildTypes {
             release {
                 proguard {
-                    version = "7.3.2"
+                    version = "7.4.0"
                     configurationFiles.from(files("rules.pro"))
                 }
             }
