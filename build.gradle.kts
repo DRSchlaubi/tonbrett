@@ -1,26 +1,24 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 
 plugins {
-    alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.compose) apply false
 }
 
 allprojects {
     group = "dev.schlaubi.tonbrett"
-    version = "1.15.7"
+    version = "1.16.0"
 
     repositories {
         mavenCentral()
+        google()
     }
 }
 
 subprojects {
     afterEvaluate {
         extensions.findByType<KotlinTopLevelExtension>()?.apply {
-            jvmToolchain(20)
+            jvmToolchain(21)
         }
     }
 }

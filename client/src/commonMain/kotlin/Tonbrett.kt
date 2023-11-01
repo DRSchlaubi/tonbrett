@@ -177,4 +177,4 @@ class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, pr
  */
 @Suppress("INVISIBLE_MEMBER")
 inline fun <reified T> HttpClient.href(resource: T, urlBuilder: URLBuilder) =
-    href(resources().resourcesFormat, resource, urlBuilder)
+    href(plugin(Resources).resourcesFormat, resource, urlBuilder)

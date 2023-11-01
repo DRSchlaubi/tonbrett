@@ -1,4 +1,4 @@
-@file:Suppress("INVISIBLE_MEMBER", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+@file:Suppress("INVISIBLE_MEMBER", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE", "INVISIBLE_REFERENCE")
 
 package dev.schlaubi.tonbrett.client
 

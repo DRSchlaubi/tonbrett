@@ -1,30 +1,14 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import dev.schlaubi.tonbrett.gradle.androidSdk
 
 plugins {
-    kotlin("multiplatform")
+    `multiplatform-module`
     kotlin("plugin.serialization")
     `published-module`
 }
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default {
-        common {
-            group("nonJvm") {
-                withNative()
-                withJs()
-            }
-        }
-    }
     explicitApi()
 
-    jvm()
-    js(IR) {
-        browser()
-    }
-    iosSimulatorArm64()
-    iosX64()
-    iosArm64()
     macosArm64()
     macosX64()
     mingwX64()
@@ -37,11 +21,16 @@ kotlin {
             }
         }
 
-        named("jvmMain") {
+        jvmMain {
             dependencies {
                 compileOnly(libs.kmongo.id.serialization)
                 compileOnly(libs.kord.common)
             }
         }
     }
+}
+
+android {
+    namespace = "dev.schlaubi.tonbrett.common"
+    compileSdkVersion = androidSdk
 }

@@ -1,4 +1,5 @@
 import dev.schlaubi.mikbot.gradle.mikbot
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import kotlin.io.path.div
 
 plugins {
@@ -21,6 +22,7 @@ dependencies {
 
 kotlin {
     compilerOptions {
+        languageVersion = KotlinVersion.KOTLIN_2_0
         freeCompilerArgs.add("-Xcontext-receivers")
     }
 }

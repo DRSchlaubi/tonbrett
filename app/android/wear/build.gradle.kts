@@ -1,4 +1,5 @@
 import dev.schlaubi.tonbrett.gradle.sdkInt
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("android")
@@ -45,6 +46,16 @@ android {
     packaging {
         resources {
             pickFirsts.add("META-INF/versions/9/previous-compilation-data.bin")
+        }
+    }
+
+    compileOptions {
+        targetCompatibility = JavaVersion.VERSION_20
+    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_20
         }
     }
 }

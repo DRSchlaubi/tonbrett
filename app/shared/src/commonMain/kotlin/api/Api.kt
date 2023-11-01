@@ -42,11 +42,10 @@ expect abstract class AppContextBase : ApiStateHolder {
  * Context used for piping platform contexts into a multiplatform app.
  */
 expect open class AppContext : AppContextBase {
-
     /**
      * Initiates authorization flow for the current platform.
      */
-     fun reAuthorize()
+    fun reAuthorize()
 }
 
 /**

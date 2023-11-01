@@ -35,12 +35,12 @@ actual fun start(args: Array<String>) {
     }
 }
 
-actual fun launchUri(uri: URI): Unit = Arena.openConfined().use { arena ->
+actual fun launchUri(uri: URI): Unit = Arena.ofConfined().use { arena ->
     val url = arena.allocateUtf8String(uri.toString())
     launch_uri(url)
 }
 
-actual fun setToken(token: String) = Arena.openConfined().use { arena ->
+actual fun setToken(token: String) = Arena.ofConfined().use { arena ->
     val tokenStr = arena.allocateUtf8String(token)
     store_token(tokenStr)
 }
@@ -50,7 +50,7 @@ actual fun getToken(): String = invokeStringResultFunction(::get_token)
 private fun invokeStringResultFunction(
     function: (SegmentAllocator) -> MemorySegment
 ) =
-    Arena.openConfined().use { arena ->
+    Arena.ofConfined().use { arena ->
         val result = function(arena)
         val isError = StringResult.`is_error$get`(result)
         val length = StringResult.`length$get`(result).coerceAtLeast(0)

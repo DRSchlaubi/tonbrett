@@ -4,7 +4,6 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalBoolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalInt
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
-import com.kotlindiscord.kord.extensions.types.respond
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.mikbot.plugin.api.util.discordError
 import dev.schlaubi.tonbrett.bot.command.emoji

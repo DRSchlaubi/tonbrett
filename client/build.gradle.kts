@@ -1,9 +1,7 @@
 import dev.schlaubi.tonbrett.gradle.androidSdk
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
+    `multiplatform-module`
     `published-module`
 }
 
@@ -12,24 +10,7 @@ repositories {
     google()
 }
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default {
-        common {
-            group("jvmShared") {
-                withAndroidTarget()
-                withJvm()
-            }
-        }
-    }
-    jvm()
-    js(IR) {
-        browser()
-    }
-    androidTarget()
-    iosSimulatorArm64()
-    iosX64()
-    iosArm64()
     macosArm64()
     macosX64()
     mingwX64()
@@ -47,25 +28,25 @@ kotlin {
             }
         }
 
-        named("jsMain") {
+        jsMain {
             dependencies {
                 implementation(libs.ktor.client.js)
             }
         }
 
-        named("appleMain") {
+        appleMain {
             dependencies {
                 implementation(libs.ktor.client.darwin)
             }
         }
 
-        named("jvmSharedMain") {
+        jvmMain {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
             }
         }
 
-        named("mingwMain") {
+        mingwMain {
             dependencies {
                 implementation(libs.ktor.client.winhttp)
             }

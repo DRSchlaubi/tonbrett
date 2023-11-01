@@ -4,8 +4,7 @@ import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
+    `multiplatform-module`
     id("org.jetbrains.compose")
     alias(libs.plugins.buildconfig)
     alias(libs.plugins.ksp)
@@ -27,11 +26,6 @@ kotlin {
                 withJs()
             }
 
-            group("jvm") {
-                withAndroidTarget()
-                withJvm()
-            }
-
             group("mobile") {
                 group("apple") {
                     withApple()
@@ -46,14 +40,6 @@ kotlin {
             }
         }
     }
-    androidTarget()
-    jvm("desktop")
-    js(IR) {
-        browser()
-    }
-    iosSimulatorArm64()
-    iosX64()
-    iosArm64()
 
     sourceSets {
         all {
@@ -77,13 +63,13 @@ kotlin {
             }
         }
 
-        named("jsMain") {
+        jsMain {
             dependencies {
-                api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:1.9.0")
+                api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:1.9.10")
             }
         }
 
-        named("jvmMain") {
+        jvmMain {
             dependencies {
                 implementation(libs.kmongo.id.serialization)
             }
@@ -95,7 +81,7 @@ kotlin {
             }
         }
 
-        named("androidMain") {
+        androidMain {
             dependencies {
                 implementation(libs.androidx.browser)
             }

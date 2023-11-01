@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  JAVA_VERSION: 20
+  JAVA_VERSION: 21
 
 permissions:
   contents: write

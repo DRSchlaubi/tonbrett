@@ -1,4 +1,5 @@
 import dev.schlaubi.tonbrett.gradle.sdkInt
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("android")
@@ -58,5 +59,15 @@ android {
     }
     androidResources {
         generateLocaleConfig = true
+    }
+
+    compileOptions {
+        targetCompatibility = JavaVersion.VERSION_20
+    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_20
+        }
     }
 }

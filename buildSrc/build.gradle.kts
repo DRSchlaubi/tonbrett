@@ -8,21 +8,24 @@ plugins {
 repositories {
     gradlePluginPortal()
     mavenCentral()
+    google()
 }
 
 dependencies {
     implementation(libs.google.artifactregistry)
     implementation(libs.kotlinx.serialization)
+    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.android.gradle.plugin)
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_20
 }
 
 tasks {
     withType<KotlinCompile> {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_1_8
+            jvmTarget = JvmTarget.JVM_20
         }
     }
 }
