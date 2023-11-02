@@ -56,3 +56,6 @@
 # compose
 -keep class androidx.compose.ui.text.platform.Platform { *; }
 -keep class androidx.compose.runtime.** { *; }
+
+# protobuf
+-keep class dev.schlaubi.tonbrett.app.android.shared.* { *; }
