@@ -29,7 +29,7 @@ import java.awt.Window as AWTWindow
 
 private val LOG = KotlinLogging.logger { }
 
-fun main(array: Array<String>) = start(arrayOf("tonbrett://login?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL211c2lrdXMuZ3V0aWt1cy5zY2hsYXUuYmkiLCJ1c2VySWQiOjQxNjkwMjM3OTU5ODc3NDI3MywicmVmcmVzaFRva2VuIjoiVTNtdXV4WE1WTW9uQkU4RGFQOW1jRkN4dUQzMkRlIiwiZXhwIjoxNjk5NDg2NDM4fQ.lLXjSeynjaHiCXbO5lJh6fWb9rKjBfOGii9mDT-yK40"))
+fun main(array: Array<String>) = start(array)
 
 fun startApplication(forAuth: Boolean = false) = application {
     val sessionExpired = remember { mutableStateOf(false) }

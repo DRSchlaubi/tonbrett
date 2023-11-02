@@ -53,4 +53,6 @@
   <1>.<2>$Companion Companion;
 }
 
--dontobfuscate
+# compose
+-keep class androidx.compose.ui.text.platform.Platform { *; }
+-keep class androidx.compose.runtime.** { *; }
