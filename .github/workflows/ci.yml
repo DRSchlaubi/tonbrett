@@ -49,6 +49,9 @@ jobs:
         if: matrix.os == 'windows-latest'
         with:
           toolchain: 'stable'
+      - name: Setup MSbuild
+        if: matrix.os == 'windows-latest'
+        run: choco install windows-sdk-10 --version=10.0.26624
       - name: Setup jextract
         if: matrix.os == 'windows-latest'
         shell: powershell
@@ -92,9 +95,6 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         with:
           arguments: packageDistributable
-      - name: Setup MSbuild
-        if: matrix.os == 'windows-latest'
-        run: choco install windows-sdk --version=10.0.26624
       - name: Build MSIX
         if: matrix.os == 'windows-latest'
         run: |
@@ -207,7 +207,7 @@ jobs:
         with:
           name: msstore-workspace
       - name: Setup MSbuild
-        run: choco install windows-sdk --version=10.0.26624
+        run: choco install windows-sdk-10 --version=10.0.26624
       - name: Configure the Microsoft Store CLI
         run: |
           Install-Module -Name StoreBroker -Force
