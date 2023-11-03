@@ -54,6 +54,7 @@ tasks {
             "--include-function", "get_token",
             "--include-function", "store_token",
             "--include-function", "copy_string_from_get_string_result_into_buffer",
+            "--include-function", "request_msstore_auto_update",
             "--include-struct", "StringResult",
             "--include-typedef", "uint16_t",
             header,

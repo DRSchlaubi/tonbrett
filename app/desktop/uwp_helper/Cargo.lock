@@ -369,6 +369,7 @@ name = "uwp_helper"
 version = "0.1.0"
 dependencies = [
  "cbindgen",
+ "log",
  "tokio",
  "windows",
 ]

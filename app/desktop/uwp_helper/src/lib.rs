@@ -1,5 +1,6 @@
 use std::ffi::{c_char, CStr};
 
+use windows::Services::Store::StoreContext;
 use windows::{
     core::h,
     core::Result,
@@ -12,6 +13,33 @@ use windows::{
 
 const RESOURCE: &HSTRING = h!("dev.schlaubi.tonbrett/api_token");
 const USERNAME: &HSTRING = h!("_");
+
+#[tokio::main]
+#[no_mangle]
+pub async extern "C" fn request_msstore_auto_update() -> bool {
+    let result = _request_msstore_auto_update().await;
+    return match result {
+        Err(err) => {
+            log::error!("Could not request msstore update: {}", err);
+            true
+        }
+        _ => false,
+    };
+}
+
+async fn _request_msstore_auto_update() -> Result<()> {
+    let context = StoreContext::GetDefault()?;
+    let updates = context.GetAppAndOptionalStorePackageUpdatesAsync()?.await?;
+
+    if updates.Size()? > 0 {
+        context
+            .RequestDownloadAndInstallStorePackageUpdatesAsync(&updates)?
+            .await
+            .map(|_| ())
+    } else {
+        Ok(())
+    }
+}
 
 #[tokio::main]
 #[no_mangle]

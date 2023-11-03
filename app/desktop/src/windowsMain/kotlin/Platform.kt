@@ -4,6 +4,10 @@ import dev.schlaubi.tonbrett.app.desktop.uwp_helper.StringResult
 import dev.schlaubi.tonbrett.app.desktop.uwp_helper.UwpHelper.*
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import java.lang.foreign.Arena
 import java.lang.foreign.MemorySegment
@@ -17,6 +21,7 @@ actual val loginType = Route.Auth.Type.PROTOCOL
 
 actual fun prepareAuthentication(onAuth: () -> Unit): Unit = exitProcess(0)
 
+@OptIn(DelicateCoroutinesApi::class)
 actual fun start(args: Array<String>) {
     val argsString = args.joinToString(" ")
     if (argsString.startsWith("tonbrett://login")) {
@@ -28,6 +33,7 @@ actual fun start(args: Array<String>) {
             e.printStackTrace()
             Thread.sleep(50000)
         }
+        GlobalScope.launch(Dispatchers.IO) { request_msstore_auto_update() }
         startApplication()
     } else {
         val needsAuth = runCatching { getToken() }.isFailure
