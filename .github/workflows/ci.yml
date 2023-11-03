@@ -106,15 +106,6 @@ jobs:
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
         with:
           arguments: notarizeReleasePkg -Pcompose.desktop.mac.sign=true
-      - name: Upload distributions
-        uses: actions/upload-artifact@v3
-        with:
-          name: desktopapp-${{ matrix.os }}
-          path: |
-            *.msix
-            app/desktop/build/compose/binaries/main-release/deb/*.deb
-            app/desktop/build/compose/binaries/main-release/pkg/*.pkg
-            app/desktop/build/distributions/*.tar.gz
       - name: Upload MSIX workspace
         uses: actions/upload-artifact@v3
         if: matrix.os == 'windows-latest'
@@ -178,24 +169,6 @@ jobs:
           releaseFiles: app/android/build/outputs/bundle/release/tonbrett-app-release.aab
           mappingFile: app/android/build/outputs/mapping/release/mapping.txt
           track: alpha
-  sign_windows_installer:
-    name: Sign windows installer
-    runs-on: windows-signing
-    needs: build_desktop_app
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - uses: actions/download-artifact@v3
-        name: Download Artifacts from Windows
-        with:
-          name: desktopapp-windows-latest
-      - name: Code Sign 2021
-        run: |
-          & 'C:\Program Files (x86)\Windows Kits\10\App Certification Kit\signtool.exe' sign /fd SHA256 /n "Open Source Developer, Michael Rittmeister" /t http://time.certum.pl/ /d Tonbrett Tonbrett.msix
-      - name: Upload distributions
-        uses: actions/upload-artifact@v3
-        with:
-          name: desktopapp-windows-signed
-          path: "*.msix"
   release_to_msstore:
     name: Publish to MSStore
     runs-on: windows-latest
@@ -293,10 +266,6 @@ jobs:
         name: Download Artifacts from MacOS
         with:
           name: desktopapp-macos-latest
-      - uses: actions/download-artifact@v3
-        name: Download Artifacts from Windows
-        with:
-          name: desktopapp-windows-signed
       - uses: actions/download-artifact@v3
         name: Download Bot
         with:
