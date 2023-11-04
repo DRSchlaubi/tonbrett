@@ -44,10 +44,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 typealias SoundUpdater = (List<Sound>) -> Unit
 
-@OptIn(ExperimentalComposeUiApi::class)
 private val protectedKeys = listOf(Key.Enter, Key.DirectionUp, Key.DirectionDown)
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) {
     var onlineMine by remember { mutableStateOf(false) }

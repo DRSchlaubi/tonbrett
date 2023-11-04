@@ -176,7 +176,8 @@ fun SoundCard(
             }
         }
     }
-    if (description != null && hovered && !playing) {
+    // TODO: find better way to display descriptions
+/*    if (description != null && hovered && !playing) {
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
@@ -187,5 +188,5 @@ fun SoundCard(
         ) {
             Text(description, color = ColorScheme.textColor)
         }
-    }
+    }*/
 }
