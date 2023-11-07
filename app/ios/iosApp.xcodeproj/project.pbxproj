@@ -58,6 +58,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6B6208091B83A12AB77DFEDF /* xcschemes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = xcschemes;
+			path = iosApp.xcworkspace/xcuserdata/michaelrittmeister.xcuserdatad/xcschemes;
+			sourceTree = "<group>";
+		};
 		8E3F496A2A1A51E5001D2B92 = {
 			isa = PBXGroup;
 			children = (
@@ -66,6 +74,7 @@
 				8E3F49742A1A51E5001D2B92 /* Products */,
 				295B13624D7C35295254695F /* Pods */,
 				440D2C00F0B0D5F7AEEEAE9F /* Frameworks */,
+				6B6208091B83A12AB77DFEDF /* xcschemes */,
 			);
 			sourceTree = "<group>";
 		};
