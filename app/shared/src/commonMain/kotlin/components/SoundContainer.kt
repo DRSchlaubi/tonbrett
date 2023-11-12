@@ -1,3 +1,4 @@
+@file:Suppress("INVISIBLE_MEMBER")
 package dev.schlaubi.tonbrett.app.components
 
 import androidx.compose.foundation.*
@@ -12,16 +13,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +28,7 @@ import dev.schlaubi.tonbrett.app.ErrorReporter
 import dev.schlaubi.tonbrett.app.OptionalWebImage
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
+import dev.schlaubi.tonbrett.app.util.SoundToolTip
 import dev.schlaubi.tonbrett.app.util.canClearFocus
 import dev.schlaubi.tonbrett.app.util.conditional
 import dev.schlaubi.tonbrett.app.util.isMobile
@@ -48,7 +46,7 @@ fun SoundContainer(
     unavailableFor: String?,
     soundUpdater: SoundUpdater
 ) {
-    Column {
+    Box {
         SearchBarScope(soundUpdater) {
             LazyVerticalGrid(GridCells.Adaptive(160.dp), Modifier.canClearFocus().fillMaxHeight()) {
                 items(sounds) { (id, name, _, description, emoji) ->
@@ -109,66 +107,69 @@ fun SoundCard(
 
     fun stop() = request { api.stop() }
 
-    SoundCardContextMenuArea(id) {
-        ElevatedCard(
-            colors = CardDefaults.cardColors(containerColor = ColorScheme.secondaryContainer),
-            shape = corners,
-            modifier = Modifier.size(width = 128.dp, height = 64.dp)
-                .padding(vertical = 3.dp, horizontal = 5.dp)
-                .conditional(playing) {
-                    border(BorderStroke(2.dp, ColorScheme.active), corners)
-                }
-                .hoverable(interactionSource)
-                .conditional(isMobile && !waiting && !disabled) {
-                    combinedClickable(
-                        onClick = {
-                            if (playing) {
-                                stop()
-                            } else {
+    SoundToolTip(description, hovered && !playing) {
+        SoundCardContextMenuArea(id) {
+            ElevatedCard(
+                colors = CardDefaults.cardColors(containerColor = ColorScheme.secondaryContainer),
+                shape = corners,
+                modifier = Modifier.height(height = 64.dp)
+                    .fillMaxWidth()
+                    .padding(vertical = 3.dp, horizontal = 5.dp)
+                    .conditional(playing) {
+                        border(BorderStroke(2.dp, ColorScheme.active), corners)
+                    }
+                    .hoverable(interactionSource)
+                    .conditional(isMobile && !waiting && !disabled) {
+                        combinedClickable(
+                            onClick = {
+                                if (playing) {
+                                    stop()
+                                } else {
+                                    play()
+                                }
+                            },
+                            onDoubleClick = {
+                                if (playing && !disabled) {
+                                    play()
+                                }
+                            }
+                        )
+                    }.conditional(!isMobile) {
+                        clickable {
+                            if (!disabled && !waiting) {
                                 play()
                             }
-                        },
-                        onDoubleClick = {
-                            if (playing && !disabled) {
-                                play()
-                            }
-                        }
-                    )
-                }.conditional(!isMobile) {
-                    clickable {
-                        if (!disabled && !waiting) {
-                            play()
                         }
                     }
-                }
-        ) {
-            BoxWithConstraints {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
-                ) {
-                    require(emoji is Sound.Emoji.HasUrl?){ "This emoji is invalid: $emoji" }
-                    OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
-                    Text(name, color = ColorScheme.textColor, fontSize = 16.sp, textAlign = TextAlign.Center)
-                }
-                if (playing && hovered && !disabled && !waiting) {
-                    Box(Modifier.zIndex(1f).background(ColorScheme.secondaryContainer)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            IconButton({
-                                play()
-                            }) {
-                                Icon(Icons.Default.Refresh, null, tint = ColorScheme.textColor)
-                            }
-                            Divider(Modifier.width(1.dp).height(15.dp))
-                            IconButton({
-                                stop()
-                            }) {
-                                Icon(Icons.Default.Stop, null, tint = ColorScheme.textColor)
+            ) {
+                BoxWithConstraints {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
+                    ) {
+                        require(emoji is Sound.Emoji.HasUrl?) { "This emoji is invalid: $emoji" }
+                        OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
+                        Text(name, color = ColorScheme.textColor, fontSize = 16.sp, textAlign = TextAlign.Center)
+                    }
+                    if (playing && hovered && !disabled && !waiting) {
+                        Box(Modifier.zIndex(1f).background(ColorScheme.secondaryContainer)) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                IconButton({
+                                    play()
+                                }) {
+                                    Icon(Icons.Default.Refresh, null, tint = ColorScheme.textColor)
+                                }
+                                Divider(Modifier.width(1.dp).height(15.dp))
+                                IconButton({
+                                    stop()
+                                }) {
+                                    Icon(Icons.Default.Stop, null, tint = ColorScheme.textColor)
+                                }
                             }
                         }
                     }
@@ -176,17 +177,4 @@ fun SoundCard(
             }
         }
     }
-    // TODO: find better way to display descriptions
-/*    if (description != null && hovered && !playing) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .shadow(2.dp)
-                .zIndex(2f)
-                .background(ColorScheme.secondaryContainer)
-                .padding(8.dp),
-        ) {
-            Text(description, color = ColorScheme.textColor)
-        }
-    }*/
 }
