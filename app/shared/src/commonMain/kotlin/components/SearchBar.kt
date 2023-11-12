@@ -1,7 +1,6 @@
 package dev.schlaubi.tonbrett.app.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
@@ -9,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Person
@@ -17,7 +17,6 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
@@ -131,7 +130,7 @@ fun SearchBarScope(updateSounds: SoundUpdater, content: @Composable () -> Unit) 
     }
 }
 
-@OptIn(FlowPreview::class, ExperimentalComposeUiApi::class)
+@OptIn(FlowPreview::class)
 @Composable
 private fun SearchField(
     value: TextFieldValue, onlyMine: Boolean, updateSounds: SoundUpdater,
@@ -196,6 +195,7 @@ private fun SearchField(
                 updateSearch(it)
             }
         },
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus(force = true) }),
         singleLine = true,
         visualTransformation = SyntaxHighlightingTextTransformation,
         modifier = Modifier
