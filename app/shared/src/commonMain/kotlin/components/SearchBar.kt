@@ -173,7 +173,7 @@ private fun SearchField(
     OutlinedTextField(
         value,
         updateSearch,
-        placeholder = { Text(strings.searchExplainer) },
+        placeholder = { Text(strings.searchExplainer, color = ColorScheme.textColor.copy(alpha = .7f)) },
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = ColorScheme.searchBarColor,
             unfocusedContainerColor = ColorScheme.searchBarColor,
