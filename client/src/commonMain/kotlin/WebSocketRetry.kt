@@ -82,7 +82,7 @@ private class WebSocketRetryContext(
     suspend fun connect() {
         suspend fun retry(e: Throwable) {
             val reason = session.closeReason.await()
-            if (reason?.knownReason == CloseReason.Codes.VIOLATED_POLICY) return run { println("ERE") }
+            if (reason?.knownReason == CloseReason.Codes.VIOLATED_POLICY) return
             val exception = DisconnectedException(reason)
             LOG.warn(exception) { "Got disconnected from WebSocket" }
             reconnect(e, isRetry = false)
