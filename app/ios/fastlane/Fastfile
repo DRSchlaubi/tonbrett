@@ -34,7 +34,7 @@ end
 
 platform :ios do
   lane :closed_beta do
-    xcversion(version: "15.0")
+    xcodes(version: "15.0")
 
     keychain_name = TEMP_KEYCHAIN_USER
     keychain_password = TEMP_KEYCHAIN_PASSWORD
