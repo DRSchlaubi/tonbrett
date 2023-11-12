@@ -36,13 +36,13 @@ fun SoundToolTip(text: String?, isShown: Boolean, content: @Composable () -> Uni
 
         if (isShown || isHovered) {
             val density = LocalDensity.current
-            var height by remember { mutableStateOf(0.dp) }
+            var height by remember { mutableStateOf(0) }
 
-            fun whenPositionedOrTransparent(color: Color) = if (height > 0.dp) color else Color.Transparent
+            fun whenPositionedOrTransparent(color: Color) = if (height > 0) color else Color.Transparent
 
             Popup(
                 alignment = Alignment.TopCenter,
-                offset = IntOffset(0, with(density) { (-(5).dp - height).toPx().roundToInt() })
+                offset = IntOffset(0, with(density) { (-(5).dp.roundToPx() - height) })
             ) {
                 SelectionContainer {
                     Text(
@@ -52,7 +52,7 @@ fun SoundToolTip(text: String?, isShown: Boolean, content: @Composable () -> Uni
                         modifier = Modifier
                             .background(whenPositionedOrTransparent(Color.Black), RoundedCornerShape(7.dp))
                             .onSizeChanged {
-                                height = with(density) { it.height.toDp() }
+                                height = it.height
                             }
                             .hoverable(interactionSource)
                             .padding(horizontal = 5.dp, vertical = 10.dp)
