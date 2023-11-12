@@ -1,6 +1,10 @@
 @file:Suppress("INVISIBLE_MEMBER")
+
 package dev.schlaubi.tonbrett.app.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -16,9 +20,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,26 +47,40 @@ fun SoundContainer(
     unavailableFor: String?,
     soundUpdater: SoundUpdater
 ) {
-    Box {
+    var lastDisabledReason by remember { mutableStateOf(unavailableFor) }
+    if (unavailableFor != null) {
+        lastDisabledReason = unavailableFor
+    }
+
+    Column {
+        AnimatedVisibility(
+            unavailableFor != null,
+            exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+            label = unavailableFor.toString()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp)
+                    .background(ColorScheme.error)
+            ) {
+                Text(
+                    lastDisabledReason!!,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 25.sp
+                )
+            }
+        }
+
         SearchBarScope(soundUpdater) {
             LazyVerticalGrid(GridCells.Adaptive(160.dp), Modifier.canClearFocus().fillMaxHeight()) {
                 items(sounds) { (id, name, _, description, emoji) ->
                     SoundCard(id, name, emoji, description, id == playingSound, errorReporter, unavailableFor != null)
                 }
             }
-
-            if (unavailableFor != null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp)
-                        .background(ColorScheme.disabled.copy(alpha = .4f))
-                        .zIndex(1f)
-                ) {
-                    Text(unavailableFor, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(), fontSize = 25.sp)
-                }
-            }
         }
+
     }
 }
 
