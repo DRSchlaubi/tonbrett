@@ -17,14 +17,14 @@ The bot only collects the data you directly provide, by adding or modifying soun
 - An optional categorical tag
 - The volume the sound gets played with
 
-  ## Deleting your data
+## Deleting your data
 
-  ### Player (Web App, Desktop App, Mobile App)
-  Simply uninstall the App
+### Player (Web App, Desktop App, Mobile App)
+Simply uninstall the App
 
-  ### Bot
+### Bot
 
-  Run the `/sound delete` command to delete a particular sound or `/gdpr delete` to delete all sounds.
+Run the `/sound delete` command to delete a particular sound or `/gdpr delete` to delete all sounds.
 
 # Deutsche Version
 
