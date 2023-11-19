@@ -81,12 +81,6 @@ kotlin {
             }
         }
 
-        named("desktopMain") {
-            dependencies {
-                implementation(libs.os.theme.detector)
-            }
-        }
-
         androidMain {
             dependencies {
                 implementation(libs.androidx.browser)

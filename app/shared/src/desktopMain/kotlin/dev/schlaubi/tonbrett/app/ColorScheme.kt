@@ -1,9 +1,11 @@
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.runtime.*
-import com.jthemedetecor.OsThemeDetector
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 actual fun isSystemInDarkMode(): Boolean {
@@ -11,17 +13,10 @@ actual fun isSystemInDarkMode(): Boolean {
         mutableStateOf(currentSystemTheme == SystemTheme.DARK)
     }
 
-    DisposableEffect(Unit) {
-        val darkThemeListener = { isDarkTheme: Boolean ->
-            darkTheme = isDarkTheme
-        }
-
-        val detector = OsThemeDetector.getDetector().apply {
-            registerListener(darkThemeListener)
-        }
-
-        onDispose {
-            detector.removeListener(darkThemeListener)
+    LaunchedEffect(Unit) {
+        while (isActive) {
+            darkTheme = currentSystemTheme == SystemTheme.DARK
+            delay(1.seconds)
         }
     }
 

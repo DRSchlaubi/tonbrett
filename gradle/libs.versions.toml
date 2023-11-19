@@ -85,8 +85,6 @@ kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android" }
 
-os-theme-detector = { group = "com.github.Dansoftowner", name = "jSystemThemeDetector", version = "3.6" }
-
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
