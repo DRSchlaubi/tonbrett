@@ -73,18 +73,18 @@ fun SoundContainer(
             }
         }
 
-        SearchBarScope(soundUpdater) {
-            LazyVerticalGrid(
-                GridCells.Adaptive(160.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                horizontalArrangement = Arrangement.spacedBy(5.dp),
-                modifier = Modifier.canClearFocus().fillMaxHeight().padding(5.dp)
-            ) {
-                items(sounds) { (id, name, _, description, emoji) ->
-                    SoundCard(id, name, emoji, description, id == playingSound, errorReporter, unavailableFor != null)
-                }
+        SearchBar(soundUpdater)
+        LazyVerticalGrid(
+            GridCells.Adaptive(160.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.canClearFocus().fillMaxHeight().padding(5.dp)
+        ) {
+            items(sounds) { (id, name, _, description, emoji) ->
+                SoundCard(id, name, emoji, description, id == playingSound, errorReporter, unavailableFor != null)
             }
         }
+
 
     }
 }

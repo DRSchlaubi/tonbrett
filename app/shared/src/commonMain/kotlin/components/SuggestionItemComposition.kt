@@ -4,11 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 val LocalSuggestionComposition =
     compositionLocalOf<SuggestionItemComposition> { throw UnsupportedOperationException("No default") }
 
-val LocalEnterPressFlow = compositionLocalOf<Flow<Unit>> { throw UnsupportedOperationException("No default") }
+val LocalEnterPressFlow = compositionLocalOf<Flow<Unit>> { MutableSharedFlow() }
 
 data class SuggestionScope(
     val index: Int,
@@ -26,6 +28,7 @@ data class SuggestionItemComposition(
 ) {
     val currentIndex: Int
         get() = nextIndex - 1
+
     fun getAndIncrement() = nextIndex++
 }
 
