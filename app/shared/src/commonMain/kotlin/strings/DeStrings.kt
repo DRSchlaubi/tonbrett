@@ -32,5 +32,6 @@ val DeStrings = Strings(
     copyUrl = "Audio-URL kopieren",
     playerBusy = "Jemand anders spielt gerade einen Ton ab",
     pleaseSignIn = "Bitte melde dich an um die APp zu benutzen",
-    signInWithDiscord = "Mit Discord anmelden"
+    signInWithDiscord = "Mit Discord anmelden",
+    typeForMoreSuggestions = "Suche für mehr Vorschläge"
 )

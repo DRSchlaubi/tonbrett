@@ -29,5 +29,6 @@ data class Strings(
     val copyUrl: String,
     val playerBusy: String,
     val pleaseSignIn: String,
-    val signInWithDiscord: String
+    val signInWithDiscord: String,
+    val typeForMoreSuggestions: String
 )
