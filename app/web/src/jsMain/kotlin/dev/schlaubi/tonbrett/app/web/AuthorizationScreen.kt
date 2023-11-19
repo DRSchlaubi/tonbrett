@@ -61,7 +61,7 @@ fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
             }
         }
     }
-    BoxWithConstraints(Modifier.fillMaxSize().background(ColorScheme.container)) {
+    BoxWithConstraints(Modifier.fillMaxSize().background(ColorScheme.current.container)) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,7 +69,7 @@ fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
         ) {
             Column(
                 modifier = Modifier.background(
-                    ColorScheme.searchBarColor,
+                    ColorScheme.current.searchBarColor,
                     shape = RoundedCornerShape(10.dp)
                 )
                     .wrapContentSize()
@@ -82,7 +82,7 @@ fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
                     ProvideTextStyle(
                         TextStyle(
                             textAlign = TextAlign.Center,
-                            color = ColorScheme.textColor
+                            color = ColorScheme.current.textColor
                         )
                     ) {
                         Icon(
@@ -104,7 +104,7 @@ fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
                         Spacer(Modifier.padding(vertical = 7.dp))
                         if (cli) {
                             BoxWithConstraints(
-                                Modifier.background(ColorScheme.container, RoundedCornerShape(4.dp))
+                                Modifier.background(ColorScheme.current.container, RoundedCornerShape(4.dp))
                                     .fillMaxWidth()
                                     .height(32.dp)
                                     .padding(horizontal = 15.dp)
@@ -158,7 +158,7 @@ fun CopyButton(text: String) {
     }
 
     Surface(
-        color = ColorScheme.secondaryContainer, shape = RoundedCornerShape(4.dp),
+        color = ColorScheme.current.secondaryContainer, shape = RoundedCornerShape(4.dp),
         modifier = Modifier
             .fillMaxHeight()
             .padding(vertical = 3.dp)
@@ -174,7 +174,7 @@ fun CopyButton(text: String) {
             } else {
                 Icons.Default.ContentCopy
             }
-            Icon(icon, null, tint = ColorScheme.textColor)
+            Icon(icon, null, tint = ColorScheme.current.textColor)
         }
     }
 }

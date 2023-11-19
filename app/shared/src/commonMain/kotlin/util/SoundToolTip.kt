@@ -47,10 +47,10 @@ fun SoundToolTip(text: String?, isShown: Boolean, content: @Composable () -> Uni
                 SelectionContainer {
                     Text(
                         text,
-                        color = whenPositionedOrTransparent(ColorScheme.textColor),
+                        color = whenPositionedOrTransparent(ColorScheme.current.textColor),
                         textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .background(whenPositionedOrTransparent(Color.Black), RoundedCornerShape(7.dp))
+                            .background(whenPositionedOrTransparent(ColorScheme.current.searchBarColor), RoundedCornerShape(7.dp))
                             .onSizeChanged {
                                 height = it.height
                             }

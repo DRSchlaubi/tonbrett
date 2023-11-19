@@ -62,7 +62,7 @@ fun SoundContainer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 5.dp)
-                    .background(ColorScheme.error)
+                    .background(ColorScheme.current.error)
             ) {
                 Text(
                     lastDisabledReason!!,
@@ -130,12 +130,12 @@ fun SoundCard(
     SoundToolTip(description, hovered && !playing) {
         SoundCardContextMenuArea(id) {
             ElevatedCard(
-                colors = CardDefaults.cardColors(containerColor = ColorScheme.secondaryContainer),
+                colors = CardDefaults.cardColors(containerColor = ColorScheme.current.secondaryContainer),
                 shape = corners,
                 modifier = Modifier.height(height = 64.dp)
                     .fillMaxWidth()
                     .conditional(playing) {
-                        border(BorderStroke(2.dp, ColorScheme.active), corners)
+                        border(BorderStroke(2.dp, ColorScheme.current.active), corners)
                     }
                     .hoverable(interactionSource)
                     .conditional(isMobile && !waiting && !disabled) {
@@ -169,10 +169,10 @@ fun SoundCard(
                     ) {
                         require(emoji is Sound.Emoji.HasUrl?) { "This emoji is invalid: $emoji" }
                         OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
-                        Text(name, color = ColorScheme.textColor, fontSize = 16.sp, textAlign = TextAlign.Center)
+                        Text(name, color = ColorScheme.current.textColor, fontSize = 16.sp, textAlign = TextAlign.Center)
                     }
                     if (playing && hovered && !disabled && !waiting) {
-                        Box(Modifier.zIndex(1f).background(ColorScheme.secondaryContainer)) {
+                        Box(Modifier.zIndex(1f).background(ColorScheme.current.secondaryContainer)) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center,
@@ -181,13 +181,13 @@ fun SoundCard(
                                 IconButton({
                                     play()
                                 }) {
-                                    Icon(Icons.Default.Refresh, null, tint = ColorScheme.textColor)
+                                    Icon(Icons.Default.Refresh, null, tint = ColorScheme.current.textColor)
                                 }
                                 Divider(Modifier.width(1.dp).height(15.dp))
                                 IconButton({
                                     stop()
                                 }) {
-                                    Icon(Icons.Default.Stop, null, tint = ColorScheme.textColor)
+                                    Icon(Icons.Default.Stop, null, tint = ColorScheme.current.textColor)
                                 }
                             }
                         }

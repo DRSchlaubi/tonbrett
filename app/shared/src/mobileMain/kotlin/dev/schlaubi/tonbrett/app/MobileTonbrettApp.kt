@@ -54,7 +54,7 @@ fun MobileTonbrettApp(receivedToken: String? = null, onAuth: (url: String) -> Un
             } else {
                 strings.pleaseSignIn
             }
-            Text(text, color = MaterialTheme.colorScheme.onSecondary)
+            Text(text, color = MaterialTheme.ColorScheme.current.onSecondary)
             Button(::authorize) {
                 Icon(Icons.Default.OpenInBrowser, null)
                 Text(strings.signInWithDiscord)

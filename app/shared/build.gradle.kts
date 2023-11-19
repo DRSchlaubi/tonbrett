@@ -12,7 +12,7 @@ plugins {
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default {
+    applyDefaultHierarchyTemplate {
         common {
             group("nonWeb") {
                 withNative()
@@ -78,6 +78,12 @@ kotlin {
         named("mobileMain") {
             dependencies {
                 api(libs.kvault)
+            }
+        }
+
+        named("desktopMain") {
+            dependencies {
+                implementation(libs.os.theme.detector)
             }
         }
 
