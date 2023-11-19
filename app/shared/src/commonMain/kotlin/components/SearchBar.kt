@@ -18,8 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -51,7 +49,6 @@ fun SearchBar(updateSounds: SoundUpdater) {
     var selectedSuggestion by remember(showSuggestions) { mutableStateOf(-1) }
     val scope = rememberCoroutineScope()
     val updates = remember { MutableStateFlow(value) }
-    val focusRequester = remember { FocusRequester() }
 
     fun updateSearch(to: String) {
         updates.tryEmit(to)
@@ -100,8 +97,8 @@ fun SearchBar(updateSounds: SoundUpdater) {
         true
     }) {
         DockedSearchBar(
-            value, ::updateSearch, { focusRequester.freeFocus() }, showSuggestions, ::showSuggestions,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp).focusRequester(focusRequester),
+            value, ::updateSearch, { showSuggestions(false) }, showSuggestions, ::showSuggestions,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp),
             placeholder = { Text(strings.searchExplainer, color = ColorScheme.current.textColor.copy(alpha = .7f)) },
             trailingIcon = {
                 TrailingIcon(value, {
