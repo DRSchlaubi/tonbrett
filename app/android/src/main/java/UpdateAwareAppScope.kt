@@ -72,7 +72,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
                 modifier = Modifier
                     .padding(vertical = 7.dp)
                     .background(
-                        MaterialTheme.ColorScheme.current.primary,
+                        MaterialTheme.colorScheme.primary,
                         RoundedCornerShape(50.dp)
                     )
             ) {
