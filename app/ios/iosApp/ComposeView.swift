@@ -30,7 +30,6 @@ struct ContentView: View {
     var body: some View {
         ComposeView(receivedToken: receivedToken, onAuth: signIn)
             .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
-            .preferredColorScheme(.dark) // there is no light theme YET or ever
     }
     
     func signIn(url: String) {

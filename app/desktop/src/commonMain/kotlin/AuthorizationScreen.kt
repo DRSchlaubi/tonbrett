@@ -34,10 +34,10 @@ fun AuthorizationScreen(alreadyWaiting: Boolean, onAuth: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize().background(ColorScheme.container)
+        modifier = Modifier.fillMaxSize().background(ColorScheme.current.container)
     ) {
         val strings = LocalStrings.current
-        Text(strings.pleaseSignIn, color = ColorScheme.textColor)
+        Text(strings.pleaseSignIn, color = ColorScheme.current.textColor)
         if (waiting) {
             CircularProgressIndicator()
         } else {

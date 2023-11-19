@@ -67,7 +67,7 @@ fun SearchSuggestions(
                 if (value.isNotBlank() && currentTags.isNotEmpty()) {
                     Text(
                         strings.searchByTag,
-                        color = ColorScheme.textColor,
+                        color = ColorScheme.current.textColor,
                         modifier = Modifier.padding(horizontal = 5.dp)
                     )
                     currentTags.forEach { tag ->
@@ -89,7 +89,7 @@ fun SearchSuggestions(
                     }
                     Text(
                         strings.searchOptions,
-                        color = ColorScheme.textColor,
+                        color = ColorScheme.current.textColor,
                         modifier = Modifier.padding(horizontal = 5.dp)
                     )
                     Column(Modifier.hoverable(interactionSource)) {
@@ -137,7 +137,7 @@ private fun SyntaxSuggestion(
         updateSelected(index)
     }
     val text = buildAnnotatedString {
-        append(AnnotatedString("$name:", SpanStyle(color = ColorScheme.textColor)))
+        append(AnnotatedString("$name:", SpanStyle(color = ColorScheme.current.textColor)))
         append(' ')
         val color = if (value.isBlank()) Color.Gray else Color.LightGray
         val text = value.ifBlank { placeholder }?.substringAfter(':')

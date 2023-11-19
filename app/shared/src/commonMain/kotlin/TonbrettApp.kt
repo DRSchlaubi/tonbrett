@@ -1,6 +1,7 @@
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,6 +54,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
     var initialUser: User? by remember { mutableStateOf(null) }
 
     val lyricist = rememberStrings(Locale.current.toLanguageTag())
+
     suspend fun reportError(exception: Exception) {
         if (exception is ReauthorizationRequiredException) {
             sessionExpired = true
@@ -85,7 +87,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
         val user = initialUser
         if (!crashed && !sessionExpired && user != null) {
             Scaffold(
-                containerColor = ColorScheme.container,
+                containerColor = ColorScheme.current.container,
                 snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) }) { padding ->
                 Column(Modifier.padding(padding)) {
                     SoundList(::reportError, user.voiceState)
@@ -106,7 +108,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
             if (user == null && !sessionExpired) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.background(ColorScheme.container)
+                    modifier = Modifier.background(ColorScheme.current.container)
                         .fillMaxSize()
                 ) {
                     CircularProgressIndicator()
@@ -115,7 +117,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.background(ColorScheme.container)
+                    modifier = Modifier.background(ColorScheme.current.container)
                         .fillMaxSize()
                 ) {
                     if (sessionExpired) {
@@ -124,7 +126,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                                 Icon(Icons.Default.Refresh, LocalStrings.current.reAuthorize)
                                 Text(
                                     LocalStrings.current.reAuthorize,
-                                    color = ColorScheme.textColor
+                                    color = ColorScheme.current.textColor
                                 )
                             }
                         }
@@ -132,7 +134,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                         CrashErrorScreen(LocalStrings.current.crashedExplainer) {
                             Button({ crashed = false }) {
                                 Icon(Icons.Default.Refresh, LocalStrings.current.reload)
-                                Text(LocalStrings.current.reload, color = ColorScheme.textColor)
+                                Text(LocalStrings.current.reload, color = ColorScheme.current.textColor)
                             }
                         }
                     }

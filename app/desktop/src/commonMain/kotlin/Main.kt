@@ -45,9 +45,9 @@ fun startApplication(forAuth: Boolean = false) = application {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize().background(ColorScheme.container)
+                modifier = Modifier.fillMaxSize().background(ColorScheme.current.container)
             ) {
-                Text(strings.needsUpdate, color = ColorScheme.textColor)
+                Text(strings.needsUpdate, color = ColorScheme.current.textColor)
                 Button({
                     launchUri(URI("https://github.com/DRSchlaubi/tonbrett/releases/latest"))
                     exitApplication()

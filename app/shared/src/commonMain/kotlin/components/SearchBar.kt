@@ -102,21 +102,21 @@ fun SearchBar(updateSounds: SoundUpdater) {
         DockedSearchBar(
             value, ::updateSearch, { focusRequester.freeFocus() }, showSuggestions, ::showSuggestions,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp).focusRequester(focusRequester),
-            placeholder = { Text(strings.searchExplainer, color = ColorScheme.textColor.copy(alpha = .7f)) },
+            placeholder = { Text(strings.searchExplainer, color = ColorScheme.current.textColor.copy(alpha = .7f)) },
             trailingIcon = {
                 TrailingIcon(value, {
                     updateSearch(it)
                 }, false)
             },
             colors = SearchBarDefaults.colors(
-                containerColor = ColorScheme.searchBarColor,
+                containerColor = ColorScheme.current.searchBarColor,
                 inputFieldColors = TextFieldDefaults.colors(
-                    focusedContainerColor = ColorScheme.searchBarColor,
-                    unfocusedContainerColor = ColorScheme.searchBarColor,
-                    focusedPlaceholderColor = ColorScheme.secondaryContainer,
-                    unfocusedPlaceholderColor = ColorScheme.secondaryContainer,
-                    focusedTextColor = ColorScheme.textColor,
-                    unfocusedTextColor = ColorScheme.textColor
+                    focusedContainerColor = ColorScheme.current.searchBarColor,
+                    unfocusedContainerColor = ColorScheme.current.searchBarColor,
+                    focusedPlaceholderColor = ColorScheme.current.secondaryContainer,
+                    unfocusedPlaceholderColor = ColorScheme.current.secondaryContainer,
+                    focusedTextColor = ColorScheme.current.textColor,
+                    unfocusedTextColor = ColorScheme.current.textColor
                 )
             )
         ) {
@@ -138,7 +138,7 @@ fun SearchBar(updateSounds: SoundUpdater) {
                 val height = with(density) { constraints.maxHeight.toDp() }
 
                 if (height > 100.dp) {
-                    Text(strings.typeForMoreSuggestions, color = ColorScheme.textColor)
+                    Text(strings.typeForMoreSuggestions, color = ColorScheme.current.textColor)
                 }
             }
         }

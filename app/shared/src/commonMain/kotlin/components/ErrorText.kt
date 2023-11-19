@@ -8,5 +8,5 @@ import dev.schlaubi.tonbrett.app.ColorScheme
 
 @Composable
 fun ErrorText(message: String) {
-    Text(message, color = ColorScheme.textColor, fontSize = 3.em, textAlign = TextAlign.Center)
+    Text(message, color = ColorScheme.current.textColor, fontSize = 3.em, textAlign = TextAlign.Center)
 }

@@ -72,7 +72,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
                 modifier = Modifier
                     .padding(vertical = 7.dp)
                     .background(
-                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.ColorScheme.current.primary,
                         RoundedCornerShape(50.dp)
                     )
             ) {
@@ -80,7 +80,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
                 fun Info(text: String) {
                     Text(
                         text,
-                        style = MaterialTheme.typography.headlineSmall.copy(color = ColorScheme.textColor),
+                        style = MaterialTheme.typography.headlineSmall.copy(color = ColorScheme.current.textColor),
                         modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
                     )
                 }

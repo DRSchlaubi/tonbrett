@@ -77,7 +77,7 @@ fun UpdateScreen(activity: Activity) {
     ) {
         Text(
             strings.appCrash,
-            color = ColorScheme.textColor,
+            color = ColorScheme.current.textColor,
             style = MaterialTheme.typography.headlineMedium
         )
         val currentInfo = updateInfo

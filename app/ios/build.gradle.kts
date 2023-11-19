@@ -8,7 +8,7 @@ plugins {
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default()
+    applyDefaultHierarchyTemplate()
     iosX64()
     iosSimulatorArm64()
     iosArm64()
