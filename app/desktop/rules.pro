@@ -20,6 +20,7 @@
 -dontwarn okhttp3.**
 -dontwarn io.ktor.**
 -dontwarn dev.schlaubi.tonbrett.app.desktop.uwp_helper.**
+-dontwarn io.github.g00fy2.versioncompare.**
 
 # kmongo
 -keep class org.litote.kmongo.id.UUIDStringIdGeneratorProvider
