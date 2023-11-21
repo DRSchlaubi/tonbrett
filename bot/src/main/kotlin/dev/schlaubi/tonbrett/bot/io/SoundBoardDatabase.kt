@@ -1,6 +1,7 @@
 package dev.schlaubi.tonbrett.bot.io
 
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.mongodb.client.model.Collation
 import dev.schlaubi.mikbot.plugin.api.io.getCollection
 import dev.schlaubi.mikbot.plugin.api.util.database
 import dev.schlaubi.stdx.core.isNotNullOrBlank
@@ -9,7 +10,6 @@ import dev.schlaubi.tonbrett.common.Sound
 import dev.schlaubi.tonbrett.common.SoundGroup
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bson.conversions.Bson
 import org.bson.types.ObjectId
@@ -66,18 +66,21 @@ fun CoroutineCollection<Sound>.searchGrouped(
         group(
             Sound::tag, SoundGroup::sounds.push("$\$ROOT")
         ),
-        sort(ascending(SoundGroup::tag))
-    ).toFlow()
+    )
+        .collation(Collation.builder().caseLevel(true).locale("en").build())
+        .toFlow()
     val noTag = aggregate<SoundGroup>(
         match(buildSearchFilter(query, onlineMine, user)),
         match(Sound::tag eq null),
         group(
             Sound::tag, SoundGroup::sounds.push("$\$ROOT")
-        ),
-        sort(ascending(SoundGroup::tag))
+        )
     ).toFlow()
 
-    return merge(withTag, noTag)
+    return flow {
+        emitAll(withTag)
+        emitAll(noTag)
+    }
 }
 
 private fun buildSearchFilter(query: String?, onlineMine: Boolean, user: Snowflake): Bson {
