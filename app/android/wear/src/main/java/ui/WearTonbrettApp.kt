@@ -72,7 +72,7 @@ fun WearTonbrettApp(token: String) {
 
     if (state is State.Awaiting) {
         LaunchedEffect(api) {
-            sounds = api.getSounds()
+            sounds = api.getSoundList()
 
             val me = api.getMe()
 

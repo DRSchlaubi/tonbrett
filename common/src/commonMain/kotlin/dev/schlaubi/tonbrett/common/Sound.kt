@@ -112,6 +112,19 @@ public data class Sound(
     }
 }
 
+/**
+ * Representation of a grouping of sounds.
+ *
+ * @property tag the tag of all sounds in the group
+ * @property sounds a list of [Sounds][Sound] in this group@
+ */
+@Serializable
+public data class SoundGroup(
+    @SerialName("_id")
+    val tag: String?,
+    val sounds: List<Sound>
+)
+
 internal class SequenceSerializer<T>(childSerializer: KSerializer<T>) : KSerializer<Sequence<T>> {
     private val delegate = ListSerializer(childSerializer)
     override val descriptor: SerialDescriptor

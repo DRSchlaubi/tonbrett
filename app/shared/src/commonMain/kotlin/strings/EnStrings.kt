@@ -33,5 +33,6 @@ val EnStrings = Strings(
     playerBusy = "Someone else is currently playing a sound",
     pleaseSignIn = "Please sign in to use the app",
     signInWithDiscord = "Sign in with Discord",
-    typeForMoreSuggestions = "Type for more suggestions"
+    typeForMoreSuggestions = "Type for more suggestions",
+    otherSounds = "Other sounds"
 )

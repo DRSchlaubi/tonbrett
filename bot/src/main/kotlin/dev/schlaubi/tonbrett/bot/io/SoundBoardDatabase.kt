@@ -6,12 +6,16 @@ import dev.schlaubi.mikbot.plugin.api.util.database
 import dev.schlaubi.stdx.core.isNotNullOrBlank
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.Sound
+import dev.schlaubi.tonbrett.common.SoundGroup
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
+import org.litote.kmongo.coroutine.aggregate
 import org.litote.kmongo.util.KMongoUtil
 
 object SoundBoardDatabase : KordExKoinComponent {
@@ -36,7 +40,7 @@ fun CoroutineCollection<Sound>.findAllTags(query: String? = null, limit: Int? = 
     val flow = aggregate<Tags>(pipeline).toFlow()
         .flatMapConcat { it.tags.asFlow() }
 
-    return if(limit != null) {
+    return if (limit != null) {
         flow.take(limit)
     } else {
         flow
@@ -48,6 +52,35 @@ fun CoroutineCollection<Sound>.search(
     onlineMine: Boolean,
     user: Snowflake
 ): Flow<Sound> {
+    return find(buildSearchFilter(query, onlineMine, user)).toFlow()
+}
+
+fun CoroutineCollection<Sound>.searchGrouped(
+    query: String?,
+    onlineMine: Boolean,
+    user: Snowflake
+): Flow<SoundGroup> {
+    val withTag = aggregate<SoundGroup>(
+        match(buildSearchFilter(query, onlineMine, user)),
+        match(not(Sound::tag eq null)),
+        group(
+            Sound::tag, SoundGroup::sounds.push("$\$ROOT")
+        ),
+        sort(ascending(SoundGroup::tag))
+    ).toFlow()
+    val noTag = aggregate<SoundGroup>(
+        match(buildSearchFilter(query, onlineMine, user)),
+        match(Sound::tag eq null),
+        group(
+            Sound::tag, SoundGroup::sounds.push("$\$ROOT")
+        ),
+        sort(ascending(SoundGroup::tag))
+    ).toFlow()
+
+    return merge(withTag, noTag)
+}
+
+private fun buildSearchFilter(query: String?, onlineMine: Boolean, user: Snowflake): Bson {
     val filter = buildList {
         add(or(Sound::public eq true, Sound::owner eq user))
         if (onlineMine) {
@@ -58,6 +91,7 @@ fun CoroutineCollection<Sound>.search(
                 query.startsWith("tag:") -> query.toFuzzyFilter("tag", "tag:")
                 query.startsWith("description:") ->
                     query.toFuzzyFilter("description", "description:")
+
                 query.startsWith("name:") -> query.toFuzzyFilter("name", "name:")
                 else -> {
                     or(
@@ -72,7 +106,7 @@ fun CoroutineCollection<Sound>.search(
         }
     }
 
-    return find(and(filter)).toFlow()
+    return and(filter)
 }
 
 

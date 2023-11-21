@@ -26,6 +26,7 @@ import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.common.Sound
+import dev.schlaubi.tonbrett.common.SoundGroup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
 
-typealias SoundUpdater = (List<Sound>) -> Unit
+typealias SoundUpdater = (List<SoundGroup>) -> Unit
 
 private val protectedKeys = listOf(Key.Enter, Key.DirectionUp, Key.DirectionDown)
 

@@ -42,7 +42,7 @@ mikbotPlugin {
 tasks {
     assembleBot {
         bundledPlugins = listOf(
-            "ktor@${libs.versions.mikbot.get()}",
+            "ktor@1.25.0",
             "music-player@${libs.mikbot.music.get().version}"
         )
     }

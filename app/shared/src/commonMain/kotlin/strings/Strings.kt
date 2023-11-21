@@ -30,5 +30,6 @@ data class Strings(
     val playerBusy: String,
     val pleaseSignIn: String,
     val signInWithDiscord: String,
-    val typeForMoreSuggestions: String
+    val typeForMoreSuggestions: String,
+    val otherSounds: String
 )

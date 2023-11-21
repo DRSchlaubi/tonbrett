@@ -27,7 +27,7 @@ private val LOG = KotlinLogging.logger {}
 @Composable
 fun SoundList(errorReporter: ErrorReporter, voiceState: User.VoiceState?) {
     var playingSound by remember { mutableStateOf<Id<Sound>?>(null) }
-    var sounds by remember { mutableStateOf<List<Sound>>(emptyList()) }
+    var sounds by remember { mutableStateOf<List<SoundGroup>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var available by remember { mutableStateOf(voiceState?.playerAvailable ?: false) }
     var channelMismatch by remember { mutableStateOf(voiceState?.channelMismatch ?: false) }
@@ -74,17 +74,30 @@ fun SoundList(errorReporter: ErrorReporter, voiceState: User.VoiceState?) {
                         }
 
                         is SoundDeletedEvent -> {
-                            sounds = sounds.filter { it.id != event.id }
+                            sounds = sounds.map {
+                                it.copy(sounds = it.sounds.filter { sound -> sound.id != event.id })
+                            }
                         }
 
                         is SoundCreatedEvent -> {
-                            sounds += event.sound
+                            val existingGroup = sounds.firstOrNull { it.tag == event.sound.tag }
+                            if (existingGroup == null) {
+                                sounds += SoundGroup(event.sound.tag, listOf(event.sound))
+                            } else {
+                                val id = sounds.indexOf(existingGroup)
+                                val copy = sounds.toMutableList()
+                                copy[id] = existingGroup.copy(sounds = existingGroup.sounds + event.sound)
+                                sounds = copy
+                            }
                         }
 
                         is SoundUpdatedEvent -> {
-                            val copy = sounds.toMutableList()
+                            val groupsCopy = sounds.toMutableList()
+                            val group = groupsCopy.first { it.tag == event.sound.tag }
+                            val copy = group.sounds.toMutableList()
                             copy[copy.indexOfFirst { it.id == event.sound.id }] = event.sound
-                            sounds = copy
+                            groupsCopy[groupsCopy.indexOf(group)] = group.copy(sounds = copy)
+                            sounds = groupsCopy
                         }
 
                         else -> LOG.warn { "Unknown event type: $event" }

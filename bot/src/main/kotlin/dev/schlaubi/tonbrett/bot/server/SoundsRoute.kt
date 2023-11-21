@@ -7,14 +7,12 @@ import dev.kord.core.Kord
 import dev.schlaubi.lavakord.kord.connectAudio
 import dev.schlaubi.tonbrett.bot.core.soundPlayer
 import dev.schlaubi.tonbrett.bot.core.voiceState
-import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
-import dev.schlaubi.tonbrett.bot.io.findAllTags
-import dev.schlaubi.tonbrett.bot.io.findById
-import dev.schlaubi.tonbrett.bot.io.search
+import dev.schlaubi.tonbrett.bot.io.*
 import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.bot.util.soundNotFound
 import dev.schlaubi.tonbrett.bot.util.translate
 import dev.schlaubi.tonbrett.common.Route.*
+import dev.schlaubi.tonbrett.common.Route.Tags
 import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -41,7 +39,8 @@ fun Route.sounds() {
 
     get<Sounds.ListSounds> { (onlyMine, queryString, useUnicode) ->
         call.respond(
-            SoundBoardDatabase.sounds.search(queryString, onlyMine, call.userId).toList().convertForNonJvmPlatforms(!useUnicode)
+            SoundBoardDatabase.sounds.searchGrouped(queryString, onlyMine, call.userId).toList()
+                .convertForNonJvmPlatforms(!useUnicode)
         )
     }
 

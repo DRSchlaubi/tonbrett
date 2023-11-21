@@ -114,14 +114,24 @@ class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, pr
     val events = eventFlow.asSharedFlow()
 
     /**
-     * Retrieves all available sounds.
+     * Retrieves all available sounds as [groups][SoundGroup].
      *
      * @param onlyMine whether to show only the current users sounds
      * @param query an optional search query
      * @param useUnicode whether to return the emojis as unicode or Twemoji URLs
      */
-    suspend fun getSounds(onlyMine: Boolean = false, query: String? = null, useUnicode: Boolean = false): List<Sound> =
+    suspend fun getSounds(onlyMine: Boolean = false, query: String? = null, useUnicode: Boolean = false): List<SoundGroup> =
         client.get(Route.Sounds.ListSounds(onlyMine, query, useUnicode)).body()
+
+    /**
+     * Retrieves all available sounds as [sounds][Sound].
+     *
+     * @param onlyMine whether to show only the current users sounds
+     * @param query an optional search query
+     * @param useUnicode whether to return the emojis as unicode or Twemoji URLs
+     */
+    suspend fun getSoundList(onlyMine: Boolean = false, query: String? = null, useUnicode: Boolean = false) =
+        getSounds(onlyMine, query, useUnicode).flatMap(SoundGroup::sounds)
 
     /**
      * Returns the current [User].
