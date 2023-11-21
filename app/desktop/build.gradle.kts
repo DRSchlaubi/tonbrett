@@ -25,7 +25,7 @@ kotlin {
             }
         }
 
-        named("jvmMain") {
+        jvmMain {
             if (OSUtils.IS_WINDOWS && false) {
                 dependsOn(windowsMain)
             } else {
