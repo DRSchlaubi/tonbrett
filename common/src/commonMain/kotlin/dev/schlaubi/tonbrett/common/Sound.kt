@@ -76,12 +76,12 @@ public data class Sound(
     @SerialName("twemoji")
     public data class Twemoji(
         val value: String,
-        val codePoints: @Serializable(with = SequenceSerializer::class) Sequence<Int>,
+        val codePoints: List<Int>,
         val length: Int
     ) : Emoji, Emoji.HasUrl {
         override val url: String
             get() {
-                val name = formatEmojiUnicode(codePoints, length)
+                val name = formatEmojiUnicode(codePoints.asSequence(), length)
                 return "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/$name.png"
             }
     }
