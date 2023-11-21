@@ -66,42 +66,56 @@ fun SoundList(errorReporter: ErrorReporter, voiceState: User.VoiceState?) {
         withContext(Dispatchers.IO) {
             api.events
                 .onEach { event ->
-                    when (event) {
-                        is VoiceStateUpdateEvent -> reload(event.voiceState)
-                        is InterfaceAvailabilityChangeEvent -> {
-                            playingSound = event.playingSongId
-                            available = event.available
-                        }
-
-                        is SoundDeletedEvent -> {
-                            sounds = sounds.map {
-                                it.copy(sounds = it.sounds.filter { sound -> sound.id != event.id })
+                    fun handleEvent(event: Event) {
+                        when (event) {
+                            is VoiceStateUpdateEvent -> reload(event.voiceState)
+                            is InterfaceAvailabilityChangeEvent -> {
+                                playingSound = event.playingSongId
+                                available = event.available
                             }
-                        }
 
-                        is SoundCreatedEvent -> {
-                            val existingGroup = sounds.firstOrNull { it.tag == event.sound.tag }
-                            if (existingGroup == null) {
-                                sounds += SoundGroup(event.sound.tag, listOf(event.sound))
-                            } else {
-                                val id = sounds.indexOf(existingGroup)
-                                val copy = sounds.toMutableList()
-                                copy[id] = existingGroup.copy(sounds = existingGroup.sounds + event.sound)
-                                sounds = copy
+                            is SoundDeletedEvent -> {
+                                sounds = sounds.mapNotNull {
+                                    it.copy(sounds = it.sounds.filter { sound -> sound.id != event.id })
+                                        // Remove group if it is empty
+                                        .takeIf { group -> group.sounds.isNotEmpty() }
+                                }
                             }
-                        }
 
-                        is SoundUpdatedEvent -> {
-                            val groupsCopy = sounds.toMutableList()
-                            val group = groupsCopy.first { it.tag == event.sound.tag }
-                            val copy = group.sounds.toMutableList()
-                            copy[copy.indexOfFirst { it.id == event.sound.id }] = event.sound
-                            groupsCopy[groupsCopy.indexOf(group)] = group.copy(sounds = copy)
-                            sounds = groupsCopy
-                        }
+                            is SoundCreatedEvent -> {
+                                val existingGroup = sounds.firstOrNull { it.tag == event.sound.tag }
+                                if (existingGroup == null) {
+                                    sounds += SoundGroup(event.sound.tag, listOf(event.sound))
+                                } else {
+                                    val id = sounds.indexOf(existingGroup)
+                                    val copy = sounds.toMutableList()
+                                    copy[id] = existingGroup.copy(sounds = existingGroup.sounds + event.sound)
+                                    sounds = copy
+                                }
+                            }
 
-                        else -> LOG.warn { "Unknown event type: $event" }
+                            is SoundUpdatedEvent -> {
+                                val currentSoundTag = sounds
+                                    .first { it.sounds.any { sound -> sound.id == event.sound.id } }
+                                    .tag
+                                val groupsCopy = sounds.toMutableList()
+                                val currentGroup = groupsCopy.first { it.tag == currentSoundTag }
+                                if (currentSoundTag == event.sound.tag) {
+                                    val copy = currentGroup.sounds.toMutableList()
+                                    copy[copy.indexOfFirst { it.id == event.sound.id }] = event.sound
+                                    groupsCopy[groupsCopy.indexOf(currentGroup)] = currentGroup.copy(sounds = copy)
+                                    sounds = groupsCopy
+                                } else {
+                                    // This is way easier than implementing this logic twice
+                                    handleEvent(SoundDeletedEvent(event.sound.id))
+                                    handleEvent(SoundCreatedEvent(event.sound))
+                                }
+                            }
+
+                            else -> LOG.warn { "Unknown event type: $event" }
+                        }
                     }
+                    handleEvent(event)
                 }
                 .launchIn(this)
         }

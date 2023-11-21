@@ -7,12 +7,11 @@ plugins {
 
 allprojects {
     group = "dev.schlaubi.tonbrett"
-    version = "1.16.25"
+    version = "1.16.26"
 
     repositories {
         mavenCentral()
         google()
-        maven("https://jitpack.io")
     }
 }
 

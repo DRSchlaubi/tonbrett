@@ -122,8 +122,7 @@ public data class Sound(
 public data class SoundGroup(
     @SerialName("_id")
     val tag: String?,
-    val sounds: List<Sound>,
-    val tagLowerCase: String? = null
+    val sounds: List<Sound>
 )
 
 internal class SequenceSerializer<T>(childSerializer: KSerializer<T>) : KSerializer<Sequence<T>> {
