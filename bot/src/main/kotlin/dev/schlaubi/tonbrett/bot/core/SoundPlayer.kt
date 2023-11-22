@@ -10,16 +10,13 @@ import dev.schlaubi.tonbrett.common.InterfaceAvailabilityChangeEvent
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.Sound
 import io.ktor.http.path
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.seconds
 
 private val players = mutableMapOf<Snowflake, SoundPlayer>()
 
@@ -84,6 +81,8 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
                 .filter { it.reason != Message.EmittedEvent.TrackEndEvent.AudioTrackEndReason.REPLACED }
                 .take(1)
                 .single()
+            // Lavalink event comes about 1s to early
+            delay(1.seconds)
             locked = false
             currentUser = null
             if (channelId != null) {
