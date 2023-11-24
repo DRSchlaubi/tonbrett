@@ -34,14 +34,18 @@ abstract class ApiStateHolder {
 /**
  * This is the base class of [AppContext] so we can have defaults.
  */
-expect abstract class AppContextBase : ApiStateHolder {
-    val isSignedIn: Boolean
+abstract class AppContextBase : ApiStateHolder() {
+    abstract override var token: String
+    abstract val isSignedIn: Boolean
 }
 
 /**
  * Context used for piping platform contexts into a multiplatform app.
  */
 expect open class AppContext : AppContextBase {
+    override var token: String
+    override val isSignedIn: Boolean
+
     /**
      * Initiates authorization flow for the current platform.
      */

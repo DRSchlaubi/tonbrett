@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.api.LocalContext
+import dev.schlaubi.tonbrett.app.api.MobileAppContext
 import dev.schlaubi.tonbrett.app.api.getUrl
 import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
@@ -25,6 +26,7 @@ import dev.schlaubi.tonbrett.common.Route
 fun MobileTonbrettApp(receivedToken: String? = null, onAuth: (url: String) -> Unit) {
     val sessionExpired = remember { mutableStateOf(false) }
     val context = LocalContext.current
+    require(context is MobileAppContext)
 
     fun authorize() {
         val url = href(Route.Auth(Route.Auth.Type.MOBILE_APP), getUrl())

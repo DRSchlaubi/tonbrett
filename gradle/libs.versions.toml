@@ -1,22 +1,22 @@
 [versions]
-kotlin = "1.9.20"
+kotlin = "2.0.0-Beta1"
 ktor = "2.3.6"
 kmongo = "4.10.0"
-kord = "0.11.1"
-mikbot = "3.25.1"
-ksp = "1.9.20-1.0.13"
+kord = "0.12.0"
+mikbot = "3.26.0"
+ksp = "2.0.0-Beta1-1.0.14"
 kordex = "1.6.0-SNAPSHOT"
 android = "8.1.4"
-compose = "1.5.10"
+compose = "1.5.11"
 compose-wear = "1.2.1"
-lyricist = "1.6.0"
+lyricist = "1.6.2"
 google-play = "2.1.0"
 coroutines = "1.7.3"
 play-services-wearable = "18.1.0"
-horologist = "0.5.8"
+horologist = "0.5.10"
 protobuf = "3.19.4"
-compose-compiler = "1.5.3"
-coil = "2.4.0"
+compose-compiler = "1.5.4"
+coil = "2.5.0"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.1" }
@@ -44,7 +44,7 @@ ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref =
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
-mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.1.8-SNAPSHOT" }
+mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.3.0-SNAPSHOT" }
 
 imageloader = { group = "io.github.qdsfdhvh", name = "image-loader", version = "1.6.7" }
 
@@ -69,8 +69,8 @@ google-artifactregistry = { group = "gradle.plugin.com.google.cloud.artifactregi
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
 
 protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
-protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version = "3.24.4" }
-protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version = "3.24.4" }
+protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version = "3.25.0" }
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version = "3.25.0" }
 
 androidx-wear-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "compose-wear" }
 androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "compose-wear" }

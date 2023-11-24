@@ -25,7 +25,7 @@ include(
     ":app:desktop:uwp_helper",
     ":app:android",
     ":app:android:shared",
-    ":app:android:wear",
+//    ":app:android:wear",
     ":app:ios"
 )
 

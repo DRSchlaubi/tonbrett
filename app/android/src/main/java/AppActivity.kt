@@ -9,7 +9,6 @@ import dev.schlaubi.tonbrett.app.MobileTonbrettApp
 import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.api.AppContext
 import dev.schlaubi.tonbrett.app.api.ProvideContext
-import dev.schlaubi.tonbrett.app.api.tokenKey
 
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,13 +18,9 @@ class AppActivity : ComponentActivity() {
         } else {
             null
         }
+
         setContent {
-            val context = object : AppContext(this) {
-                override fun reAuthorize() {
-                    vault.deleteObject(tokenKey)
-                    super.reAuthorize()
-                }
-            }
+            val context = AppContext(this)
 
             WearOSTokenSharing(token = token ?: context.getTokenOrNull())
 
