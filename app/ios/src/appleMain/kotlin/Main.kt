@@ -1,5 +1,4 @@
 import androidx.compose.ui.window.ComposeUIViewController
-import com.liftric.kvault.KVault
 import dev.schlaubi.tonbrett.app.MobileTonbrettApp
 import dev.schlaubi.tonbrett.app.api.ProvideContext
 import platform.UIKit.UIViewController
