@@ -4,6 +4,7 @@ import com.liftric.kvault.KVault
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import platform.UIKit.UIViewController
 
 actual val Dispatchers.IO: CoroutineDispatcher
     get() = IO
@@ -19,6 +20,8 @@ actual open class AppContext : AppContextBase(), MobileAppContext {
         set(value) {
             vault.set(tokenKey, value)
         }
+
+    open fun present(viewController: UIViewController): Unit = TODO()
 
     fun getTokenOrNull() = vault.string(tokenKey)
 
