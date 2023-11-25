@@ -36,6 +36,7 @@
 # serialization
 # For some reason if we don't do this, we get a VerifyError at runtime
 -keep class kotlinx.serialization.* { *; }
+-keep class dev.schlaubi.tonbrett.common.** { *; }
 
 # Serializer for classes with named companion objects are retrieved using `getDeclaredClasses`.
 # If you have any, replace classes with those containing named companion objects.

@@ -113,6 +113,7 @@ private class ExceptionHandlerFactory(val handler: (Throwable) -> Unit) : Window
         @OptIn(ExperimentalComposeUiApi::class)
         override fun onException(throwable: Throwable) {
             if (throwable is IllegalArgumentException || throwable is ContentConvertException) {
+                throwable.printStackTrace()
                 handler(throwable)
             } else {
                 DefaultWindowExceptionHandlerFactory.exceptionHandler(window).onException(throwable)
