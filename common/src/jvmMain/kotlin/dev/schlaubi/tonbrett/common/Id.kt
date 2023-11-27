@@ -7,7 +7,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import org.litote.kmongo.id.StringId
 import org.litote.kmongo.toId
 
 
@@ -17,7 +16,11 @@ public actual interface Id<T> : org.litote.kmongo.Id<T>
 
 @JvmInline
 private value class WrappedId<T>(private val id: org.litote.kmongo.Id<T>) : Id<T>,
-    org.litote.kmongo.Id<T> by id
+    org.litote.kmongo.Id<T> by id {
+    override fun toString(): String = id.toString()
+}
+
+public fun <T> newId(): Id<T> = WrappedId(org.litote.kmongo.newId())
 
 public object IdSerializer : KSerializer<Id<*>> {
     override val descriptor: SerialDescriptor =
