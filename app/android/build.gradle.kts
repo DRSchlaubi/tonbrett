@@ -1,10 +1,15 @@
 import dev.schlaubi.tonbrett.gradle.sdkInt
+import org.jetbrains.kotlin.config.LanguageVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("android")
     id("com.android.application")
     id("org.jetbrains.compose")
+}
+
+repositories {
+    maven("https://androidx.dev/storage/compose-compiler/repository/")
 }
 
 dependencies {
@@ -41,8 +46,9 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = true
+        all {
+            // TODO: Re-enable when r8 supports Kotlin 2.0.0 metadata :(
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
