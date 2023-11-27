@@ -46,9 +46,8 @@ android {
     }
 
     buildTypes {
-        all {
-            // TODO: Re-enable when r8 supports Kotlin 2.0.0 metadata :(
-            isMinifyEnabled = false
+        release {
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
