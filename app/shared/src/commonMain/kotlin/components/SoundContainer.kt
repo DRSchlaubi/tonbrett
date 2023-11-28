@@ -101,7 +101,7 @@ private fun SoundGroup(
     var collapsed by remember { mutableStateOf(false) }
     val strings = LocalStrings.current
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-        Text(group.tag ?: strings.otherSounds, color = Color.White)
+        Text(group.tag ?: strings.otherSounds, color = ColorScheme.current.textColor)
         CollapseIcon(collapsed, Modifier.clickable { collapsed = !collapsed })
         Divider(Modifier.fillMaxWidth().padding(5.dp))
     }
