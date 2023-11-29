@@ -2,16 +2,28 @@
 -keepclassmembers class io.ktor.** { volatile <fields>; }
 -keep class io.ktor.client.engine.okhttp.OkHttpEngineContainer
 -keep class io.ktor.serialization.kotlinx.json.KotlinxSerializationJsonExtensionProvider
--keep class kotlinx.coroutines.** { *; }
 # even though we don't use log4j, proguard fails preverification if this class gets optimized
 -keep class io.netty.util.internal.logging.Log4J2LoggerFactory { *; }
--keepattributes Signature,InnerClasses
+
+# ServiceLoader support
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+
+# Most of volatile fields are updated with AFU and should not be mangled
+-keepclassmembers class kotlinx.coroutines.** {
+    volatile <fields>;
+}
 -keepclasseswithmembers class io.netty.** {
     *;
 }
 -keepnames class io.netty.** {
     *;
 }
+# Same story for the standard library's SafeContinuation that also uses AtomicReferenceFieldUpdater
+-keepclassmembers class kotlin.coroutines.SafeContinuation {
+    volatile <fields>;
+}
+
 -dontwarn kotlinx.atomicfu.**
 -dontwarn io.netty.**
 -dontwarn com.typesafe.**
@@ -35,9 +47,6 @@
 
 # serialization
 # For some reason if we don't do this, we get a VerifyError at runtime
--keep class kotlinx.serialization.* { *; }
--keep class dev.schlaubi.tonbrett.common.** { *; }
-
 # Serializer for classes with named companion objects are retrieved using `getDeclaredClasses`.
 # If you have any, replace classes with those containing named companion objects.
 -keepattributes InnerClasses # Needed for `getDeclaredClasses`.
@@ -56,6 +65,14 @@
   <1>.<2>$Companion Companion;
 }
 
+
+-keep class dev.schlaubi.tonbrett.common.** {*;}
+-keep class dev.schlaubi.tonbrett.app.desktop.** {*;}
+-keep class kotlinx.serialization.* { *; }
+
 # compose
 -keep class androidx.compose.ui.text.platform.Platform { *; }
 -keep class androidx.compose.runtime.** { *; }
+
+# https://github.com/Guardsquare/proguard/issues/349
+-optimizations !class/unboxing/enum
