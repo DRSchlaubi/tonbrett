@@ -1,12 +1,7 @@
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.icons.Icons
@@ -16,13 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.intl.Locale
@@ -36,7 +25,7 @@ import dev.schlaubi.tonbrett.app.components.ErrorText
 import dev.schlaubi.tonbrett.app.components.SoundList
 import dev.schlaubi.tonbrett.client.ReauthorizationRequiredException
 import dev.schlaubi.tonbrett.common.User
-import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
@@ -83,7 +72,10 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
         }
     }
 
-    SingletonImageLoader.set(newImageLoader(LocalContext.current))
+    SideEffect {
+        SingletonImageLoader.set { newImageLoader(context) }
+    }
+
     ProvideStrings(lyricist) {
         val user = initialUser
         if (!crashed && !sessionExpired && user != null) {
