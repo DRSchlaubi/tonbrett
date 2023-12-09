@@ -87,9 +87,7 @@ private fun ApplicationScope.startActualApplication(
             } else {
                 context.resetApi()
                 ProvideContext(context) {
-                    ProvideImageLoader {
-                        TonbrettApp(sessionExpired)
-                    }
+                    TonbrettApp(sessionExpired)
                 }
             }
         }

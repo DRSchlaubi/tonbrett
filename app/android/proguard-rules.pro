@@ -2,28 +2,38 @@
 -keepclassmembers class io.ktor.** { volatile <fields>; }
 -keep class io.ktor.client.engine.okhttp.OkHttpEngineContainer
 -keep class io.ktor.serialization.kotlinx.json.KotlinxSerializationJsonExtensionProvider
--keep class kotlinx.coroutines.** { *; }
+# even though we don't use log4j, proguard fails preverification if this class gets optimized
+-keep class io.netty.util.internal.logging.Log4J2LoggerFactory { *; }
+-dontwarn kotlinx.coroutines.swing.**
+
+# ServiceLoader support
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keep class kotlinx.coroutines.android.AndroidDispatcherFactory {}
+
+# Most of volatile fields are updated with AFU and should not be mangled
+-keepclassmembers class kotlinx.coroutines.** {
+    volatile <fields>;
+}
+-keepclasseswithmembers class io.netty.** {
+    *;
+}
+-keepnames class io.netty.** {
+    *;
+}
+# Same story for the standard library's SafeContinuation that also uses AtomicReferenceFieldUpdater
+-keepclassmembers class kotlin.coroutines.SafeContinuation {
+    volatile <fields>;
+}
+
 -dontwarn kotlinx.atomicfu.**
 -dontwarn io.netty.**
 -dontwarn com.typesafe.**
+-dontwarn org.slf4j.**
+-dontwarn ch.qos.logback.**
 -dontwarn okhttp3.**
 -dontwarn io.ktor.**
-
-# okhttp
-# JSR 305 annotations are for embedding nullability information.
--dontwarn javax.annotation.**
-
-# A resource is loaded with a relative path so the package of this class must be preserved.
--adaptresourcefilenames okhttp3/internal/publicsuffix/PublicSuffixDatabase.gz
-
-# Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
--dontwarn org.codehaus.mojo.animal_sniffer.*
-
-# OkHttp platform used only on JVM and when Conscrypt and other security providers are available.
--dontwarn okhttp3.internal.platform.**
--dontwarn org.conscrypt.**
--dontwarn org.bouncycastle.**
--dontwarn org.openjsse.**
+-dontwarn dev.schlaubi.tonbrett.app.desktop.uwp_helper.**
 
 # kmongo
 -keep class org.litote.kmongo.id.UUIDStringIdGeneratorProvider
@@ -31,10 +41,14 @@
     public <init>(java.lang.String);
 }
 
+# logback
+-keep class ch.qos.logback.classic.spi.LogbackServiceProvider
+-keep class ch.qos.logback.core.rolling.RollingFileAppender
+-keep class ch.qos.logback.core.rolling.TimeBasedRollingPolicy
+-keep class ch.qos.logback.core.ConsoleAppender
+
 # serialization
 # For some reason if we don't do this, we get a VerifyError at runtime
--keep class kotlinx.serialization.* { *; }
-
 # Serializer for classes with named companion objects are retrieved using `getDeclaredClasses`.
 # If you have any, replace classes with those containing named companion objects.
 -keepattributes InnerClasses # Needed for `getDeclaredClasses`.
@@ -52,10 +66,3 @@
 -keepclassmembers class <1>.<2> {
   <1>.<2>$Companion Companion;
 }
-
-# compose
--keep class androidx.compose.ui.text.platform.Platform { *; }
--keep class androidx.compose.runtime.** { *; }
-
-# protobuf
--keep class dev.schlaubi.tonbrett.app.android.shared.* { *; }

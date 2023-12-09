@@ -1,6 +1,7 @@
 package dev.schlaubi.tonbrett.app.api
 
 import androidx.compose.runtime.*
+import coil3.PlatformContext
 import dev.schlaubi.tonbrett.client.Tonbrett
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineDispatcher
@@ -37,6 +38,7 @@ abstract class ApiStateHolder {
 abstract class AppContextBase : ApiStateHolder() {
     abstract override var token: String
     abstract val isSignedIn: Boolean
+    abstract val platformContext: PlatformContext
 }
 
 /**
@@ -45,6 +47,7 @@ abstract class AppContextBase : ApiStateHolder() {
 expect open class AppContext : AppContextBase {
     override var token: String
     override val isSignedIn: Boolean
+    override val platformContext: PlatformContext
 
     /**
      * Initiates authorization flow for the current platform.

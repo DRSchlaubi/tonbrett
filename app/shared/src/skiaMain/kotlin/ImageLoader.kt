@@ -2,14 +2,7 @@
 
 package dev.schlaubi.tonbrett.app
 
-import com.seiko.imageloader.component.ComponentRegistryBuilder
-import com.seiko.imageloader.component.decoder.GifDecoder
-import com.seiko.imageloader.component.decoder.SkiaImageDecoder
-import dev.schlaubi.tonbrett.app.api.AppContext
-import kotlinx.coroutines.CoroutineScope
+import coil3.ComponentRegistry
 import kotlin.jvm.JvmName
 
-internal actual fun ComponentRegistryBuilder.registerComponents(appContext: AppContext, coroutineScope: CoroutineScope) {
-    add(GifDecoder.Factory())
-    add(SkiaImageDecoder.Factory())
-}
+internal actual fun ComponentRegistry.Builder.addPlatformComponents() {}

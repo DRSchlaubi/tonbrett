@@ -1,5 +1,6 @@
 package dev.schlaubi.tonbrett.app.api
 
+import coil3.PlatformContext
 import io.ktor.http.*
 import kotlinx.browser.sessionStorage
 import kotlinx.browser.window
@@ -14,6 +15,7 @@ actual val Dispatchers.IO: CoroutineDispatcher
     get() = Main // JS Is single threaded so not needed
 
 actual open class AppContext : AppContextBase() {
+    actual override val platformContext: PlatformContext = PlatformContext.INSTANCE
     actual override val isSignedIn: Boolean
         get() = sessionStorage[tokenKey] != null
 

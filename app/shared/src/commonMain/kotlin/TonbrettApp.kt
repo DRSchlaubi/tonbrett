@@ -1,7 +1,6 @@
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +29,7 @@ import androidx.compose.ui.text.intl.Locale
 import cafe.adriel.lyricist.LocalStrings
 import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
+import coil3.SingletonImageLoader
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.components.ErrorText
@@ -83,6 +83,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
         }
     }
 
+    SingletonImageLoader.set(newImageLoader(LocalContext.current))
     ProvideStrings(lyricist) {
         val user = initialUser
         if (!crashed && !sessionExpired && user != null) {

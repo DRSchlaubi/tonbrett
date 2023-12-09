@@ -1,6 +1,7 @@
 use std::ffi::{c_char, CStr};
 
 use windows::Services::Store::StoreContext;
+use windows::Storage::ApplicationData;
 use windows::{
     core::h,
     core::Result,
@@ -27,20 +28,6 @@ pub async extern "C" fn request_msstore_auto_update() -> bool {
     };
 }
 
-async fn _request_msstore_auto_update() -> Result<()> {
-    let context = StoreContext::GetDefault()?;
-    let updates = context.GetAppAndOptionalStorePackageUpdatesAsync()?.await?;
-
-    if updates.Size()? > 0 {
-        context
-            .RequestDownloadAndInstallStorePackageUpdatesAsync(&updates)?
-            .await
-            .map(|_| ())
-    } else {
-        Ok(())
-    }
-}
-
 #[tokio::main]
 #[no_mangle]
 pub async unsafe extern "C" fn launch_uri(uri: *const c_char) {
@@ -63,17 +50,7 @@ pub unsafe extern "C" fn store_token(token: *const c_char) {
 
 #[no_mangle]
 pub extern "C" fn get_token() -> StringResult {
-    let result = _get_token();
-    let (string, is_error) = match result {
-        Ok(password) => (password, false),
-        Err(error) => (error.message(), true),
-    };
-
-    StringResult {
-        is_error,
-        length: string.len(),
-        string,
-    }
+    StringResult::from(_get_token())
 }
 
 #[no_mangle]
@@ -82,6 +59,11 @@ pub unsafe extern "C" fn copy_string_from_get_string_result_into_buffer(
     buffer: *mut u16,
 ) {
     buffer.copy_from(result.string.as_ptr(), result.length)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn get_temp_folder() -> StringResult {
+    StringResult::from(_get_temp_folder())
 }
 
 async fn _launch_uri(uri: &str) -> Result<()> {
@@ -106,4 +88,37 @@ fn _get_token() -> Result<HSTRING> {
     let password = credential.Password()?;
 
     Ok(password)
+}
+
+fn _get_temp_folder() -> Result<HSTRING> {
+    ApplicationData::Current()?.TemporaryFolder()?.Path()
+}
+
+async fn _request_msstore_auto_update() -> Result<()> {
+    let context = StoreContext::GetDefault()?;
+    let updates = context.GetAppAndOptionalStorePackageUpdatesAsync()?.await?;
+
+    if updates.Size()? > 0 {
+        context
+            .RequestDownloadAndInstallStorePackageUpdatesAsync(&updates)?
+            .await
+            .map(|_| ())
+    } else {
+        Ok(())
+    }
+}
+
+impl From<Result<HSTRING>> for StringResult {
+    fn from(value: Result<HSTRING>) -> Self {
+        let (string, is_error) = match value {
+            Ok(password) => (password, false),
+            Err(error) => (error.message(), true),
+        };
+
+        StringResult {
+            is_error,
+            length: string.len(),
+            string,
+        }
+    }
 }

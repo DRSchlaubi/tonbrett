@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="deploymentTargetDropDown">
-    <targetSelectedWithDropDown>
-      <Target>
-        <type value="QUICK_BOOT_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\micha\.android\avd\Pixel_7_Pro.avd" />
-          </Key>
-        </deviceKey>
-      </Target>
-    </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-11-12T01:23:10.297988500Z" />
+    <value>
+      <entry key="app.android">
+        <State />
+      </entry>
+      <entry key="app.android.wear">
+        <State />
+      </entry>
+    </value>
   </component>
 </project>

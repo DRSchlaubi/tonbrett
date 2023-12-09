@@ -2,16 +2,17 @@
 
 package dev.schlaubi.tonbrett.app
 
-import com.seiko.imageloader.component.ComponentRegistryBuilder
-import com.seiko.imageloader.component.decoder.BitmapFactoryDecoder
-import com.seiko.imageloader.component.decoder.GifDecoder
-import dev.schlaubi.tonbrett.app.api.AppContext
-import kotlinx.coroutines.CoroutineScope
+import android.os.Build
+import coil3.ComponentRegistry
+import coil3.decode.GifDecoder
+import coil3.decode.ImageDecoderDecoder
+import coil3.decode.SvgDecoder
 
-internal actual fun ComponentRegistryBuilder.registerComponents(
-    appContext: AppContext,
-    coroutineScope: CoroutineScope
-) {
-    add(GifDecoder.Factory())
-    add(BitmapFactoryDecoder.Factory(appContext.currentActivity, Int.MAX_VALUE))
+internal actual fun ComponentRegistry.Builder.addPlatformComponents() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        add(ImageDecoderDecoder.Factory())
+    } else {
+        add(GifDecoder.Factory())
+    }
+    add(SvgDecoder.Factory())
 }

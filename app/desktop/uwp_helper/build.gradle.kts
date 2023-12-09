@@ -53,6 +53,7 @@ tasks {
             "--include-function", "launch_uri",
             "--include-function", "get_token",
             "--include-function", "store_token",
+            "--include-function", "get_temp_folder",
             "--include-function", "copy_string_from_get_string_result_into_buffer",
             "--include-function", "request_msstore_auto_update",
             "--include-struct", "StringResult",

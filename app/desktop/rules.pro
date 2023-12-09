@@ -8,6 +8,7 @@
 # ServiceLoader support
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keep class kotlinx.coroutines.swing.SwingDispatcherFactory {}
 
 # Most of volatile fields are updated with AFU and should not be mangled
 -keepclassmembers class kotlinx.coroutines.** {
@@ -65,14 +66,5 @@
   <1>.<2>$Companion Companion;
 }
 
-
--keep class dev.schlaubi.tonbrett.common.** {*;}
--keep class dev.schlaubi.tonbrett.app.desktop.** {*;}
--keep class kotlinx.serialization.* { *; }
-
-# compose
--keep class androidx.compose.ui.text.platform.Platform { *; }
--keep class androidx.compose.runtime.** { *; }
-
 # https://github.com/Guardsquare/proguard/issues/349
--optimizations !class/unboxing/enum
+-dontoptimize

@@ -7,11 +7,12 @@ plugins {
 
 allprojects {
     group = "dev.schlaubi.tonbrett"
-    version = "1.17.10"
+    version = "1.18.0"
 
     repositories {
         mavenCentral()
         google()
+        maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
 

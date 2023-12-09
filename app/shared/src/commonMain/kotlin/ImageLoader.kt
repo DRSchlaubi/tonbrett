@@ -2,58 +2,71 @@ package dev.schlaubi.tonbrett.app
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.seiko.imageloader.ImageLoader
-import com.seiko.imageloader.LocalImageLoader
-import com.seiko.imageloader.component.ComponentRegistryBuilder
-import com.seiko.imageloader.component.setupKtorComponents
-import com.seiko.imageloader.model.ImageResult
-import com.seiko.imageloader.rememberImageAction
-import com.seiko.imageloader.rememberImageActionPainter
+import coil3.ComponentRegistry
+import coil3.ImageLoader
+import coil3.annotation.ExperimentalCoilApi
+import coil3.compose.AsyncImagePainter
+import coil3.compose.LocalPlatformContext
+import coil3.compose.rememberAsyncImagePainter
+import coil3.disk.DiskCache
+import coil3.fetch.NetworkFetcher
+import coil3.memory.MemoryCache
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import dev.schlaubi.tonbrett.app.api.AppContext
-import dev.schlaubi.tonbrett.app.api.LocalContext
 import kotlinx.coroutines.CoroutineScope
 import mu.KotlinLogging
+import okio.FileSystem
 
 private val LOG = KotlinLogging.logger { }
 
-internal expect fun ComponentRegistryBuilder.registerComponents(appContext: AppContext, coroutineScope: CoroutineScope)
+internal expect fun ComponentRegistry.Builder.addPlatformComponents()
 
 @Composable
 internal expect fun isWindowMinimized(): Boolean
 
 @Composable
-fun OptionalWebImage(url: String?, contentDescription: String? = null, modifier: Modifier = Modifier) = OptionalWebImageInternal(url, contentDescription, modifier)
+fun OptionalWebImage(url: String?, contentDescription: String? = null, modifier: Modifier = Modifier) =
+    OptionalWebImageInternal(url, contentDescription, modifier)
 
 @Composable
 private fun OptionalWebImageInternal(url: String?, contentDescription: String?, modifier: Modifier) {
     if (url != null) {
-        val action by rememberImageAction(url)
-        val painter = rememberImageActionPainter(action)
-        val state = action
-        if (state is ImageResult.Error) {
-            LOG.warn(state.error) { "Could not load image $url" }
+        val painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(LocalPlatformContext.current)
+                .data(url)
+                .build()
+        )
+        val state = painter.state
+        if (state is AsyncImagePainter.State.Error) {
+            LOG.warn(state.result.throwable) { "Could not load image $url" }
         } else if (!isWindowMinimized()) {
             Image(painter, contentDescription, modifier)
         }
     }
 }
 
-@Composable
-fun ProvideImageLoader(content: @Composable () -> Unit) {
-    val coroutineScope = rememberCoroutineScope()
-    CompositionLocalProvider(
-        LocalImageLoader provides newImageLoader(LocalContext.current, coroutineScope),
-        content = content
-    )
-}
+@OptIn(ExperimentalCoilApi::class)
+fun newImageLoader(appContext: AppContext): ImageLoader =
+    ImageLoader.Builder(appContext.platformContext)
+        .components {
+            add(NetworkFetcher.Factory())
+            addPlatformComponents()
+        }
+        .memoryCache {
+            MemoryCache.Builder()
+                // Set the max size to 25% of the app's available memory.
+                .maxSizePercent(appContext.platformContext, percent = 0.25)
+                .build()
+        }
+        .diskCache { newDiskCache() }
+        .crossfade(false)
+        .build()
 
-private fun newImageLoader(appContext: AppContext, coroutineScope: CoroutineScope): ImageLoader = ImageLoader {
-    components {
-        setupKtorComponents()
-        registerComponents(appContext, coroutineScope)
-    }
-}
+expect fun newDiskCache(): DiskCache?
+
+internal fun fileSystemDiskCache(directory: String) = DiskCache.Builder()
+    .directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
+    .maxSizeBytes(512L * 1024 * 1024) // 512MB
+    .build()

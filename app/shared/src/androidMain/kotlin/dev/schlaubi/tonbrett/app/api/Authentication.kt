@@ -1,11 +1,13 @@
 package dev.schlaubi.tonbrett.app.api
 
 import android.app.Activity
+import coil3.PlatformContext
 import com.liftric.kvault.KVault
 
 actual open class AppContext(val currentActivity: Activity) : AppContextBase(), MobileAppContext {
     private val vault: KVault = KVault(currentActivity)
     override var onReAuthorize: () -> Unit = { TODO() }
+    actual override val platformContext: PlatformContext = currentActivity
     actual override val isSignedIn: Boolean
         get() = vault.existsObject(tokenKey)
 

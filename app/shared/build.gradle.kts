@@ -59,19 +59,22 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
-                implementation(libs.imageloader)
+
+                implementation(libs.coil.compose)
+                implementation(libs.coil.network)
             }
         }
 
         jsMain {
             dependencies {
-                api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:1.9.10")
+                api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:1.9.21")
             }
         }
 
         jvmMain {
             dependencies {
                 implementation(libs.kmongo.id.serialization)
+                implementation(libs.kotlinx.coroutines.swing)
             }
         }
 
@@ -84,6 +87,9 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.androidx.browser)
+                implementation(libs.kotlinx.coroutines.android)
+                implementation(libs.coil.gif)
+                implementation(libs.coil.svg)
             }
         }
     }

@@ -2,6 +2,7 @@ package dev.schlaubi.tonbrett.app.desktop
 
 import dev.schlaubi.tonbrett.app.desktop.uwp_helper.StringResult
 import dev.schlaubi.tonbrett.app.desktop.uwp_helper.UwpHelper.*
+import dev.schlaubi.tonbrett.app.uwpTempFolder
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -23,6 +24,9 @@ actual fun prepareAuthentication(onAuth: () -> Unit): Unit = exitProcess(0)
 
 @OptIn(DelicateCoroutinesApi::class)
 actual fun start(args: Array<String>) {
+    val tempFolder = getTempFolder()
+    System.setProperty(uwpTempFolder, tempFolder)
+
     val argsString = args.joinToString(" ")
     if (argsString.startsWith("tonbrett://login")) {
         try {
@@ -52,6 +56,8 @@ actual fun setToken(token: String) = Arena.ofConfined().use { arena ->
 }
 
 actual fun getToken(): String = invokeStringResultFunction(::get_token)
+
+private fun getTempFolder(): String = invokeStringResultFunction(::get_temp_folder)
 
 private fun invokeStringResultFunction(
     function: (SegmentAllocator) -> MemorySegment

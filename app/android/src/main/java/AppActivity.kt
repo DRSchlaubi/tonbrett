@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.browser.customtabs.CustomTabsIntent
 import dev.schlaubi.tonbrett.app.MobileTonbrettApp
-import dev.schlaubi.tonbrett.app.ProvideImageLoader
 import dev.schlaubi.tonbrett.app.api.AppContext
 import dev.schlaubi.tonbrett.app.api.ProvideContext
 
@@ -25,12 +24,10 @@ class AppActivity : ComponentActivity() {
             WearOSTokenSharing(token = token ?: context.getTokenOrNull())
 
             ProvideContext(context) {
-                ProvideImageLoader {
-                    UpdateAwareAppScope(activity = this) {
-                        MobileTonbrettApp(token) { url ->
-                            val intent = CustomTabsIntent.Builder().build()
-                            intent.launchUrl(this@AppActivity, Uri.parse(url))
-                        }
+                UpdateAwareAppScope(activity = this) {
+                    MobileTonbrettApp(token) { url ->
+                        val intent = CustomTabsIntent.Builder().build()
+                        intent.launchUrl(this@AppActivity, Uri.parse(url))
                     }
                 }
             }

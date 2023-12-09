@@ -1,5 +1,6 @@
 package dev.schlaubi.tonbrett.app.api
 
+import coil3.PlatformContext
 import com.liftric.kvault.KVault
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -10,6 +11,7 @@ actual val Dispatchers.IO: CoroutineDispatcher
     get() = IO
 
 actual open class AppContext : AppContextBase(), MobileAppContext {
+    actual override val platformContext: PlatformContext = PlatformContext.INSTANCE
     private val vault: KVault = KVault()
     override var onReAuthorize: () -> Unit = { TODO() }
     actual override val isSignedIn: Boolean
