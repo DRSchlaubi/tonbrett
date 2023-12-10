@@ -21,7 +21,8 @@ class AppActivity : ComponentActivity() {
         setContent {
             val context = AppContext(this)
 
-            WearOSTokenSharing(token = token ?: context.getTokenOrNull())
+            //Disable for now
+            //WearOSTokenSharing(token = token ?: context.getTokenOrNull())
 
             ProvideContext(context) {
                 UpdateAwareAppScope(activity = this) {
