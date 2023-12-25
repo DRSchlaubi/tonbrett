@@ -1,6 +1,5 @@
 import dev.schlaubi.mikbot.gradle.mikbot
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import kotlin.io.path.div
 
 plugins {
     alias(libs.plugins.ksp)
@@ -12,7 +11,6 @@ plugins {
 dependencies {
     implementation(projects.common)
     ktorDependency(libs.ktor.server.auth)
-    ktorDependency(libs.ktor.server.websockets)
     ktorDependency(libs.ktor.server.cors)
     ktorDependency(libs.ktor.server.auth.jwt)
     implementation(libs.kmongo.id.serialization)

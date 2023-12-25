@@ -4,22 +4,30 @@ import com.kotlindiscord.kord.extensions.koin.KordExContext
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.Kord
+import dev.kord.core.event.guild.VoiceServerUpdateEvent
 import dev.schlaubi.lavakord.kord.connectAudio
 import dev.schlaubi.tonbrett.bot.core.soundPlayer
 import dev.schlaubi.tonbrett.bot.core.voiceState
-import dev.schlaubi.tonbrett.bot.io.*
+import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
+import dev.schlaubi.tonbrett.bot.io.findAllTags
+import dev.schlaubi.tonbrett.bot.io.findById
+import dev.schlaubi.tonbrett.bot.io.searchGrouped
 import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.bot.util.soundNotFound
 import dev.schlaubi.tonbrett.bot.util.translate
 import dev.schlaubi.tonbrett.common.Route.*
-import dev.schlaubi.tonbrett.common.Route.Tags
 import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.Route
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(KordUnsafe::class, KordExperimental::class)
 fun Route.sounds() {
@@ -56,10 +64,19 @@ fun Route.sounds() {
         @Suppress("INVISIBLE_MEMBER", "EQUALITY_NOT_APPLICABLE")
         if (player.channelId == null) {
             player.player.link.connectAudio(voiceState.channelId)
-        } else if (player.channelId != voiceState.channelId) {
+            withTimeout(5.seconds) {
+                kord.events
+                    .filterIsInstance<VoiceServerUpdateEvent>()
+                    .filter {
+                        it.guildId == player.player.guildId
+                    }
+                    // wait for "Connect event"
+                    .first()
+            }
+        } else if (player.channelId != null && player.channelId != voiceState.channelId) {
             badRequest(call.translate("rest.errors.vc_mismatch"))
         }
-        player.playSound(sound, user)
+        player.playSound(sound, user, voiceState.channelId?.takeIf { player.channelId == null })
         call.respond(HttpStatusCode.Accepted)
     }
 }

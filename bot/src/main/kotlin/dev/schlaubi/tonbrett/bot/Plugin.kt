@@ -8,9 +8,15 @@ import dev.schlaubi.mikbot.plugin.api.PluginMain
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.tonbrett.bot.commands.*
 import dev.schlaubi.tonbrett.bot.core.VoiceStateWatcher
+import dev.schlaubi.tonbrett.common.TonbrettSerializersModule
+import org.litote.kmongo.serialization.registerModule
 
 @PluginMain
 class Plugin(context: PluginContext) : Plugin(context) {
+    override fun start() {
+        registerModule(TonbrettSerializersModule)
+    }
+
     override fun ExtensibleBotBuilder.ExtensionsBuilder.addExtensions() {
         add(::Module)
         add(::VoiceStateWatcher)

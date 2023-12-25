@@ -1,9 +1,9 @@
 [versions]
 kotlin = "2.0.0-Beta1"
-ktor = "2.3.7"
+ktor = "3.0.0-beta-1"
 kmongo = "4.10.0"
 kord = "0.12.0"
-mikbot = "3.26.0"
+mikbot = "3.27.0"
 ksp = "2.0.0-Beta1-1.0.14"
 kordex = "1.6.0-SNAPSHOT"
 android = "8.2.0"
@@ -21,6 +21,7 @@ coil = "3.0.0-20231208.205440-1"
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.1" }
 kmongo-id-serialization = { group = "org.litote.kmongo", name = "kmongo-id-serialization", version.ref = "kmongo" }
+kmongo-serialization = { group = "org.litote.kmongo", name = "kmongo-serialization", version.ref = "kmongo" }
 kord-common = { group = "dev.kord", name = "kord-common", version.ref = "kord" }
 kordex-processor = { group = "com.kotlindiscord.kord.extensions", name = "annotation-processor", version.ref = "kordex" }
 
@@ -45,6 +46,7 @@ ktor-client-winhttp = { group = "io.ktor", name = "ktor-client-winhttp", version
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
+ktor-sse = { group = "io.ktor", name = "ktor-sse", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }

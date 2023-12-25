@@ -1,6 +1,6 @@
 package dev.schlaubi.tonbrett.bot.commands
 
-import dev.kord.rest.builder.message.create.actionRow
+import dev.kord.rest.builder.message.actionRow
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.mikbot.util_plugins.ktor.api.buildBotUrl
 import io.ktor.http.*

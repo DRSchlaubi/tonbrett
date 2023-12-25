@@ -9,7 +9,7 @@ import dev.schlaubi.tonbrett.bot.util.player
 import dev.schlaubi.tonbrett.common.InterfaceAvailabilityChangeEvent
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.Sound
-import io.ktor.http.path
+import io.ktor.http.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
@@ -63,7 +63,7 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
     }
 
     @Suppress("INVISIBLE_MEMBER", "SuspendFunctionOnCoroutineScope")
-    suspend fun playSound(sound: Sound, user: Snowflake) {
+    suspend fun playSound(sound: Sound, user: Snowflake, channelId: Snowflake?) {
         val alreadyLocked = locked
         locked = true
         updateAvailability(false, sound, user)
