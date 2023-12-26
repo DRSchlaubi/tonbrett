@@ -4,7 +4,6 @@ import com.kotlindiscord.kord.extensions.koin.KordExContext
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.Kord
-import dev.kord.core.event.guild.VoiceServerUpdateEvent
 import dev.schlaubi.lavakord.kord.connectAudio
 import dev.schlaubi.tonbrett.bot.core.soundPlayer
 import dev.schlaubi.tonbrett.bot.core.voiceState
@@ -22,12 +21,9 @@ import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.Route
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.withTimeout
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(KordUnsafe::class, KordExperimental::class)
 fun Route.sounds() {
@@ -64,19 +60,11 @@ fun Route.sounds() {
         @Suppress("INVISIBLE_MEMBER", "EQUALITY_NOT_APPLICABLE")
         if (player.channelId == null) {
             player.player.link.connectAudio(voiceState.channelId)
-            withTimeout(5.seconds) {
-                kord.events
-                    .filterIsInstance<VoiceServerUpdateEvent>()
-                    .filter {
-                        it.guildId == player.player.guildId
-                    }
-                    // wait for "Connect event"
-                    .first()
-            }
+            delay(500.milliseconds) // let's wait a bit before playing the sound to avoid issues with cutting off audio
         } else if (player.channelId != null && player.channelId != voiceState.channelId) {
             badRequest(call.translate("rest.errors.vc_mismatch"))
         }
-        player.playSound(sound, user, voiceState.channelId?.takeIf { player.channelId == null })
+        player.playSound(sound, user)
         call.respond(HttpStatusCode.Accepted)
     }
 }

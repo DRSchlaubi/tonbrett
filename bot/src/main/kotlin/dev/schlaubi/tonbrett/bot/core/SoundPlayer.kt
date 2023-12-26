@@ -63,7 +63,7 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
     }
 
     @Suppress("INVISIBLE_MEMBER", "SuspendFunctionOnCoroutineScope")
-    suspend fun playSound(sound: Sound, user: Snowflake, channelId: Snowflake?) {
+    suspend fun playSound(sound: Sound, user: Snowflake) {
         val alreadyLocked = locked
         locked = true
         updateAvailability(false, sound, user)
