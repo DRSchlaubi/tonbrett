@@ -1,8 +1,6 @@
 [versions]
 kotlin = "2.0.0-Beta1"
-# lastest ktor version is broken on native
-#noinspection GradleDependency
-ktor = "2.3.6"
+ktor = "2.3.7"
 kmongo = "4.10.0"
 kord = "0.12.0"
 mikbot = "3.27.0"
