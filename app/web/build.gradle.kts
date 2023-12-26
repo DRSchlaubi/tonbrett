@@ -5,6 +5,10 @@ plugins {
     id("org.jetbrains.compose")
 }
 
+repositories {
+    maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap/")
+}
+
 kotlin {
     js(IR) {
         browser()
@@ -33,7 +37,9 @@ kotlin {
                 @OptIn(ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
-                implementation(libs.ktor.sse)
+
+                // For some reason this is needed, otherwise the js compiler complains
+                implementation("io.ktor:ktor-sse:2.3.3-eap-756")
             }
         }
     }

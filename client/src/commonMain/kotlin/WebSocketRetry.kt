@@ -21,7 +21,7 @@ private val LOG = KotlinLogging.logger {  }
  *
  * @see retryingWebSocket
  */
-val WebSocketRetry = createClientPlugin("WebSocketRetry", { HttpRequestRetryConfig() }) {}
+val WebSocketRetry = createClientPlugin("WebSocketRetry", { HttpRequestRetry.Configuration() }) {}
 
 /**
  * Exception used for logging WebSocket connection errors.
@@ -45,12 +45,12 @@ suspend fun HttpClient.retryingWebSocket(
 
 private class WebSocketRetryContext(
     val client: HttpClient,
-    val config: HttpRequestRetryConfig,
+    val config: HttpRequestRetry.Configuration,
     val httpRequestBuilder: HttpRequestBuilder.() -> Unit,
     val handler: suspend DefaultClientWebSocketSession.() -> Unit
 ) {
     lateinit var session: DefaultClientWebSocketSession
-    private var delayContext: HttpRetryDelayContext? = null
+    private var delayContext: HttpRequestRetry.DelayContext? = null
     private var tries = 1
 
     fun reset() {
@@ -63,7 +63,7 @@ private class WebSocketRetryContext(
 
     suspend fun reconnect(e: Throwable, isRetry: Boolean = true) {
         if (!isRetry) {
-            delayContext = HttpRetryDelayContext(
+            delayContext = HttpRequestRetry.DelayContext(
                 HttpRequestBuilder(),
                 session.call.response,
                 e

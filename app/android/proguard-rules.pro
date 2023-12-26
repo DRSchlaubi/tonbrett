@@ -40,6 +40,8 @@
 -keepclassmembers class org.litote.kmongo.id.StringId {
     public <init>(java.lang.String);
 }
+# This isn't used so it can be eliminated
+-dontwarn dev.schlaubi.tonbrett.common.IdSerializer
 
 # logback
 -keep class ch.qos.logback.classic.spi.LogbackServiceProvider

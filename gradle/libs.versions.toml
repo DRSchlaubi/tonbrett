@@ -1,6 +1,8 @@
 [versions]
 kotlin = "2.0.0-Beta1"
-ktor = "3.0.0-beta-1"
+# lastest ktor version is broken on native
+#noinspection GradleDependency
+ktor = "2.3.6"
 kmongo = "4.10.0"
 kord = "0.12.0"
 mikbot = "3.27.0"
@@ -19,7 +21,7 @@ compose-compiler = "1.5.5-dev-k2.0.0-Beta1-06b8ae672a4"
 coil = "3.0.0-20231208.205440-1"
 
 [libraries]
-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.1" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.2" }
 kmongo-id-serialization = { group = "org.litote.kmongo", name = "kmongo-id-serialization", version.ref = "kmongo" }
 kmongo-serialization = { group = "org.litote.kmongo", name = "kmongo-serialization", version.ref = "kmongo" }
 kord-common = { group = "dev.kord", name = "kord-common", version.ref = "kord" }
@@ -63,11 +65,11 @@ logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.4.1
 
 kvault = { group = "com.liftric", name = "kvault", version = "1.10.0" }
 
-androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.8.1" }
+androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.8.2" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
 androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.12.0" }
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.7.0" }
-mdc-android = { group = "com.google.android.material", name = "material", version = "1.10.0" }
+mdc-android = { group = "com.google.android.material", name = "material", version = "1.11.0" }
 google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
 google-play-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "google-play" }
 
@@ -104,5 +106,5 @@ android-base = { id = "com.android.base", version.ref = "android" }
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-buildconfig = { id = "com.github.gmazzo.buildconfig", version = "4.1.2" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.1.0" }
 protobuf = { id = "com.google.protobuf", version = "0.9.4" }

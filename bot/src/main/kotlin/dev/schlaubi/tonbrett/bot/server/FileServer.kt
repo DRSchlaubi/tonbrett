@@ -20,7 +20,7 @@ fun Route.files() {
         val path = Config.SOUNDS_FOLDER / sound.fileName
 
         val contentType = contentTypeRaw?.let { ContentType.parse(contentTypeRaw) }
-            ?: ContentType.defaultForPath(path)
+            ?: ContentType.defaultForFile(path)
 
         val content = LocalFileContent(
             path.toFile(),
