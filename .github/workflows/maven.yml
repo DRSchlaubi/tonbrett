@@ -18,11 +18,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
-      - name: Build plugin
-        uses: gradle/gradle-build-action@v2
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+      - run: ./gradlew publish
         env:
           SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
           GOOGLE_KEY: ${{ secrets.GOOGLE_KEY }}
-        with:
-          arguments: publish

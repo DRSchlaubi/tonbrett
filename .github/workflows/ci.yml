@@ -19,10 +19,9 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: ${{ env.JAVA_VERSION }}
-      - name: Build plugin
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: assembleBot
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+      - run: ./gradlew assembleBot
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v3
         with:
@@ -83,15 +82,12 @@ jobs:
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security import INSTALLER_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
-      - name: Build App Distribution
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: packageReleaseDistributionForCurrentOS  -Pcompose.desktop.mac.sign=true --stacktrace
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+      - run: ./gradlew packageReleaseDistributionForCurrentOS  -Pcompose.desktop.mac.sign=true --stacktrace
       - name: Package Linux Distribution
-        uses: gradle/gradle-build-action@v2
         if: matrix.os == 'ubuntu-latest'
-        with:
-          arguments: packageDistributable
+        run: ./gradlew packageDistributable
       - name: Setup MSbuild
         if: matrix.os == 'windows-latest'
         uses: microsoft/setup-msbuild@v1.3.1
@@ -101,11 +97,9 @@ jobs:
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d app/desktop/build/msix-workspace /p Tonbrett.msix
       - name: Notarize MacOS installer
         if: matrix.os == 'macos-latest'
-        uses: gradle/gradle-build-action@v2
         env:
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
-        with:
-          arguments: notarizeReleasePkg -Pcompose.desktop.mac.sign=true
+        run: ./gradlew notarizeReleasePkg -Pcompose.desktop.mac.sign=true
       - name: Upload distributions
         uses: actions/upload-artifact@v3
         with:
@@ -136,14 +130,13 @@ jobs:
           fileName: 'android_keystore.jks'
           fileDir: 'keystore'
           encodedString: ${{ secrets.KEYSTORE }}
-      - name: Build App Distribution
-        uses: gradle/gradle-build-action@v2
-        env:
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+      - env:
           SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        with:
-          arguments: :app:android:bundleRelease :app:android:assembleRelease
+        run: ./gradlew :app:android:bundleRelease :app:android:assembleRelease
       - uses: r0adkll/sign-android-release@v1
         id: sign_bundle
         name: Sign AAB
@@ -262,10 +255,9 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: olegtarasov/get-tag@v2.1.2
         id: tagName
-      - name: Build iosApp
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: app:ios:podinstall :app:ios:linkPodReleaseFrameworkIosArm64
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+      - run: ./gradlew app:ios:podinstall :app:ios:linkPodReleaseFrameworkIosArm64
       - name: Deploy iOS Beta to TestFlight via Fastlane
         uses: maierj/fastlane-action@v1.4.0
         with:
