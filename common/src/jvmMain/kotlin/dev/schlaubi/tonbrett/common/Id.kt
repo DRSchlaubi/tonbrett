@@ -9,6 +9,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonEncoder
 import org.bson.types.ObjectId
 import org.litote.kmongo.id.toId
 import org.litote.kmongo.toId
@@ -34,7 +36,7 @@ public object IdSerializer : KSerializer<Id<*>> {
         PrimitiveSerialDescriptor("MongoID", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): Id<*> {
-        return if (decoder is BsonFlexibleDecoder) {
+        return if (decoder !is JsonDecoder && decoder is BsonFlexibleDecoder) {
             WrappedId<Any>(decoder.reader.readObjectId().toId())
         } else {
             WrappedId<Any>(decoder.decodeString().toId())
@@ -42,7 +44,7 @@ public object IdSerializer : KSerializer<Id<*>> {
     }
 
     override fun serialize(encoder: Encoder, value: Id<*>): Unit =
-        if (encoder is BsonEncoder) {
+        if (encoder !is JsonEncoder && encoder is BsonEncoder) {
             val objectId = ObjectId(value.toString())
             encoder.encodeObjectId(objectId)
         } else {
