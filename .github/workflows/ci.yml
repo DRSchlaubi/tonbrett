@@ -85,6 +85,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3.0.0-beta.1
       - run: ./gradlew packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true --stacktrace
+        shell: bash
       - name: Package Linux Distribution
         if: matrix.os == 'ubuntu-latest'
         run: ./gradlew packageDistributable
@@ -146,9 +147,18 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+      # https://github.com/r0adkll/sign-android-release/issues/84#issuecomment-1889636075
+      - name: Setup build tool version variable
+        shell: bash
+        run: |
+          BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)
+          echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
+          echo Last build tool version is: $BUILD_TOOL_VERSION
       - uses: r0adkll/sign-android-release@v1
         id: sign_apk
         name: Sign APK
+        env:
+          BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
         with:
           releaseDirectory: app/android/build/outputs/apk/release/
           signingKeyBase64: ${{ secrets.KEYSTORE }}
