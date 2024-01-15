@@ -72,62 +72,60 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
         }
     }
 
-    SideEffect {
-        SingletonImageLoader.set { newImageLoader(context) }
-    }
-
-    ProvideStrings(lyricist) {
-        val user = initialUser
-        if (!crashed && !sessionExpired && user != null) {
-            Scaffold(
-                containerColor = ColorScheme.current.container,
-                snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) }) { padding ->
-                Column(Modifier.padding(padding)) {
-                    SoundList(::reportError, user.voiceState)
-                }
-            }
-
-            LaunchedEffect(context.token) {
-                withContext(Dispatchers.IO) {
-                    try {
-                        context.api.connect()
-                    } catch (e: Exception) {
-                        reportError(e)
+    ProvideImageLoader(newImageLoader(context)) {
+        ProvideStrings(lyricist) {
+            val user = initialUser
+            if (!crashed && !sessionExpired && user != null) {
+                Scaffold(
+                    containerColor = ColorScheme.current.container,
+                    snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) }) { padding ->
+                    Column(Modifier.padding(padding)) {
+                        SoundList(::reportError, user.voiceState)
                     }
-                    crashed = !sessionExpired
                 }
-            }
-        } else {
-            if (user == null && !sessionExpired) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.background(ColorScheme.current.container)
-                        .fillMaxSize()
-                ) {
-                    CircularProgressIndicator()
+
+                LaunchedEffect(context.token) {
+                    withContext(Dispatchers.IO) {
+                        try {
+                            context.api.connect()
+                        } catch (e: Exception) {
+                            reportError(e)
+                        }
+                        crashed = !sessionExpired
+                    }
                 }
             } else {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.background(ColorScheme.current.container)
-                        .fillMaxSize()
-                ) {
-                    if (sessionExpired) {
-                        CrashErrorScreen(LocalStrings.current.sessionExpiredExplainer) {
-                            Button({ context.reAuthorize() }) {
-                                Icon(Icons.Default.Refresh, LocalStrings.current.reAuthorize)
-                                Text(
-                                    LocalStrings.current.reAuthorize,
-                                    color = ColorScheme.current.textColor
-                                )
+                if (user == null && !sessionExpired) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.background(ColorScheme.current.container)
+                            .fillMaxSize()
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.background(ColorScheme.current.container)
+                            .fillMaxSize()
+                    ) {
+                        if (sessionExpired) {
+                            CrashErrorScreen(LocalStrings.current.sessionExpiredExplainer) {
+                                Button({ context.reAuthorize() }) {
+                                    Icon(Icons.Default.Refresh, LocalStrings.current.reAuthorize)
+                                    Text(
+                                        LocalStrings.current.reAuthorize,
+                                        color = ColorScheme.current.textColor
+                                    )
+                                }
                             }
-                        }
-                    } else if (crashed) {
-                        CrashErrorScreen(LocalStrings.current.crashedExplainer) {
-                            Button({ crashed = false }) {
-                                Icon(Icons.Default.Refresh, LocalStrings.current.reload)
-                                Text(LocalStrings.current.reload, color = ColorScheme.current.textColor)
+                        } else if (crashed) {
+                            CrashErrorScreen(LocalStrings.current.crashedExplainer) {
+                                Button({ crashed = false }) {
+                                    Icon(Icons.Default.Refresh, LocalStrings.current.reload)
+                                    Text(LocalStrings.current.reload, color = ColorScheme.current.textColor)
+                                }
                             }
                         }
                     }
@@ -135,6 +133,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
             }
         }
     }
+
 }
 
 @Composable

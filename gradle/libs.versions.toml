@@ -1,12 +1,12 @@
 [versions]
 kotlin = "2.0.0-Beta1"
 ktor = "2.3.7"
-kmongo = "4.10.0"
-kord = "0.12.0"
+kmongo = "4.11.0"
+kord = "0.13.0"
 mikbot = "3.27.0"
 ksp = "2.0.0-Beta1-1.0.14"
-kordex = "1.6.0-SNAPSHOT"
-android = "8.2.0"
+kordex = "1.7.1-SNAPSHOT"
+android = "8.2.1"
 compose = "1.6.0-alpha01"
 compose-wear = "1.2.1"
 lyricist = "1.6.2"
@@ -15,8 +15,8 @@ coroutines = "1.7.3"
 play-services-wearable = "18.1.0"
 horologist = "0.5.10"
 protobuf = "3.19.4"
-compose-compiler = "1.5.5-dev-k2.0.0-Beta1-06b8ae672a4"
-coil = "3.0.0-20231208.205440-1"
+compose-compiler = "1.5.8-dev-k2.0.0-Beta2-99ed868a0f8"
+coil = "3.0.0-alpha02"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.2" }

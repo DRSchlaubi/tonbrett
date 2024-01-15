@@ -1,7 +1,4 @@
-import com.android.build.api.dsl.Lint
-import com.android.build.gradle.internal.tasks.LintCompile
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("multiplatform")
@@ -26,35 +23,34 @@ kotlin {
 
     androidTarget {
         compilations.all {
-            compilerOptions {
-                jvmTarget = JvmTarget.JVM_20
+            kotlinOptions {
+                jvmTarget = "21"
+            }
+        }
+        jvm("desktop")
+        js(IR) {
+            browser()
+        }
+        iosSimulatorArm64()
+        iosX64()
+        iosArm64()
+
+        targets.all {
+            compilations.all {
+                compilerOptions.configure {
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
             }
         }
     }
-    jvm("desktop")
-    js(IR) {
-        browser()
-    }
-    iosSimulatorArm64()
-    iosX64()
-    iosArm64()
 
-    targets.all {
-        compilations.all {
-            compilerOptions.configure {
-                freeCompilerArgs.add("-Xexpect-actual-classes")
-            }
-        }
+    java {
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
-
-java {
-    targetCompatibility = JavaVersion.VERSION_20
-}
-
 android {
     compileOptions {
-        targetCompatibility = JavaVersion.VERSION_20
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     lint {
