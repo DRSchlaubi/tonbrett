@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = "dev.schlaubi.tonbrett"
-    version = "1.18.8"
+    version = "1.18.9"
 
     repositories {
         mavenCentral()

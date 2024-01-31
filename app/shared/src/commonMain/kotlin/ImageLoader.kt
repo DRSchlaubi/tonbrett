@@ -7,12 +7,12 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import coil3.ComponentRegistry
 import coil3.ImageLoader
-import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImagePainter
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
+import coil3.network.ktor.KtorNetworkFetcherFactory
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.schlaubi.tonbrett.app.api.AppContext
@@ -57,6 +57,7 @@ private fun OptionalWebImageInternal(url: String?, contentDescription: String?, 
 }
 
 fun newImageLoader(appContext: AppContext): ImageLoader = ImageLoader.Builder(appContext.platformContext).components {
+    add(KtorNetworkFetcherFactory())
     addPlatformComponents()
 }.memoryCache {
     MemoryCache.Builder()
