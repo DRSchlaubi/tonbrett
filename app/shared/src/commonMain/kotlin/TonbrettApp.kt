@@ -42,7 +42,7 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
     val context = LocalContext.current
     var initialUser: User? by remember { mutableStateOf(null) }
 
-    val lyricist = rememberStrings(Locale.current.toLanguageTag())
+    val lyricist = rememberStrings()
 
     suspend fun reportError(exception: Exception) {
         if (exception is ReauthorizationRequiredException) {
