@@ -228,6 +228,7 @@ jobs:
           $Cred = New-Object System.Management.Automation.PSCredential($user, $password)
           Set-StoreBrokerAuthentication -TenantId ${{ secrets.MS_TENANT_ID }} -Credential $Cred
           $appId = "9P61S67DVWM2"
+          $global:SBDisableTelemetry = $true
           # Create submission package
           New-SubmissionPackage -ConfigPath .\submission.json -AppxPath .\Tonbrett.msix -OutPath out -OutName package
           # Create new submission
