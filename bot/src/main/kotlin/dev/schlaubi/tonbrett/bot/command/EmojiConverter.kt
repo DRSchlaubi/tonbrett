@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.converters.union
 import dev.kord.core.entity.GuildEmoji
+import dev.kord.core.entity.StandardEmoji
 import dev.kord.x.emoji.Emojis
 import dev.schlaubi.tonbrett.common.Sound
 
@@ -43,6 +44,7 @@ context(CommandContext)
 fun Any.toEmoji(): Sound.Emoji = when (this) {
     is String -> Sound.DiscordEmoji(this)
     is GuildEmoji -> Sound.GuildEmoji(id, isAnimated)
+    is StandardEmoji -> Sound.DiscordEmoji(name)
     else -> error("Invalid emoji type: $this")
 }
 
