@@ -17,7 +17,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.schlaubi.tonbrett.app.api.AppContext
 import mu.KotlinLogging
-import okio.FileSystem
+import okio.Path
 
 private val LOG = KotlinLogging.logger { }
 
@@ -67,7 +67,7 @@ fun newImageLoader(appContext: AppContext): ImageLoader = ImageLoader.Builder(ap
 
 expect fun newDiskCache(): DiskCache?
 
-internal fun fileSystemDiskCache(directory: String) =
-    DiskCache.Builder().directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
+internal fun fileSystemDiskCache(directory: Path) =
+    DiskCache.Builder().directory(directory / "image_cache")
         .maxSizeBytes(512L * 1024 * 1024) // 512MB
         .build()

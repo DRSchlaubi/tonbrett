@@ -6,9 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.awt.ComposeWindow
-import androidx.compose.ui.window.FrameWindowScope
-import androidx.compose.ui.window.WindowScope
-import androidx.compose.ui.window.WindowState
 import coil3.disk.DiskCache
 import okio.Path
 import okio.Path.Companion.toPath
@@ -47,4 +44,4 @@ private fun getBasePath(): Path {
     return basePath / "Tonbrett"
 }
 
-actual fun newDiskCache(): DiskCache? = fileSystemDiskCache(getBasePath().toString())
+actual fun newDiskCache(): DiskCache? = fileSystemDiskCache(getBasePath())
