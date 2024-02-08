@@ -43,7 +43,8 @@
 -dontwarn dev.schlaubi.tonbrett.common.IdSerializer
 
 # logback
--keep class ch.qos.logback.classic.spi.LogbackServiceProvider
+-keep class ch.qos.logback.classic.spi.LogbackServiceProvider { *; }
+-keep class ch.qos.logback.classic.util.** { *; }
 -keep class ch.qos.logback.core.rolling.RollingFileAppender
 -keep class ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 -keep class ch.qos.logback.core.ConsoleAppender
@@ -67,6 +68,9 @@
 -keepclassmembers class <1>.<2> {
   <1>.<2>$Companion Companion;
 }
+
+# Coil
+-keep class coil3.network.ktor.internal.KtorNetworkFetcherServiceLoaderTarget
 
 # https://github.com/Guardsquare/proguard/issues/349
 -dontoptimize
