@@ -1,0 +1,37 @@
+name: Winget CI
+
+on:
+  release:
+    types:
+      - published
+      
+jobs:
+  winget:
+    name: Update winget manifest
+    runs-on: windows-latest
+    steps:
+      - name: Setup winget-create
+        shell: pwsh
+        env:
+          WINGETCREATE_VERSION: v1.5.7.0
+        run: >-
+          iwr
+          https://github.com/microsoft/winget-create/releases/download/${env:WINGETCREATE_VERSION}/wingetcreate.exe
+          -OutFile wingetcreate.exe
+      - name: Bump Winget manifest
+        shell: pwsh
+        env:
+          WINGET_GITHUB_TOKEN: '${{ secrets.WINGET_UPLOAD_GITHUB_TOKEN }}'
+        run: >
+          $tagname = $env:GITHUB_REF.Replace("refs/tags/", "")
+
+          $version = $tagname.Replace("v", "")
+
+          $url =
+          "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett.msix"
+
+          .\wingetcreate.exe update Schlaubi.Tonbrett -u $url --version $version
+
+          if ($version -notmatch "-") {
+            .\wingetcreate.exe submit .\manifests\o\Schlaubi\Tonbrett\${version}\ --token $env:WINGET_GITHUB_TOKEN
+          }
