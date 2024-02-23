@@ -52,7 +52,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: powershell
         run: |
-          Invoke-WebRequest https://download.java.net/java/early_access/jextract/1/openjdk-21-jextract+1-2_windows-x64_bin.tar.gz -OutFile jextract.tar.gz
+          Invoke-WebRequest https://download.java.net/java/early_access/jextract/21/1/openjdk-21-jextract+1-2_windows-x64_bin.tar.gz -OutFile jextract.tar.gz
 
           tar xzvf jextract.tar.gz
       - name: Setup MacOS signing
