@@ -103,7 +103,7 @@ private fun SoundGroup(
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
         Text(group.tag ?: strings.otherSounds, color = ColorScheme.current.textColor)
         CollapseIcon(collapsed, Modifier.clickable { collapsed = !collapsed })
-        Divider(Modifier.fillMaxWidth().padding(5.dp))
+        HorizontalDivider(Modifier.fillMaxWidth().padding(5.dp))
     }
 
     AnimatedVisibility(!collapsed) {
@@ -240,7 +240,7 @@ fun SoundCard(
                                 }) {
                                     Icon(Icons.Default.Refresh, null, tint = ColorScheme.current.textColor)
                                 }
-                                Divider(Modifier.width(1.dp).height(15.dp))
+                                HorizontalDivider(Modifier.width(1.dp).height(15.dp))
                                 IconButton({
                                     stop()
                                 }) {

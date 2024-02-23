@@ -27,27 +27,28 @@ kotlin {
                 jvmTarget = "21"
             }
         }
-        jvm("desktop")
-        js(IR) {
-            browser()
-        }
-        iosSimulatorArm64()
-        iosX64()
-        iosArm64()
+    }
+    jvm("desktop")
+    js(IR) {
+        browser()
+    }
+    iosSimulatorArm64()
+    iosX64()
+    iosArm64()
 
-        targets.all {
-            compilations.all {
-                compilerOptions.configure {
-                    freeCompilerArgs.add("-Xexpect-actual-classes")
-                }
+    targets.all {
+        compilations.all {
+            compilerOptions.configure {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
             }
         }
-    }
-
-    java {
-        targetCompatibility = JavaVersion.VERSION_21
-    }
+    }    
 }
+
+java {
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 android {
     compileOptions {
         targetCompatibility = JavaVersion.VERSION_21

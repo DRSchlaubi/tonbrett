@@ -43,6 +43,9 @@ out/
 
 **/.test-env
 
+# Kotlin Compiler daemon
+.kotlin/
+
 # Windows app
 wix311/
 local.properties

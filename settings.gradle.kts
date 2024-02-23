@@ -26,7 +26,7 @@ include(
     ":app:android",
     ":app:android:shared",
 //    ":app:android:wear",
-    ":app:ios"
+//    ":app:ios"
 )
 
 project(":app:android:shared").name = "androidShared"

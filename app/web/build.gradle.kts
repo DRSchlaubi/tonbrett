@@ -37,9 +37,6 @@ kotlin {
                 @OptIn(ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
-
-                // For some reason this is needed, otherwise the js compiler complains
-                implementation("io.ktor:ktor-sse:2.3.3-eap-756")
             }
         }
     }
@@ -47,7 +44,6 @@ kotlin {
 
 tasks {
     val copyIcon by creating(Copy::class) {
-        dependsOn("jsBrowserProductionExecutableDistributeResources")
         from(rootProject.file("icons/logo.ico"))
         into(layout.buildDirectory.dir("distributions"))
         rename { "favicon.ico" }

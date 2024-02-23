@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -84,7 +84,7 @@ fun SearchSuggestions(
                 if (!value.startsWith("tag:")) {
                     if (currentTags.isNotEmpty()) {
                         Box(Modifier.padding(vertical = 10.dp, horizontal = 7.dp)) {
-                            Divider(Modifier.fillMaxWidth(), color = Color.DarkGray, thickness = 2.dp)
+                            HorizontalDivider(Modifier.fillMaxWidth(), color = Color.DarkGray, thickness = 2.dp)
                         }
                     }
                     Text(
