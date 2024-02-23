@@ -266,7 +266,7 @@ jobs:
         id: tagName
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3.0.0-beta.1
-      - run: ./gradlew app:ios:podinstall :app:ios:linkPodReleaseFrameworkIosArm64
+      - run: ./gradlew app:ios:podInstall :app:ios:linkPodReleaseFrameworkIosArm64
       - name: Deploy iOS Beta to TestFlight via Fastlane
         uses: maierj/fastlane-action@v1.4.0
         with:
