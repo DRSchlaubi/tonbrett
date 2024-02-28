@@ -29,11 +29,10 @@ jobs:
 
           $version = $tagname.Replace("v", "")
 
-          $url =
-          "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett.msix"
+          $url = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett.msix"
 
           .\wingetcreate.exe update Schlaubi.Tonbrett -u $url --version $version
 
           if ($version -notmatch "-") {
-            .\wingetcreate.exe submit .\manifests\o\Schlaubi\Tonbrett\${version}\ --token $env:WINGET_GITHUB_TOKEN
+            .\wingetcreate.exe submit .\manifests\s\Schlaubi\Tonbrett\${version}\ --token $env:WINGET_GITHUB_TOKEN
           }
