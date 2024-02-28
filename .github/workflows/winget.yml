@@ -6,6 +6,7 @@ on:
     types:
       - published
       - created
+      - released
       
 jobs:
   winget:
