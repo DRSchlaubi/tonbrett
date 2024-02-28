@@ -23,7 +23,7 @@ import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.*
 import dev.schlaubi.tonbrett.app.api.ProvideContext
 import io.ktor.serialization.*
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.net.URI
 import java.awt.Window as AWTWindow
 

@@ -33,7 +33,7 @@ import io.ktor.client.fetch.*
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.coroutines.delay
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.w3c.dom.url.URLSearchParams
 import kotlin.time.Duration.Companion.seconds
 

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,7 +43,7 @@ fun AuthorizationScreen(alreadyWaiting: Boolean, onAuth: () -> Unit) {
             CircularProgressIndicator()
         } else {
             Button({ waiting = true }, contentPadding = PaddingValues(horizontal = 10.dp)) {
-                Icon(Icons.Default.OpenInNew, null)
+                Icon(Icons.AutoMirrored.Default.OpenInNew, null)
                 Text(strings.signInWithDiscord)
             }
         }

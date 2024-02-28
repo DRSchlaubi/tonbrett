@@ -28,7 +28,7 @@ import dev.schlaubi.tonbrett.common.User
 import io.ktor.client.plugins.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 typealias ErrorReporter = suspend (Exception) -> Unit
 

@@ -10,7 +10,7 @@ import io.ktor.client.request.*
 import io.ktor.utils.io.core.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 

@@ -1,3 +1,3 @@
-import org.gradle.api.artifacts.MinimalExternalModuleDependency
+import org.gradle.api.artifacts.Dependency
 
-fun MinimalExternalModuleDependency.toNotation() = "$group:$name:$version"
+fun Dependency.toNotation() = "$group:$name:$version"

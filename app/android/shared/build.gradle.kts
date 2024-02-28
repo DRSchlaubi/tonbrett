@@ -21,17 +21,6 @@ dependencies {
 android {
     namespace = "dev.schlaubi.tonbrett.app.android.shared"
     compileSdk = sdkInt
-
-    // For some reason java 9+ sources do some jlink nonsense which causes major problems for this project
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 protobuf {

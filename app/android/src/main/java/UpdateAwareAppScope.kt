@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -120,7 +121,7 @@ fun UpdateAwareAppScope(activity: Activity, content: @Composable () -> Unit) {
                             appUpdateManager.requestCompleteUpdate()
                         }
                     }) {
-                        Icon(Icons.Default.OpenInNew, null)
+                        Icon(Icons.AutoMirrored.Default.OpenInNew, null)
                         Info(stringResource(R.string.update_download_done))
                     }
 

@@ -16,7 +16,7 @@ import coil3.network.ktor.KtorNetworkFetcherFactory
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.schlaubi.tonbrett.app.api.AppContext
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import okio.Path
 
 private val LOG = KotlinLogging.logger { }
