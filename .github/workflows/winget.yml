@@ -15,12 +15,7 @@ jobs:
     steps:
       - name: Setup winget-create
         shell: pwsh
-        env:
-          WINGETCREATE_VERSION: v1.5.7.0
-        run: >-
-          iwr
-          https://github.com/microsoft/winget-create/releases/download/${env:WINGETCREATE_VERSION}/wingetcreate.exe
-          -OutFile wingetcreate.exe
+        run: choco install wingetcreate
       - name: Bump Winget manifest
         shell: pwsh
         env:
