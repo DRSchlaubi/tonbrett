@@ -81,7 +81,7 @@ jobs:
           security import INSTALLER_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
       - name: Setup Gradle
-        uses: gradle/gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true --stacktrace
         shell: bash
       - name: Package Linux Distribution
