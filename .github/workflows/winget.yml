@@ -14,7 +14,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Setup winget-create
-        shell: pwsh
         run: choco install wingetcreate
       - name: Bump Winget manifest
         shell: pwsh

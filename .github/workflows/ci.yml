@@ -14,21 +14,21 @@ jobs:
     name: Build Discord Bot
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'oracle'
           java-version: ${{ env.JAVA_VERSION }}
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3.0.0-beta.1
+        uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew assembleBot
       - name: Upload plugin artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: plugin
           path: bot/build/plugin/*.zip
       - name: Upload plugin bot
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bot
           path: bot/build/bot/*.zip
@@ -39,15 +39,13 @@ jobs:
         os: [ ubuntu-latest, macos-14, windows-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'oracle'
           java-version: ${{env.JAVA_VERSION}}
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         if: matrix.os == 'windows-latest'
-        with:
-          toolchain: 'stable'
       - name: Setup jextract
         if: matrix.os == 'windows-latest'
         shell: powershell
@@ -83,7 +81,7 @@ jobs:
           security import INSTALLER_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3.0.0-beta.1
+        uses: gradle/gradle/actions/setup-gradle@v3
       - run: ./gradlew packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true --stacktrace
         shell: bash
       - name: Package Linux Distribution
@@ -91,7 +89,7 @@ jobs:
         run: ./gradlew packageDistributable
       - name: Setup MSbuild
         if: matrix.os == 'windows-latest'
-        uses: microsoft/setup-msbuild@v1.3.1
+        uses: microsoft/setup-msbuild@v2
       - name: Build MSIX
         if: matrix.os == 'windows-latest'
         run: |
@@ -102,7 +100,7 @@ jobs:
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
         run: ./gradlew notarizeReleasePkg -Pcompose.desktop.mac.sign=true
       - name: Upload distributions
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: desktopapp-${{ matrix.os }}
           path: |
@@ -111,7 +109,7 @@ jobs:
             app/desktop/build/compose/binaries/main-release/pkg/*.pkg
             app/desktop/build/distributions/*.tar.gz
       - name: Upload MSIX workspace
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: matrix.os == 'windows-latest'
         with:
           name: msstore-workspace
@@ -120,19 +118,19 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Android App
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'oracle'
           java-version: ${{env.JAVA_VERSION}}
       - name: Decode Keystore
-        uses: timheuer/base64-to-file@v1.2
+        uses: timheuer/base64-to-file@v1
         with:
           fileName: 'android_keystore.jks'
           fileDir: 'keystore'
           encodedString: ${{ secrets.KEYSTORE }}
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3.0.0-beta.1
+        uses: gradle/actions/setup-gradle@v3
       - env:
           SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -166,7 +164,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: android-app
           path: app/android/build/outputs/apk/release/*.apk
@@ -187,7 +185,7 @@ jobs:
     needs: build_desktop_app
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         name: Download Artifacts from Windows
         with:
           name: desktopapp-windows-latest
@@ -195,7 +193,7 @@ jobs:
         run: |
           & 'C:\Program Files (x86)\Windows Kits\10\App Certification Kit\signtool.exe' sign /fd SHA256 /n "Open Source Developer, Michael Rittmeister" /t http://time.certum.pl/ /d Tonbrett Tonbrett.msix
       - name: Upload distributions
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: desktopapp-windows-signed
           path: "*.msix"
@@ -205,12 +203,12 @@ jobs:
     needs: [ build_desktop_app ]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         name: Download Artifacts from Windows
         with:
           name: msstore-workspace
       - name: Setup MSbuild
-        uses: microsoft/setup-msbuild@v1.3.1
+        uses: microsoft/setup-msbuild@v2
       - name: Configure the Microsoft Store CLI
         run: |
           Install-Module -Name StoreBroker -Force
@@ -257,18 +255,18 @@ jobs:
           xcode-version: '15.0'
       - name: Install xcodes
         run: brew install xcodesorg/made/xcodes
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'oracle'
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: olegtarasov/get-tag@v2.1.2
+      - uses: olegtarasov/get-tag@v2
         id: tagName
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3.0.0-beta.1
+        uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew :app:ios:podInstall :app:ios:linkPodReleaseFrameworkIosArm64
       - name: Deploy iOS Beta to TestFlight via Fastlane
-        uses: maierj/fastlane-action@v1.4.0
+        uses: maierj/fastlane-action@v3
         with:
           subdirectory: app/ios
           lane: closed_beta
@@ -293,27 +291,27 @@ jobs:
     needs: [ build_bot_artifacts, build_desktop_app, build_android_app, sign_windows_installer ]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         name: Download Artifacts from Ubuntu
         with:
           name: desktopapp-ubuntu-latest
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         name: Download Artifacts from MacOS
         with:
           name: desktopapp-macos-14
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         name: Download Artifacts from Windows
         with:
           name: desktopapp-windows-signed
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         name: Download Bot
         with:
           name: bot
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         name: Download Plugin
         with:
           name: plugin
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         name: Download Android App
         with:
           name: android-app
