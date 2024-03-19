@@ -1,19 +1,29 @@
 use std::ffi::{c_char, CStr};
 
-use windows::Services::Store::StoreContext;
-use windows::Storage::ApplicationData;
 use windows::{
-    core::h,
-    core::Result,
-    core::{Error, HSTRING},
+    core::{
+        Error,
+        HSTRING,
+        h,
+        Result
+    },
     Foundation::Uri,
     Security::Credentials::{PasswordCredential, PasswordVault},
     System::Launcher,
     Win32::Foundation::E_FAIL,
+    Services::Store::StoreContext,
+    Storage::ApplicationData
 };
 
 const RESOURCE: &HSTRING = h!("dev.schlaubi.tonbrett/api_token");
 const USERNAME: &HSTRING = h!("_");
+
+#[repr(C)]
+pub struct StringResult {
+    is_error: bool,
+    length: usize,
+    string: HSTRING,
+}
 
 #[tokio::main]
 #[no_mangle]
@@ -35,13 +45,6 @@ pub async unsafe extern "C" fn launch_uri(uri: *const c_char) {
     _launch_uri(uri_str).await.unwrap()
 }
 
-#[repr(C)]
-pub struct StringResult {
-    is_error: bool,
-    length: usize,
-    string: HSTRING,
-}
-
 #[no_mangle]
 pub unsafe extern "C" fn store_token(token: *const c_char) {
     let token_str = CStr::from_ptr(token).to_str().unwrap();
@@ -50,7 +53,7 @@ pub unsafe extern "C" fn store_token(token: *const c_char) {
 
 #[no_mangle]
 pub extern "C" fn get_token() -> StringResult {
-    StringResult::from(_get_token())
+    _get_token().into()
 }
 
 #[no_mangle]
@@ -63,7 +66,7 @@ pub unsafe extern "C" fn copy_string_from_get_string_result_into_buffer(
 
 #[no_mangle]
 pub unsafe extern "C" fn get_temp_folder() -> StringResult {
-    StringResult::from(_get_temp_folder())
+    _get_temp_folder().into()
 }
 
 async fn _launch_uri(uri: &str) -> Result<()> {
@@ -85,9 +88,8 @@ fn _store_token(token: &str) -> Result<()> {
 fn _get_token() -> Result<HSTRING> {
     let vault = PasswordVault::new()?;
     let credential = vault.Retrieve(RESOURCE, USERNAME)?;
-    let password = credential.Password()?;
 
-    Ok(password)
+    return credential.Password()
 }
 
 fn _get_temp_folder() -> Result<HSTRING> {
@@ -96,7 +98,8 @@ fn _get_temp_folder() -> Result<HSTRING> {
 
 async fn _request_msstore_auto_update() -> Result<()> {
     let context = StoreContext::GetDefault()?;
-    let updates = context.GetAppAndOptionalStorePackageUpdatesAsync()?.await?;
+    let updates =
+        context.GetAppAndOptionalStorePackageUpdatesAsync()?.await?;
 
     if updates.Size()? > 0 {
         context
@@ -112,7 +115,7 @@ impl From<Result<HSTRING>> for StringResult {
     fn from(value: Result<HSTRING>) -> Self {
         let (string, is_error) = match value {
             Ok(password) => (password, false),
-            Err(error) => (error.message(), true),
+            Err(error) => (error.message().into(), true),
         };
 
         StringResult {

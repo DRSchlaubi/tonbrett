@@ -40,7 +40,7 @@ tasks {
         val libraryPath = if (System.getenv("GITHUB_REF") != null) {
             "uwp_helper"
         } else {
-            file("target/release/uwp_helper.dll").absolutePath
+            file("target/release/uwp_helper").absolutePath
         }
 
         commandLine(
@@ -49,7 +49,6 @@ tasks {
             "--target-package", "dev.schlaubi.tonbrett.app.desktop.uwp_helper",
             "--library", libraryPath,
             "--output", jextractOutput.get().asFile.absolutePath,
-            "--source",
             "--include-function", "launch_uri",
             "--include-function", "get_token",
             "--include-function", "store_token",

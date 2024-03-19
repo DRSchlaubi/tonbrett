@@ -8,11 +8,11 @@ build = "build.rs"
 crate-type = ["cdylib"]
 
 [dependencies.windows]
-version = "0.51.1"
+version = "0.54.0"
 features = ["System", "Foundation", "Win32_Foundation", "Security_Credentials", "Services_Store", "Foundation_Collections", "Storage"]
 
 [dependencies.tokio]
-version = "1.32.0"
+version = "1.36.0"
 features = ["macros", "rt-multi-thread"]
 
 [build-dependencies.cbindgen]
@@ -20,4 +20,4 @@ version = "0.26.0"
 default-features = false
 
 [dependencies]
-log = "0.4.20"
+log = "0.4.21"

@@ -46,12 +46,12 @@ actual fun start(args: Array<String>) {
 }
 
 actual fun launchUri(uri: URI): Unit = Arena.ofConfined().use { arena ->
-    val url = arena.allocateUtf8String(uri.toString())
+    val url = arena.allocateFrom(uri.toString())
     launch_uri(url)
 }
 
 actual fun setToken(token: String) = Arena.ofConfined().use { arena ->
-    val tokenStr = arena.allocateUtf8String(token)
+    val tokenStr = arena.allocateFrom(token)
     store_token(tokenStr)
 }
 
@@ -61,12 +61,11 @@ private fun getTempFolder(): String = invokeStringResultFunction(::get_temp_fold
 
 private fun invokeStringResultFunction(
     function: (SegmentAllocator) -> MemorySegment
-) =
-    Arena.ofConfined().use { arena ->
+) = Arena.ofConfined().use { arena ->
         val result = function(arena)
-        val isError = StringResult.`is_error$get`(result)
-        val length = StringResult.`length$get`(result).coerceAtLeast(0)
-        val buffer = arena.allocateArray(uint16_t, length)
+        val isError = StringResult.is_error(result)
+        val length = StringResult.length(result).coerceAtLeast(0)
+        val buffer = arena.allocate(uint16_t, length)
         copy_string_from_get_string_result_into_buffer(result, buffer)
         val shortArray = buffer.toArray(uint16_t)
         val charArray = CharArray(shortArray.size)

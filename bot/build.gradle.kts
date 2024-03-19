@@ -8,6 +8,10 @@ plugins {
     alias(libs.plugins.mikbot)
 }
 
+repositories {
+    maven("https://maven.topi.wtf/releases")
+}
+
 dependencies {
     implementation(projects.common)
     ktorDependency(libs.ktor.server.auth)
