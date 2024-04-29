@@ -75,7 +75,7 @@ android {
 
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_20
+            jvmTarget = JvmTarget.JVM_22
         }
     }
 }

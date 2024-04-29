@@ -14,10 +14,12 @@ kotlin {
         browser()
         binaries.executable()
         compilations.all {
-            compilerOptions.configure {
-                freeCompilerArgs.addAll(
-                    "-Xir-per-module", "-Xir-property-lazy-initialization"
-                )
+            compileTaskProvider.configure {
+                compilerOptions {
+                    freeCompilerArgs.addAll(
+                        "-Xir-per-module", "-Xir-property-lazy-initialization"
+                    )
+                }
             }
         }
     }

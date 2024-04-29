@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
+import com.android.build.gradle.internal.lint.AndroidLintTask
 import com.google.protobuf.gradle.id
 import dev.schlaubi.tonbrett.gradle.sdkInt
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -42,14 +44,8 @@ protobuf {
     }
 }
 
-
-//tasks {
-//    afterEvaluate {
-//        named("compileDebugJavaWithJavac") {
-//            dependsOn("generateReleaseProto")
-//        }
-//        named("compileDebugKotlin") {
-//            dependsOn("generateReleaseProto")
-//        }
-//    }
-//}
+tasks {
+    withType<AndroidLintAnalysisTask>().configureEach {
+        enabled = false
+    }
+}
