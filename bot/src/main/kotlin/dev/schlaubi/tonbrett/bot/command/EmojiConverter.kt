@@ -1,5 +1,6 @@
 package dev.schlaubi.tonbrett.bot.command
 
+import com.kotlindiscord.kord.extensions.annotations.UnexpectedFunctionBehaviour
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.Converter
@@ -16,7 +17,7 @@ import dev.kord.core.entity.StandardEmoji
 import dev.kord.x.emoji.Emojis
 import dev.schlaubi.tonbrett.common.Sound
 
-@OptIn(UnsafeAPI::class, ConverterToOptional::class)
+@OptIn(UnsafeAPI::class, ConverterToOptional::class, UnexpectedFunctionBehaviour::class)
 fun Arguments.emoji(name: String, description: String): OptionalCoalescingConverter<Any> {
     fun ConverterBuilder<*>.applyName() {
         this.name = name

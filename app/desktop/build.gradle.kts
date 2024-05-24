@@ -2,6 +2,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.org.jline.utils.OSUtils
 
 plugins {
+    alias(libs.plugins.kotlin.compose)
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("org.jetbrains.compose")
@@ -91,6 +92,8 @@ compose.desktop {
         buildTypes {
             release {
                 proguard {
+                    // https://github.com/Guardsquare/proguard/issues/387
+                    isEnabled = false
                     version = "7.4.1"
                     configurationFiles.from(files("rules.pro"))
                 }

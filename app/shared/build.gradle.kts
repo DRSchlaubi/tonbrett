@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     `multiplatform-module`
+    alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.compose")
     alias(libs.plugins.buildconfig)
     alias(libs.plugins.ksp)

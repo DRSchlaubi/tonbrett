@@ -1,6 +1,5 @@
-import org.jetbrains.compose.ExperimentalComposeLibrary
-
 plugins {
+    alias(libs.plugins.kotlin.compose)
     kotlin("multiplatform")
     id("org.jetbrains.compose")
 }
@@ -36,7 +35,6 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                @OptIn(ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
             }
@@ -54,8 +52,4 @@ tasks {
     named("jsMainClasses") {
         dependsOn(copyIcon)
     }
-}
-
-compose.experimental {
-    web.application {}
 }

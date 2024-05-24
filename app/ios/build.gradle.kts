@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
+    alias(libs.plugins.kotlin.compose)
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("org.jetbrains.compose")

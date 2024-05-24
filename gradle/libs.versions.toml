@@ -1,21 +1,20 @@
 [versions]
-kotlin = "2.0.0-RC1"
-ktor = "2.3.10"
+kotlin = "2.0.0"
+ktor = "2.3.11"
 kmongo = "4.11.0"
-kord = "0.13.1"
-mikbot = "3.30.1"
-ksp = "2.0.0-RC1-1.0.20"
+kord = "0.14.0"
+mikbot = "3.33.0"
+ksp = "2.0.0-1.0.21"
 kordex = "1.8.0-SNAPSHOT"
-android = "8.3.2"
-compose = "1.6.10-dev1608"
+android = "8.4.0"
+compose = "1.6.10"
 compose-wear = "1.3.1"
 lyricist = "1.7.0"
 google-play = "2.1.0"
-coroutines = "1.8.0"
+coroutines = "1.8.1"
 play-services-wearable = "18.1.0"
 horologist = "0.6.9"
 protobuf = "4.26.1"
-compose-compiler = "1.5.13-dev-k2.0.0-RC1-50f08dfa4b4"
 coil = "3.0.0-alpha06"
 
 [libraries]
@@ -52,20 +51,20 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
 mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.5.18-SNAPSHOT" }
 
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "6.0.4" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "6.0.9" }
 
 lyricist = { group = "cafe.adriel.lyricist", name = "lyricist", version.ref = "lyricist" }
 lyricist-processor = { group = "cafe.adriel.lyricist", name = "lyricist-processor", version.ref = "lyricist" }
 
-logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.3" }
+logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.6" }
 
 kvault = { group = "com.liftric", name = "kvault", version = "1.12.0" }
 
 androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.0" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
-androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.13.0" }
+androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.13.1" }
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.8.0" }
-mdc-android = { group = "com.google.android.material", name = "material", version = "1.11.0" }
+mdc-android = { group = "com.google.android.material", name = "material", version = "1.12.0" }
 google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
 google-play-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "google-play" }
 
@@ -96,6 +95,7 @@ android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", ve
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 mikbot = { id = "dev.schlaubi.mikbot.gradle-plugin", version.ref = "mikbot" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-base = { id = "com.android.base", version.ref = "android" }
