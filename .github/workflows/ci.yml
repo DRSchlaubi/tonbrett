@@ -46,6 +46,8 @@ jobs:
           java-version: ${{env.JAVA_VERSION}}
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         if: matrix.os == 'windows-latest'
+        with:
+          cache-workspaces: app/desktop/uwp_helper
       - name: Setup jextract
         if: matrix.os == 'windows-latest'
         shell: powershell
