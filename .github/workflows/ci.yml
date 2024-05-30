@@ -257,6 +257,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
+          working-directory: 'app/ios'
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
