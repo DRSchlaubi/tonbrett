@@ -261,12 +261,14 @@ jobs:
           distribution: 'oracle'
           java-version: ${{ env.JAVA_VERSION }}
       - uses: olegtarasov/get-tag@v2
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         id: tagName
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew :app:ios:podInstall :app:ios:linkPodReleaseFrameworkIosArm64
       - name: Deploy iOS Beta to TestFlight via Fastlane
-        uses: maierj/fastlane-action@v3
+        uses: maierj/fastlane-action@v3.1.0
         with:
           subdirectory: app/ios
           lane: closed_beta
