@@ -3,7 +3,7 @@ WORKDIR /usr/app
 COPY . .
 RUN ./gradlew --no-daemon installBotArchive
 
-FROM openjdk:22-jre-alpine
+FROM eclipse-temurin:22-jre-alpine
 
 WORKDIR /usr/app
 COPY --from=builder /usr/app/bot/build/installBot .
