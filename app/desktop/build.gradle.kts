@@ -27,7 +27,7 @@ kotlin {
         }
 
         jvmMain {
-            if (OSUtils.IS_WINDOWS) {
+            if (OSUtils.IS_WINDOWS && false) {
                 dependsOn(windowsMain)
             } else {
                 dependsOn(nonWindowsMain)
@@ -92,9 +92,7 @@ compose.desktop {
         buildTypes {
             release {
                 proguard {
-                    // https://github.com/Guardsquare/proguard/issues/387
-                    isEnabled = false
-                    version = "7.4.1"
+                    version = "7.5.0"
                     configurationFiles.from(files("rules.pro"))
                 }
             }
