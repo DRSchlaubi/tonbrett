@@ -1,4 +1,4 @@
-FROM eclipse-temurin:22-jdk-alpine as builder
+FROM eclipse-temurin:22-jdk as builder
 WORKDIR /usr/app
 COPY . .
 RUN ./gradlew --no-daemon installBotArchive
