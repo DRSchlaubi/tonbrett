@@ -1,6 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
-import org.jetbrains.kotlin.gradle.dsl.jvm.JvmTargetValidationMode
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     alias(libs.plugins.kotlin.serialization) apply false
@@ -9,7 +7,7 @@ plugins {
 
 allprojects {
     group = "dev.schlaubi.tonbrett"
-    version = "1.20.0"
+    version = "1.20.1"
 
     repositories {
         mavenCentral()
@@ -22,13 +20,6 @@ subprojects {
     afterEvaluate {
         extensions.findByType<KotlinTopLevelExtension>()?.apply {
             jvmToolchain(22)
-        }
-
-        // TODO: Remove after https://youtrack.jetbrains.com/issue/KT-66703/
-        tasks {
-            withType<KotlinJvmCompile> {
-                jvmTargetValidationMode = JvmTargetValidationMode.IGNORE
-            }
         }
     }
 }

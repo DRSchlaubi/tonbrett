@@ -1,48 +1,40 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.org.jline.utils.OSUtils
 
 plugins {
     alias(libs.plugins.kotlin.compose)
-    kotlin("multiplatform")
+    kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jetbrains.compose")
 }
 
-kotlin {
-    jvm()
+val windowsBuild = HostManager.hostIsMingw && rootProject.property("dev.schlaubi.tonbrett.no_windows") != "true"
 
-    sourceSets {
-        val windowsMain by creating {
-            dependsOn(commonMain.get())
-            dependencies {
-                implementation(projects.app.desktop.uwpHelper)
-            }
-        }
-        val nonWindowsMain by creating {
-            dependsOn(commonMain.get())
-            dependencies {
-                implementation(libs.ktor.server.netty)
-                implementation(libs.ktor.server.cors)
-            }
-        }
+dependencies {
+    implementation(projects.app.shared)
+    implementation(project.dependencies.compose.desktop.currentOs)
+    implementation(project.dependencies.compose.materialIconsExtended)
+    implementation(project.dependencies.compose.material3)
+    implementation(libs.logback)
 
-        jvmMain {
-            if (OSUtils.IS_WINDOWS && false) {
-                dependsOn(windowsMain)
-            } else {
-                dependsOn(nonWindowsMain)
-            }
-            dependencies {
-                implementation(projects.app.shared)
-                implementation(project.dependencies.compose.desktop.currentOs)
-                implementation(project.dependencies.compose.materialIconsExtended)
-                implementation(project.dependencies.compose.material3)
-                implementation(libs.logback)
-            }
-        }
+    if(windowsBuild) {
+        implementation(projects.app.desktop.uwpHelper)
+    } else {
+        implementation(libs.ktor.server.netty)
+        implementation(libs.ktor.server.cors)
     }
 }
 
+sourceSets {
+    main {
+        if(windowsBuild) {
+            kotlin.srcDir("src/windowsMain/kotlin")
+        } else {
+            kotlin.srcDir("src/nonWindowsMain/kotlin")
+        }
+    }
+}
 
 compose.desktop {
     application {

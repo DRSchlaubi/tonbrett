@@ -7,22 +7,30 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.div
 
-actual val loginType = Route.Auth.Type.APP
+val currentPlatform: IPlatform = UnixPlatform()
 
-actual fun start(args: Array<String>) {
-    val needsAuth = runCatching { getToken() }.isFailure
-    startApplication(needsAuth)
-}
+private class UnixPlatform : IPlatform {
 
-actual fun prepareAuthentication(onAuth: () -> Unit) = startAuthorizationServer(onAuth)
+    override val loginType = Route.Auth.Type.APP
 
-actual fun launchUri(uri: URI) {
-    val desktop = Desktop.getDesktop()
-    if (desktop.isSupported(Desktop.Action.BROWSE)) {
-        desktop.browse(uri)
-    } else {
-        Runtime.getRuntime().exec(arrayOf("xdg-open", uri.toString()))
+    override fun start(args: Array<String>) {
+        val needsAuth = runCatching { getToken() }.isFailure
+        startApplication(needsAuth)
     }
+
+    override fun prepareAuthentication(onAuth: () -> Unit) = startAuthorizationServer(onAuth)
+
+    override fun launchUri(uri: URI) {
+        val desktop = Desktop.getDesktop()
+        if (desktop.isSupported(Desktop.Action.BROWSE)) {
+            desktop.browse(uri)
+        } else {
+            Runtime.getRuntime().exec(arrayOf("xdg-open", uri.toString()))
+        }
+    }
+
+    override fun getToken() = getConfig().sessionToken ?: error("Not signed in")
+    override fun setToken(token: String) = saveConfig(Config((token)))
 }
 
 fun getAppDataRoaming(): Path {
@@ -31,10 +39,8 @@ fun getAppDataRoaming(): Path {
         os.contains("windows", ignoreCase = true) -> Path(System.getenv("APPDATA"))
         os.contains("mac", ignoreCase = true) ->
             Path(System.getenv("HOME")) / "Library" / "Application Support"
+
         else -> Path(System.getProperty("user.home"))
     }
     return basePath / "Tonbrett"
 }
-
-actual fun getToken() = getConfig().sessionToken ?: error("Not signed in")
-actual fun setToken(token: String) = saveConfig(Config((token)))

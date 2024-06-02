@@ -4,12 +4,12 @@ import dev.schlaubi.tonbrett.app.desktop.uwp_helper.StringResult
 import dev.schlaubi.tonbrett.app.desktop.uwp_helper.UwpHelper.*
 import dev.schlaubi.tonbrett.app.uwpTempFolder
 import dev.schlaubi.tonbrett.common.Route
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import io.github.oshai.kotlinlogging.KotlinLogging
 import java.lang.foreign.Arena
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SegmentAllocator
@@ -18,50 +18,53 @@ import kotlin.system.exitProcess
 
 private val LOG = KotlinLogging.logger { }
 
-actual val loginType = Route.Auth.Type.PROTOCOL
+val currentPlatform: IPlatform = WindowsPlatform()
 
-actual fun prepareAuthentication(onAuth: () -> Unit): Unit = exitProcess(0)
+private class WindowsPlatform : IPlatform {
+    override val loginType = Route.Auth.Type.PROTOCOL
 
-@OptIn(DelicateCoroutinesApi::class)
-actual fun start(args: Array<String>) {
-    val tempFolder = getTempFolder()
-    System.setProperty(uwpTempFolder, tempFolder)
+    override fun prepareAuthentication(onAuth: () -> Unit): Unit = exitProcess(0)
 
-    val argsString = args.joinToString(" ")
-    if (argsString.startsWith("tonbrett://login")) {
-        try {
-            LOG.info { "Launched App with $argsString saving token now" }
-            val token = Url(argsString).parameters["token"]!!
-            setToken(token)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Thread.sleep(50000)
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun start(args: Array<String>) {
+        val tempFolder = getTempFolder()
+        System.setProperty(uwpTempFolder, tempFolder)
+
+        val argsString = args.joinToString(" ")
+        if (argsString.startsWith("tonbrett://login")) {
+            try {
+                LOG.info { "Launched App with $argsString saving token now" }
+                val token = Url(argsString).parameters["token"]!!
+                setToken(token)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Thread.sleep(50000)
+            }
+            startApplication()
+        } else {
+            val needsAuth = runCatching { getToken() }.isFailure
+            startApplication(needsAuth)
         }
         GlobalScope.launch(Dispatchers.IO) { request_msstore_auto_update() }
-        startApplication()
-    } else {
-        val needsAuth = runCatching { getToken() }.isFailure
-        startApplication(needsAuth)
     }
-}
 
-actual fun launchUri(uri: URI): Unit = Arena.ofConfined().use { arena ->
-    val url = arena.allocateFrom(uri.toString())
-    launch_uri(url)
-}
+    override fun launchUri(uri: URI): Unit = Arena.ofConfined().use { arena ->
+        val url = arena.allocateFrom(uri.toString())
+        launch_uri(url)
+    }
 
-actual fun setToken(token: String) = Arena.ofConfined().use { arena ->
-    val tokenStr = arena.allocateFrom(token)
-    store_token(tokenStr)
-}
+    override fun setToken(token: String) = Arena.ofConfined().use { arena ->
+        val tokenStr = arena.allocateFrom(token)
+        store_token(tokenStr)
+    }
 
-actual fun getToken(): String = invokeStringResultFunction(::get_token)
+    override fun getToken(): String = invokeStringResultFunction(::get_token)
 
-private fun getTempFolder(): String = invokeStringResultFunction(::get_temp_folder)
+    private fun getTempFolder(): String = invokeStringResultFunction(::get_temp_folder)
 
-private fun invokeStringResultFunction(
-    function: (SegmentAllocator) -> MemorySegment
-) = Arena.ofConfined().use { arena ->
+    private fun invokeStringResultFunction(
+        function: (SegmentAllocator) -> MemorySegment
+    ) = Arena.ofConfined().use { arena ->
         val result = function(arena)
         val isError = StringResult.is_error(result)
         val length = StringResult.length(result).coerceAtLeast(0)
@@ -75,3 +78,4 @@ private fun invokeStringResultFunction(
         val string = String(charArray)
         if (isError) throw Exception(string) else string
     }
+}

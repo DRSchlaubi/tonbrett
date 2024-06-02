@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -19,6 +18,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.api.getUrl
+import dev.schlaubi.tonbrett.app.desktop.Platform.launchUri
+import dev.schlaubi.tonbrett.app.desktop.Platform.loginType
+import dev.schlaubi.tonbrett.app.desktop.Platform.prepareAuthentication
 import dev.schlaubi.tonbrett.client.href
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.http.*

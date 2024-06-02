@@ -119,12 +119,12 @@ android {
 
 tasks {
     afterEvaluate {
-        named("lintAnalyzeDebug") {
-            dependsOn(
-                "generateAndroidUnitTestDebugNonAndroidBuildConfig",
-                "generateAndroidUnitTestNonAndroidBuildConfig"
-            )
-        }
+//        named("lintAnalyzeDebug") {
+//            dependsOn(
+//                "generateAndroidUnitTestDebugNonAndroidBuildConfig",
+//                "generateAndroidUnitTestNonAndroidBuildConfig"
+//            )
+//        }
         val compilationTasks = kotlin.targets.flatMap {
             buildList {
                 if (it.name != "android") {

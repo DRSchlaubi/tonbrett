@@ -1,5 +1,4 @@
 import dev.schlaubi.tonbrett.gradle.sdkInt
-import org.jetbrains.kotlin.config.LanguageVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -68,7 +67,7 @@ android {
     }
 
     compileOptions {
-        targetCompatibility = JavaVersion.VERSION_20
+        targetCompatibility = JavaVersion.VERSION_22
     }
 
     kotlin {

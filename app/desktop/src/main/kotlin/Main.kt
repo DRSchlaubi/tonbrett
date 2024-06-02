@@ -20,10 +20,15 @@ import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import androidx.compose.ui.window.*
 import cafe.adriel.lyricist.LocalStrings
-import dev.schlaubi.tonbrett.app.*
+import dev.schlaubi.tonbrett.app.ColorScheme
+import dev.schlaubi.tonbrett.app.ProvideLocalWindow
+import dev.schlaubi.tonbrett.app.TonbrettApp
 import dev.schlaubi.tonbrett.app.api.ProvideContext
-import io.ktor.serialization.*
+import dev.schlaubi.tonbrett.app.desktop.Platform.launchUri
+import dev.schlaubi.tonbrett.app.desktop.Platform.start
+import dev.schlaubi.tonbrett.app.title
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktor.serialization.*
 import java.net.URI
 import java.awt.Window as AWTWindow
 

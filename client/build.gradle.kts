@@ -1,4 +1,5 @@
 import dev.schlaubi.tonbrett.gradle.androidSdk
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     `multiplatform-module`
@@ -51,6 +52,10 @@ kotlin {
                 implementation(libs.ktor.client.winhttp)
             }
         }
+    }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.add("-Xdont-warn-on-error-suppression")
     }
 }
 
