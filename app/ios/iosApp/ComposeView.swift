@@ -1,13 +1,6 @@
-//
-//  ComposeView.swift
-//  iosApp
-//
-//  Created by Michael Rittmeister on 21.05.23.
-//
-
 import UIKit
 import SwiftUI
-import shared
+import TonbrettShared
 import AuthenticationServices
 import Foundation
 

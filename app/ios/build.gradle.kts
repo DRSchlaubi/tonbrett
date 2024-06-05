@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
 plugins {
     alias(libs.plugins.kotlin.compose)
     kotlin("multiplatform")
@@ -7,7 +5,6 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     applyDefaultHierarchyTemplate()
     iosX64()
@@ -21,7 +18,7 @@ kotlin {
         ios.deploymentTarget = "15.0"
         podfile = project.file("Podfile")
         framework {
-            baseName = "shared"
+            baseName = "TonbrettShared"
             isStatic = true
         }
     }

@@ -1,3 +1,5 @@
+package dev.schlaubi.tonbrett.app.ios
+
 import androidx.compose.ui.window.ComposeUIViewController
 import dev.schlaubi.tonbrett.app.MobileTonbrettApp
 import dev.schlaubi.tonbrett.app.api.ProvideContext

@@ -1,5 +1,4 @@
 import SwiftUI
-import shared
 import FirebaseCore
 
 class AppDelegate: NSObject, UIApplicationDelegate {
