@@ -11,6 +11,9 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+// TODO: https://github.com/google/ksp/issues/1823
+project.setProperty("ksp.useKSP2", false)
+
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     applyDefaultHierarchyTemplate {
