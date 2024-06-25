@@ -194,6 +194,7 @@ jobs:
           project-slug: tonbrett
           signing-policy-slug: test-signing
           artifact-configuration-slug: tonbrett
+          github-artifact-id: desktopapp-windows-latest
 
   release_to_msstore:
     name: Publish to MSStore
