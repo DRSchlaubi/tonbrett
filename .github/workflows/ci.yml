@@ -183,7 +183,7 @@ jobs:
           track: alpha
   sign_windows_installer:
     name: Sign windows installer
-    runs-on: windows-signing
+    runs-on: windows-latest
     needs: build_desktop_app
     #if: startsWith(github.ref, 'refs/tags/')
     steps:
