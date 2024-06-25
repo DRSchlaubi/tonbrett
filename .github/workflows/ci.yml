@@ -185,20 +185,16 @@ jobs:
     name: Sign windows installer
     runs-on: windows-signing
     needs: build_desktop_app
-    if: startsWith(github.ref, 'refs/tags/')
+    #if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@v4
-        name: Download Artifacts from Windows
+      - uses: SignPath/github-action-submit-signing-request@v0.4
         with:
-          name: desktopapp-windows-latest
-      - name: Code Sign 2021
-        run: |
-          & 'C:\Program Files (x86)\Windows Kits\10\App Certification Kit\signtool.exe' sign /fd SHA256 /n "Open Source Developer, Michael Rittmeister" /t http://time.certum.pl/ /d Tonbrett Tonbrett.msix
-      - name: Upload distributions
-        uses: actions/upload-artifact@v4
-        with:
-          name: desktopapp-windows-signed
-          path: "*.msix"
+          api-token: ${{ secrets.SIGNPATH_KEY }}
+          organization-id: e6101c42-2f2b-468e-9bf4-225c01ba183f
+          project-slug: tonbrett
+          signing-policy-slug: test-signing
+          artifact-configuration-slug: tonbrett
+
   release_to_msstore:
     name: Publish to MSStore
     runs-on: windows-latest
