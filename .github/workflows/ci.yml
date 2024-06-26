@@ -38,6 +38,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest, macos-14, windows-latest ]
     runs-on: ${{ matrix.os }}
+    outputs:
+      "artifact-id-${{matrix.os}}": ${{ steps.upload-artifact.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -103,6 +105,7 @@ jobs:
         run: ./gradlew notarizeReleasePkg -Pcompose.desktop.mac.sign=true
       - name: Upload distributions
         uses: actions/upload-artifact@v4
+        id: upload-artifact
         with:
           name: desktopapp-${{ matrix.os }}
           path: |
@@ -306,6 +309,8 @@ jobs:
     runs-on: windows-latest # for some weird reason this job does not get picked on ubuntu
     needs: [ build_bot_artifacts, build_desktop_app, build_android_app, sign_windows_installer ]
     if: startsWith(github.ref, 'refs/tags/')
+    outputs:
+      release_id: ${{ steps.release.outputs.id }}
     steps:
       - uses: actions/download-artifact@v4
         name: Download Artifacts from Ubuntu
@@ -315,10 +320,6 @@ jobs:
         name: Download Artifacts from MacOS
         with:
           name: desktopapp-macos-14
-      - uses: actions/download-artifact@v4
-        name: Download Artifacts from Windows
-        with:
-          name: desktopapp-windows-signed
       - uses: actions/download-artifact@v4
         name: Download Bot
         with:
@@ -333,11 +334,41 @@ jobs:
           name: android-app
       - name: Release
         uses: softprops/action-gh-release@v2
+        id: release
         with:
           files: |
             app/desktop/build/compose/binaries/main-release/deb/*.deb
             app/desktop/build/compose/binaries/main-release/pkg/*.pkg
             app/desktop/build/distributions/*.tar.gz
-            *.msix
             *.zip
             *-signed.apk
+  sign_windows_binary:
+    runs-on: windows-latest
+    needs: [create_release, build_desktop_app]
+    steps:
+      - uses: actions/download-artifact@v4
+        name: Download Artifacts from Windows
+        with:
+          name: desktopapp-windows-latest
+          path: artifact
+      - name: Upload Artifact
+        id: upload-unsigned-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-unsigned
+          path: artifact/*.msix 
+      - uses: SignPath/github-action-submit-signing-request@v0.4
+        with:
+          api-token: ${{ secrets.SIGNPATH_KEY }}
+          organization-id: e6101c42-2f2b-468e-9bf4-225c01ba183f
+          project-slug: tonbrett
+          signing-policy-slug: test-signing
+          artifact-configuration-slug: tonbrett
+          github-artifact-id: ${{ needs.build_desktop_app.outputs.artifact-id-windows-latest }}
+          wait-for-completion-timeout-in-seconds: 36288000 # SignPath needs to manually validate this, so let's give this a week
+          output-artifact-directory: signed
+      - name: Edit Release
+        uses: irongut/EditRelease@v1.2.0
+        with:
+          id: ${{ needs.create_release.outputs.release_id }}
+          files: signed/Tonbrett.msix
