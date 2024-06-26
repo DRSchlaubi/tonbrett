@@ -105,6 +105,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: desktopapp-${{ matrix.os }}
+          id: upload-unsigned-artifact-${{ matrix.os }}
           path: |
             *.msix
             app/desktop/build/compose/binaries/main-release/deb/*.deb
@@ -194,7 +195,7 @@ jobs:
           project-slug: tonbrett
           signing-policy-slug: test-signing
           artifact-configuration-slug: tonbrett
-          github-artifact-id: desktopapp-windows-latest
+          github-artifact-id: ${{ steps.upload-unsigned-artifact-windows-latest.outputs.artifact-id }}
 
   release_to_msstore:
     name: Publish to MSStore
