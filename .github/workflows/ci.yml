@@ -38,8 +38,6 @@ jobs:
       matrix:
         os: [ ubuntu-latest, macos-14, windows-latest ]
     runs-on: ${{ matrix.os }}
-    outputs:
-      "artifact-id-${{matrix.os}}": ${{ steps.upload-artifact.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -356,7 +354,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-unsigned
-          path: artifact/*.msix 
+          path: artifact/*.msix
       - uses: SignPath/github-action-submit-signing-request@v0.4
         with:
           api-token: ${{ secrets.SIGNPATH_KEY }}
@@ -364,7 +362,7 @@ jobs:
           project-slug: tonbrett
           signing-policy-slug: test-signing
           artifact-configuration-slug: tonbrett
-          github-artifact-id: ${{ needs.build_desktop_app.outputs.artifact-id-windows-latest }}
+          github-artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact_id }}
           wait-for-completion-timeout-in-seconds: 36288000 # SignPath needs to manually validate this, so let's give this a week
           output-artifact-directory: signed
       - name: Edit Release
