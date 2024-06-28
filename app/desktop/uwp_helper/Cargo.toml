@@ -8,7 +8,7 @@ build = "build.rs"
 crate-type = ["cdylib"]
 
 [dependencies.windows]
-version = "0.56.0"
+version = "0.57.0"
 features = ["System", "Foundation", "Win32_Foundation", "Security_Credentials", "Services_Store", "Foundation_Collections", "Storage"]
 
 [dependencies.tokio]
