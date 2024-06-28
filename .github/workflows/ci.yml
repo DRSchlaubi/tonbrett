@@ -40,6 +40,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: 'Set up latest JDK code tool jextract'
+        uses: oracle-actions/setup-java@v1
+        if: matrix.os == 'windows-latest'
+        with:
+          website: jdk.java.net
+          release: jextract      
       - uses: actions/setup-java@v4
         with:
           distribution: 'oracle'
@@ -48,12 +54,6 @@ jobs:
         if: matrix.os == 'windows-latest'
         with:
           cache-workspaces: app/desktop/uwp_helper
-      - name: 'Set up latest JDK code tool jextract'
-        uses: oracle-actions/setup-java@v1
-        if: matrix.os == 'windows-latest'
-        with:
-          website: jdk.java.net
-          release: jextract
       # https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development#add-a-step-to-your-workflow
       - name: Setup MacOS signing
         if: matrix.os == 'macos-14'
