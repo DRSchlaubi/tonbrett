@@ -1,9 +1,7 @@
 package dev.schlaubi.tonbrett.app
 
 import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import coil3.ComponentRegistry
 import coil3.ImageLoader
@@ -47,9 +45,10 @@ private fun OptionalWebImageInternal(url: String?, contentDescription: String?, 
             model = ImageRequest.Builder(LocalPlatformContext.current).data(url).build(),
             imageLoader = LocalImageLoader.current
         )
-        val state = painter.state
-        if (state is AsyncImagePainter.State.Error) {
-            LOG.warn(state.result.throwable) { "Could not load image $url" }
+        val state by painter.state.collectAsState()
+        val currentState = state
+        if (currentState is AsyncImagePainter.State.Error) {
+            LOG.warn(currentState.result.throwable) { "Could not load image $url" }
         } else if (!isWindowMinimized()) {
             Image(painter, contentDescription, modifier)
         }
