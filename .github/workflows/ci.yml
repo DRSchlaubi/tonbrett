@@ -279,7 +279,7 @@ jobs:
   create_release:
     name: Create Release
     runs-on: windows-latest # for some weird reason this job does not get picked on ubuntu
-    needs: [ build_bot_artifacts, build_desktop_app, build_android_app, sign_windows_installer ]
+    needs: [ build_bot_artifacts, build_desktop_app, build_android_app ]
     if: startsWith(github.ref, 'refs/tags/')
     outputs:
       release_id: ${{ steps.release.outputs.id }}
