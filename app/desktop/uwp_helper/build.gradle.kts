@@ -27,14 +27,10 @@ tasks {
         outputs.dir(jextractOutput)
 
         // I cannot figure out how to change the path on GitHub Actions
-        val command = if (System.getenv("GITHUB_RUN_NUMBER") != null) {
-            rootProject.file("jextract-22/bin/jextract.bat").absolutePath
+        val command = if (OSUtils.IS_WINDOWS) {
+            "jextract.bat"
         } else {
-            if (OSUtils.IS_WINDOWS) {
-                "jextract.bat"
-            } else {
-                "jextract"
-            }
+            "jextract"
         }
 
         val libraryPath = if (System.getenv("GITHUB_REF") != null) {

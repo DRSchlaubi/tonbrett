@@ -48,13 +48,13 @@ jobs:
         if: matrix.os == 'windows-latest'
         with:
           cache-workspaces: app/desktop/uwp_helper
-      - name: Setup jextract
+      - name: 'Set up latest JDK code tool jextract'
+        uses: oracle-actions/setup-java@v1
         if: matrix.os == 'windows-latest'
-        shell: powershell
-        run: |
-          Invoke-WebRequest https://download.java.net/java/early_access/jextract/22/3/openjdk-22-jextract+3-13_windows-x64_bin.tar.gz -OutFile jextract.tar.gz
-
-          tar xzvf jextract.tar.gz
+        with:
+          website: jdk.java.net
+          release: jextract
+      # https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development#add-a-step-to-your-workflow
       - name: Setup MacOS signing
         if: matrix.os == 'macos-14'
         env:
@@ -84,7 +84,7 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-      - run: ./gradlew packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true --stacktrace
+      - run: ./gradlew packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true
         shell: bash
       - name: Package Linux Distribution
         if: matrix.os == 'ubuntu-latest'
@@ -139,6 +139,13 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: ./gradlew :app:android:bundleRelease :app:android:assembleRelease
+      # https://github.com/r0adkll/sign-android-release/issues/84#issuecomment-1889636075
+      - name: Setup build tool version variable
+        shell: bash
+        run: |
+          BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)
+          echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
+          echo Last build tool version is: $BUILD_TOOL_VERSION
       - uses: r0adkll/sign-android-release@v1
         id: sign_bundle
         name: Sign AAB
@@ -148,13 +155,6 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-      # https://github.com/r0adkll/sign-android-release/issues/84#issuecomment-1889636075
-      - name: Setup build tool version variable
-        shell: bash
-        run: |
-          BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)
-          echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
-          echo Last build tool version is: $BUILD_TOOL_VERSION
       - uses: r0adkll/sign-android-release@v1
         id: sign_apk
         name: Sign APK
@@ -182,32 +182,6 @@ jobs:
           releaseFiles: app/android/build/outputs/bundle/release/tonbrett-app-release.aab
           #mappingFile: app/android/build/outputs/mapping/release/mapping.txt
           track: alpha
-  sign_windows_installer:
-    name: Sign windows installer
-    runs-on: windows-latest
-    needs: build_desktop_app
-    #if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - uses: actions/download-artifact@v4
-        name: Download Artifacts from Windows
-        with:
-          name: desktopapp-windows-latest
-          path: artifact
-      - name: Upload Artifact
-        id: upload-unsigned-artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-unsigned
-          path: artifact/*.msix
-      - uses: SignPath/github-action-submit-signing-request@v0.4
-        with:
-          api-token: ${{ secrets.SIGNPATH_KEY }}
-          organization-id: e6101c42-2f2b-468e-9bf4-225c01ba183f
-          project-slug: tonbrett
-          signing-policy-slug: test-signing
-          artifact-configuration-slug: tonbrett
-          github-artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
-
   release_to_msstore:
     name: Publish to MSStore
     runs-on: windows-latest
