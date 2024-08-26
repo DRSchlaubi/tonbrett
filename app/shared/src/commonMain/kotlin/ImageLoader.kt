@@ -10,7 +10,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
-import coil3.network.ktor.KtorNetworkFetcherFactory
+import coil3.network.ktor2.KtorNetworkFetcherFactory
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.schlaubi.tonbrett.app.api.AppContext

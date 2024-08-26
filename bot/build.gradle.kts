@@ -1,5 +1,6 @@
 import dev.schlaubi.mikbot.gradle.mikbot
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import java.util.Locale
 
 plugins {
     alias(libs.plugins.ksp)
@@ -42,12 +43,9 @@ mikbotPlugin {
 }
 
 tasks {
-//    assembleBot {
-//        bundledPlugins = listOf(
-//            "ktor@1.25.0",
-//            "music-player@${libs.mikbot.music.get().version}"
-//        )
-//    }
+    generateDefaultTranslationBundle {
+        defaultLocale = Locale.Builder().setLanguage("en").setRegion("US").build()
+    }
 
     val buildWebApp = register<Copy>("buildWebApp") {
         val webApp = project(":app:web")
