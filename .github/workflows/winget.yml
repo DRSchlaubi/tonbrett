@@ -11,6 +11,7 @@ on:
       
 jobs:
   winget:
+    if: false # Waiting for signpath
     name: Update winget manifest
     runs-on: windows-latest
     steps:

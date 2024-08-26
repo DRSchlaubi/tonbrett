@@ -20,7 +20,7 @@ jobs:
           distribution: 'oracle'
           java-version: ${{ env.JAVA_VERSION }}
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew assembleBot
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
@@ -83,7 +83,7 @@ jobs:
           security import INSTALLER_CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true
         shell: bash
       - name: Package Linux Distribution
@@ -133,7 +133,7 @@ jobs:
           fileDir: 'keystore'
           encodedString: ${{ secrets.KEYSTORE }}
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
       - env:
           SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -254,7 +254,7 @@ jobs:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         id: tagName
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew :app:ios:podInstall :app:ios:linkPodReleaseFrameworkIosArm64
       - name: Deploy iOS Beta to TestFlight via Fastlane
         uses: maierj/fastlane-action@v3.1.0
@@ -317,6 +317,7 @@ jobs:
   sign_windows_binary:
     runs-on: windows-latest
     needs: [create_release, build_desktop_app]
+    if: false # waiting on signpath to enable this
     steps:
       - uses: actions/download-artifact@v4
         name: Download Artifacts from Windows
@@ -344,3 +345,4 @@ jobs:
         with:
           id: ${{ needs.create_release.outputs.release_id }}
           files: signed/Tonbrett.msix
+          token: ${{ secrets.GITHUB_TOKEN }}

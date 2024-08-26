@@ -1,11 +1,11 @@
 [versions]
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 ktor = "2.3.12"
 kmongo = "5.1.0"
 kord = "0.14.0"
-mikbot = "3.33.1"
-ksp = "2.0.0-1.0.22"
-kordex = "1.8.1-SNAPSHOT"
+mikbot = "3.35.4"
+ksp = "2.0.20-1.0.24"
+kordex = "1.9.0-SNAPSHOT"
 android = "8.5.0"
 compose = "1.6.11"
 compose-wear = "1.3.1"
@@ -15,7 +15,7 @@ coroutines = "1.8.1"
 play-services-wearable = "18.2.0"
 horologist = "0.6.14"
 protobuf = "4.27.2"
-coil = "3.0.0-alpha07"
+coil = "3.0.0-SNAPSHOT"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.1" }

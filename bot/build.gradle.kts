@@ -42,12 +42,12 @@ mikbotPlugin {
 }
 
 tasks {
-    assembleBot {
-        bundledPlugins = listOf(
-            "ktor@1.25.0",
-            "music-player@${libs.mikbot.music.get().version}"
-        )
-    }
+//    assembleBot {
+//        bundledPlugins = listOf(
+//            "ktor@1.25.0",
+//            "music-player@${libs.mikbot.music.get().version}"
+//        )
+//    }
 
     val buildWebApp = register<Copy>("buildWebApp") {
         val webApp = project(":app:web")

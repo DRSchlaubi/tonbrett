@@ -41,7 +41,7 @@ kotlin {
             }
         }
 
-        jvmMain {
+        desktopMain {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
             }

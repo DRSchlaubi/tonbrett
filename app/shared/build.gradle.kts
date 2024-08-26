@@ -75,7 +75,7 @@ kotlin {
             }
         }
 
-        jvmMain {
+        named("desktopMain") {
             dependencies {
                 implementation(libs.kmongo.id.serialization)
                 implementation(libs.kotlinx.coroutines.swing)
@@ -101,7 +101,7 @@ kotlin {
 
 dependencies {
     kspCommonMainMetadata(libs.lyricist.processor)
-    "jvmMainImplementation"(libs.kord.common) {
+    "desktopMainImplementation"(libs.kord.common) {
         exclude(group = "io.ktor")
     }
 }
