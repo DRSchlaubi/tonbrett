@@ -119,31 +119,3 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
     }
 }
-
-tasks {
-    afterEvaluate {
-//        named("lintAnalyzeDebug") {
-//            dependsOn(
-//                "generateAndroidUnitTestDebugNonAndroidBuildConfig",
-//                "generateAndroidUnitTestNonAndroidBuildConfig"
-//            )
-//        }
-        val compilationTasks = kotlin.targets.flatMap {
-            buildList {
-                if (it.name != "android") {
-                    add("compileKotlin${it.name.capitalized()}")
-                    val sourcesJarName = "${it.name}SourcesJar"
-                    add(sourcesJarName)
-                } else {
-                    add("compileDebugKotlinAndroid")
-                    add("compileReleaseKotlinAndroid")
-                }
-            }
-        }
-        for (task in compilationTasks) {
-            named(task) {
-                dependsOn("kspCommonMainKotlinMetadata")
-            }
-        }
-    }
-}

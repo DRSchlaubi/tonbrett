@@ -60,6 +60,7 @@ android {
     packaging {
         resources {
             pickFirsts.add("META-INF/versions/9/previous-compilation-data.bin")
+            pickFirsts.add("META-INF/native-image/org.mongodb/bson/native-image.properties")
         }
     }
     androidResources {

@@ -28,6 +28,14 @@ kotlin {
                 compileOnly(libs.kmongo.serialization)
             }
         }
+
+        androidMain {
+            dependencies {
+                api(libs.kmongo.id.serialization)
+                api(libs.kord.common)
+                api(libs.kmongo.serialization)
+            }
+        }
     }
 }
 

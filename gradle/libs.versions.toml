@@ -13,8 +13,8 @@ lyricist = "1.7.0"
 google-play = "2.1.0"
 coroutines = "1.9.0-RC"
 play-services-wearable = "18.2.0"
-horologist = "0.6.14"
-protobuf = "4.27.2"
+horologist = "0.6.18"
+protobuf = "4.27.3"
 coil = "3.0.0-SNAPSHOT"
 
 [libraries]
@@ -49,18 +49,18 @@ ktor-sse = { group = "io.ktor", name = "ktor-sse", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
-mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.8.2-SNAPSHOT" }
+mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.9.0-SNAPSHOT" }
 
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.0" }
 
 lyricist = { group = "cafe.adriel.lyricist", name = "lyricist", version.ref = "lyricist" }
 lyricist-processor = { group = "cafe.adriel.lyricist", name = "lyricist-processor", version.ref = "lyricist" }
 
-logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.6" }
+logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.7" }
 
 kvault = { group = "com.liftric", name = "kvault", version = "1.12.0" }
 
-androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.0" }
+androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.1" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
 androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.13.1" }
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.8.0" }
@@ -68,7 +68,7 @@ mdc-android = { group = "com.google.android.material", name = "material", versio
 google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
 google-play-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "google-play" }
 
-google-artifactregistry = { group = "gradle.plugin.com.google.cloud.artifactregistry", name = "artifactregistry-gradle-plugin", version = "2.2.1" }
+google-artifactregistry = { group = "gradle.plugin.com.google.cloud.artifactregistry", name = "artifactregistry-gradle-plugin", version = "2.2.2" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
 
 protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
@@ -102,5 +102,5 @@ android-base = { id = "com.android.base", version.ref = "android" }
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.3.5" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.4.0" }
 protobuf = { id = "com.google.protobuf", version = "0.9.4" }
