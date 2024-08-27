@@ -29,13 +29,13 @@ pub struct StringResult {
 #[no_mangle]
 pub async extern "C" fn request_msstore_auto_update() -> bool {
     let result = _request_msstore_auto_update().await;
-    return match result {
+     match result {
         Err(err) => {
             log::error!("Could not request msstore update: {}", err);
             true
         }
         _ => false,
-    };
+    }
 }
 
 #[tokio::main]
@@ -89,7 +89,7 @@ fn _get_token() -> Result<HSTRING> {
     let vault = PasswordVault::new()?;
     let credential = vault.Retrieve(RESOURCE, USERNAME)?;
 
-    return credential.Password()
+    credential.Password()
 }
 
 fn _get_temp_folder() -> Result<HSTRING> {

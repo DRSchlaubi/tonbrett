@@ -8,16 +8,18 @@ build = "build.rs"
 crate-type = ["cdylib"]
 
 [dependencies.windows]
-version = "0.57.0"
+version = "0.58.0"
+git = "https://github.com/microsoft/windows-rs.git"
+rev = "9f5ec21"
 features = ["System", "Foundation", "Win32_Foundation", "Security_Credentials", "Services_Store", "Foundation_Collections", "Storage"]
 
 [dependencies.tokio]
-version = "1.38.0"
+version = "1.39.3"
 features = ["macros", "rt-multi-thread"]
 
 [build-dependencies.cbindgen]
-version = "0.26.0"
+version = "0.27.0"
 default-features = false
 
 [dependencies]
-log = "0.4.21"
+log = "0.4.22"
