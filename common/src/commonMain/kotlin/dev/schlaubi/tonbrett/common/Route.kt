@@ -92,6 +92,12 @@ public class Route {
         public data class Callback(val parent: Auth = Auth())
 
         /**
+         * /soundboard/auth/token - requests a token for this auth code
+         */
+        @Resource("token")
+        public data class Token(val code: String, val state: String, val parent: Auth = Auth())
+
+        /**
          * /soundboard/auth/refresh - refresh JWTs
          */
         @Resource("refresh")
@@ -161,6 +167,9 @@ public class Route {
          */
         @Resource("login")
         public data class Login(val token: String, val parent: Ui = Ui())
+
+        @Resource("discord-activity")
+        public data class DiscordActivity(val parent: Ui = Ui())
     }
 
     /**

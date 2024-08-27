@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -6,13 +7,14 @@ plugins {
     id("com.android.library")
 }
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
+@OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalWasmDsl::class)
 kotlin {
     applyDefaultHierarchyTemplate {
         common {
             group("nonJvm") {
                 withNative()
                 withJs()
+                withWasmJs()
             }
 
             group("jvm") {
@@ -33,6 +35,9 @@ kotlin {
     }
     jvm("desktop")
     js(IR) {
+        browser()
+    }
+    wasmJs {
         browser()
     }
     iosSimulatorArm64()

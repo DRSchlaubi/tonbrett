@@ -62,7 +62,10 @@ fun newImageLoader(appContext: AppContext): ImageLoader = ImageLoader.Builder(ap
     MemoryCache.Builder()
         // Set the max size to 25% of the app's available memory.
         .maxSizePercent(appContext.platformContext, percent = 0.25).build()
-}.diskCache { newDiskCache() }.crossfade(false).build()
+}
+//    .diskCache { newDiskCache() }
+    .crossfade(false)
+    .build()
 
 expect fun newDiskCache(): DiskCache?
 

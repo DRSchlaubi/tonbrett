@@ -11,6 +11,8 @@ import org.w3c.dom.set
 
 const val tokenKey = "token"
 
+val appId = window.location.host.substringBefore(".")
+
 actual val Dispatchers.IO: CoroutineDispatcher
     get() = Main // JS Is single threaded so not needed
 
@@ -32,5 +34,5 @@ actual open class AppContext : AppContextBase() {
 }
 
 actual fun getUrl() = URLBuilder(window.location.href).apply {
-    pathSegments = emptyList()
+    takeFrom("https://$appId.discordsays.com/.proxy/api/")
 }.build()

@@ -57,6 +57,16 @@ private val httpClient = HttpClient {
         json(json)
     }
 }
+private val oauthSettings = OAuthServerSettings.OAuth2ServerSettings(
+    name = "discord",
+    authorizeUrl = "https://discord.com/oauth2/authorize",
+    accessTokenUrl = "https://discord.com/api/oauth2/token",
+    requestMethod = HttpMethod.Post,
+    clientId = Config.DISCORD_CLIENT_ID,
+    clientSecret = Config.DISCORD_CLIENT_SECRET,
+    defaultScopes = listOf("identify")
+)
+
 
 fun Application.installAuth() {
     install(Sessions) {
@@ -65,17 +75,7 @@ fun Application.installAuth() {
     authentication {
         oauth(discordAuth) {
             urlProvider = { this@installAuth.buildBotUrl(Route.Auth.Callback()) }
-            providerLookup = {
-                OAuthServerSettings.OAuth2ServerSettings(
-                    name = "discord",
-                    authorizeUrl = "https://discord.com/oauth2/authorize",
-                    accessTokenUrl = "https://discord.com/api/oauth2/token",
-                    requestMethod = HttpMethod.Post,
-                    clientId = Config.DISCORD_CLIENT_ID,
-                    clientSecret = Config.DISCORD_CLIENT_SECRET,
-                    defaultScopes = listOf("identify")
-                )
-            }
+            providerLookup = { oauthSettings }
             client = httpClient
         }
 
@@ -83,7 +83,7 @@ fun Application.installAuth() {
             realm = "Soundboard UI Access"
             verifier(jwtVerifier)
 
-            validate {credential ->
+            validate { credential ->
                 JWTPrincipal(credential.payload)
             }
         }
@@ -111,6 +111,21 @@ fun Application.installAuth() {
 
                 call.respondRedirect(type.redirectTo + key)
             }
+        }
+
+        @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
+        post<Route.Auth.Token> { (code, state) ->
+            val accessToken =
+                io.ktor.server.auth.oauth2RequestAccessToken(
+                    httpClient,
+                    oauthSettings,
+                    "",
+                    OAuthCallback.TokenSingle(code, state)
+                )
+
+            val key = httpClient.createJwt(accessToken)
+
+            call.respond(AuthRefreshResponse(newJwt = key))
         }
 
         post<Route.Auth.Refresh> {

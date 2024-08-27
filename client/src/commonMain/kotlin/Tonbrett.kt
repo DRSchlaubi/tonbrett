@@ -1,6 +1,7 @@
 package dev.schlaubi.tonbrett.client
 
 import dev.schlaubi.tonbrett.common.*
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -23,7 +24,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
-import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val LOG = KotlinLogging.logger { }
 
@@ -50,7 +50,11 @@ class ReauthorizationRequiredException : Exception()
  * @param baseUrl the url of the API
  * @param onTokenRefresh a callback invoked if the token got refreshed
  */
-class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, private val onTokenRefresh: (String) -> Unit = {}) {
+class Tonbrett(
+    initialToken: String,
+    @PublishedApi internal val baseUrl: Url,
+    private val onTokenRefresh: (String) -> Unit = {}
+) {
     private val eventFlow = MutableSharedFlow<Event>()
     private val json = Json {
         serializersModule = TonbrettSerializersModule
@@ -70,7 +74,9 @@ class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, pr
         install(Resources)
         install(Auth) {
             bearer {
-                loadTokens { BearerTokens(accessToken = initialToken, refreshToken = initialToken) }
+                loadTokens {
+                    BearerTokens(accessToken = initialToken, refreshToken = initialToken)
+                }
                 sendWithoutRequest { it.authorize }
                 refreshTokens {
                     val response = client.post(Route.Auth.Refresh()) {
@@ -99,6 +105,7 @@ class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, pr
                             url {
                                 protocol = if (baseUrl.protocol.isSecure()) URLProtocol.WSS else URLProtocol.WS
                                 port = baseUrl.port
+                                pathSegments = baseUrl.pathSegments + url.pathSegments
                             }
                         }
                     }
@@ -120,7 +127,11 @@ class Tonbrett(initialToken: String, @PublishedApi internal val baseUrl: Url, pr
      * @param query an optional search query
      * @param useUnicode whether to return the emojis as unicode or Twemoji URLs
      */
-    suspend fun getSounds(onlyMine: Boolean = false, query: String? = null, useUnicode: Boolean = false): List<SoundGroup> =
+    suspend fun getSounds(
+        onlyMine: Boolean = false,
+        query: String? = null,
+        useUnicode: Boolean = false
+    ): List<SoundGroup> =
         client.get(Route.Sounds.ListSounds(onlyMine, query, useUnicode)).body()
 
     /**

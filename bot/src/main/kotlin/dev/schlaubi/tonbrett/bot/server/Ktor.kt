@@ -48,6 +48,9 @@ class Ktor : KtorExtensionPoint, KordExKoinComponent {
         routing {
             files()
             ui()
+            route("/.proxy/api") {
+                ui()
+            }
             authenticated {
                 sounds()
                 users()

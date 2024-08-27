@@ -27,6 +27,8 @@ inline fun <reified R : Any> routeHandler(body: (R) -> Unit) {
     val pattern = format.encodeToPathPattern(serializer)
     if (window.location.pathname.dropLeadingSlash() != pattern) return
 
+    println("Passed for ${R::class.simpleName}")
+
     val parameters = window.location.search.dropLeadingQuery().parseUrlEncodedParameters()
     val resources = format.decodeFromParameters(serializer, parameters)
 
