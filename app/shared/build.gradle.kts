@@ -71,7 +71,7 @@ kotlin {
 
         jsMain {
             dependencies {
-                api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:1.9.21")
+                api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:2.0.20")
             }
         }
 
@@ -117,5 +117,27 @@ android {
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+tasks {
+    afterEvaluate {
+        val compilationTasks = kotlin.targets.flatMap {
+            buildList {
+                if (it.name != "android") {
+                    add("compileKotlin${it.name.replaceFirstChar { it.titlecase() }}")
+                    val sourcesJarName = "${it.name}SourcesJar"
+                    add(sourcesJarName)
+                } else {
+                    add("compileDebugKotlinAndroid")
+                    add("compileReleaseKotlinAndroid")
+                }
+            }
+        }
+        for (task in compilationTasks) {
+            named(task) {
+                dependsOn("kspCommonMainKotlinMetadata")
+            }
+        }
     }
 }

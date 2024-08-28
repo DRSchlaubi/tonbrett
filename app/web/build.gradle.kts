@@ -13,6 +13,10 @@ kotlin {
         browser()
         binaries.executable()
         compilations.all {
+            packageJson {
+                devDependencies += "html-webpack-plugin" to "5.6.0"
+                devDependencies += "browserify" to "17.0.0"
+            }
             compileTaskProvider.configure {
                 compilerOptions {
                     freeCompilerArgs.addAll(
@@ -37,6 +41,7 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
+                implementation(npm("@discord/embedded-app-sdk", "1.4.2"))
             }
         }
     }
