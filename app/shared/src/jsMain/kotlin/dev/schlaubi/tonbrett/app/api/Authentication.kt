@@ -36,5 +36,7 @@ actual open class AppContext : AppContextBase() {
 actual fun getUrl() = URLBuilder(window.location.href).apply {
     if (window.location.host.endsWith("discordsays.com")) {
         takeFrom("https://$appId.discordsays.com/.proxy/api/")
+    } else {
+        pathSegments = emptyList()
     }
 }.build()
