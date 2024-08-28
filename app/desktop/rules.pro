@@ -70,7 +70,7 @@
 }
 
 # Coil
--keep class coil3.network.ktor.internal.KtorNetworkFetcherServiceLoaderTarget
+-keep class coil3.network.ktor2.internal.KtorNetworkFetcherServiceLoaderTarget
 
 # https://github.com/Guardsquare/proguard/issues/349
 -dontoptimize
