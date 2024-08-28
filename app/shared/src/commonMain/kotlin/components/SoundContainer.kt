@@ -141,8 +141,8 @@ private fun SoundGroup(
         FlowGrid(
             GridCells.Adaptive(160.dp),
             group.sounds,
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+            verticalArrangement = Arrangement.spacedBy(3.dp),
             modifier = Modifier.canClearFocus()
         ) { (id, name, _, description, emoji) ->
             SoundCard(

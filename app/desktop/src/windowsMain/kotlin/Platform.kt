@@ -38,7 +38,6 @@ private class WindowsPlatform : IPlatform {
                 setToken(token)
             } catch (e: Exception) {
                 e.printStackTrace()
-                Thread.sleep(50000)
             }
             startApplication()
         } else {
