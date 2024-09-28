@@ -12,7 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.ripple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,7 +25,6 @@ import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
-import dev.schlaubi.tonbrett.common.Sound
 import dev.schlaubi.tonbrett.common.SoundGroup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -92,31 +91,38 @@ fun SearchBar(updateSounds: SoundUpdater) {
                 }
             }
 
-            Key.Escape -> -1 // reset selection until menu reopens
+            Key.Escape -> {
+                showSuggestions(false)
+                -1
+            } // reset selection until menu reopens
             else -> return@onPreviewKeyEvent false
         }
         true
     }) {
         DockedSearchBar(
-            value, ::updateSearch, { showSuggestions(false) }, showSuggestions, ::showSuggestions,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp),
-            placeholder = { Text(strings.searchExplainer, color = ColorScheme.current.textColor.copy(alpha = .7f)) },
-            trailingIcon = {
-                TrailingIcon(value, {
-                    updateSearch(it)
-                }, false)
-            },
-            colors = SearchBarDefaults.colors(
-                containerColor = ColorScheme.current.searchBarColor,
-                inputFieldColors = TextFieldDefaults.colors(
-                    focusedContainerColor = ColorScheme.current.searchBarColor,
-                    unfocusedContainerColor = ColorScheme.current.searchBarColor,
-                    focusedPlaceholderColor = ColorScheme.current.secondaryContainer,
-                    unfocusedPlaceholderColor = ColorScheme.current.secondaryContainer,
-                    focusedTextColor = ColorScheme.current.textColor,
-                    unfocusedTextColor = ColorScheme.current.textColor
+            {
+                SearchBarDefaults.InputField(
+                    value, ::updateSearch, { showSuggestions(false) },
+                    showSuggestions, ::showSuggestions,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp),
+                    trailingIcon = {
+                        TrailingIcon(value, {
+                            updateSearch(it)
+                        }, false)
+                    },
+                    placeholder = {
+                        Text(
+                            strings.searchExplainer,
+                            color = ColorScheme.current.textColor.copy(alpha = .7f)
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(unfocusedTextColor = ColorScheme.current.textColor, focusedTextColor = ColorScheme.current.textColor)
                 )
-            )
+            },
+            showSuggestions, ::showSuggestions,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp),
+            colors = SearchBarDefaults.colors(containerColor = ColorScheme.current.searchBarColor)
+
         ) {
             ProvideEnterPressFlow(enterPresses) {
                 SearchSuggestions(
@@ -164,7 +170,7 @@ private fun TrailingIcon(value: String, updateSearch: (String) -> Unit, supports
 
     Icon(icon, null, Modifier
         .rotate(iconRotation)
-        .clickable(interactionSource, indication = rememberRipple(), enabled = value.isNotEmpty()) {
+        .clickable(interactionSource, indication = ripple(), enabled = value.isNotEmpty()) {
             updateSearch("")
         }
     )
