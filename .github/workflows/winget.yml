@@ -4,14 +4,10 @@ on:
   workflow_dispatch:
   release:
     types:
-      - published
-      - created
-      - released
-      - prereleased
-      
+      - edited
+
 jobs:
   winget:
-    if: false # Waiting for signpath
     name: Update winget manifest
     runs-on: windows-latest
     steps:

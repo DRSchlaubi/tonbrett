@@ -317,7 +317,6 @@ jobs:
   sign_windows_binary:
     runs-on: windows-latest
     needs: [create_release, build_desktop_app]
-    if: false # waiting on signpath to enable this
     steps:
       - uses: actions/download-artifact@v4
         name: Download Artifacts from Windows
