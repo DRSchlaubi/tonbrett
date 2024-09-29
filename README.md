@@ -53,3 +53,13 @@ Note that some downloads are only available to beta testers:
 Other downloads can be found [here](https://github.com/DRSchlaubi/Tonbrett/releases/latest)
 
 Google Play and the Google Play logo are trademarks of Google LLC.
+
+# Code Signing policy
+
+Free Windows code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/)
+
+This project is run by [Michael Rittmeister](https://schlau.bi) as the sole Maintainer and reviewer
+
+# Privacy policy
+
+You can refer to the projects privacy [here](PRIVACY.md)
