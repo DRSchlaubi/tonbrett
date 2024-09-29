@@ -340,6 +340,7 @@ jobs:
           output-artifact-directory: signed
       - name: Update Release
         uses: softprops/action-gh-release@v2
-        files: signed/Tonbrett.msix
+        with:
+          files: signed/Tonbrett.msix
       - name: Upload to winget
         uses: ./.github/workflows/winget.yml
