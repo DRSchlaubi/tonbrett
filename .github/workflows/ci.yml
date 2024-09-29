@@ -306,7 +306,6 @@ jobs:
           name: android-app
       - name: Release
         uses: softprops/action-gh-release@v2
-        id: release
         with:
           files: |
             app/desktop/build/compose/binaries/main-release/deb/*.deb
@@ -339,9 +338,8 @@ jobs:
           github-artifact-id: '${{ steps.upload.outputs.artifact-id }}'
           wait-for-completion-timeout-in-seconds: 36288000 # SignPath needs to manually validate this, so let's give this a week
           output-artifact-directory: signed
-      - name: Edit Release
-        uses: irongut/EditRelease@v1.2.0
-        with:
-          id: ${{ needs.create_release.outputs.release_id }}
-          files: signed/Tonbrett.msix
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update Release
+        uses: softprops/action-gh-release@v2
+        files: signed/Tonbrett.msix
+      - name: Upload to winget
+        uses: ./.github/workflows/winget.yml

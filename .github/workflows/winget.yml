@@ -2,6 +2,7 @@ name: Winget CI
 
 on:
   workflow_dispatch:
+  workflow_call:
   release:
     types:
       - edited
