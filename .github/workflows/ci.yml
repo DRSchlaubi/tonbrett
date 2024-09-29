@@ -324,19 +324,19 @@ jobs:
           name: desktopapp-windows-latest
           path: artifact
       - name: Upload Artifact
-        id: upload-unsigned-artifact
+        id: upload
         uses: actions/upload-artifact@v4
         with:
           name: windows-unsigned
           path: artifact/*.msix
-      - uses: SignPath/github-action-submit-signing-request@v0.4
+      - uses: SignPath/github-action-submit-signing-request@v1
         with:
           api-token: ${{ secrets.SIGNPATH_KEY }}
           organization-id: e6101c42-2f2b-468e-9bf4-225c01ba183f
           project-slug: tonbrett
           signing-policy-slug: test-signing
           artifact-configuration-slug: tonbrett
-          github-artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact_id }}
+          github-artifact-id: '${{ steps.upload.outputs.artifact-id }}'
           wait-for-completion-timeout-in-seconds: 36288000 # SignPath needs to manually validate this, so let's give this a week
           output-artifact-directory: signed
       - name: Edit Release
