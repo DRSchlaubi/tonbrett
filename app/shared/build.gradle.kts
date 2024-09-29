@@ -94,6 +94,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.android)
                 implementation(libs.coil.gif)
                 implementation(libs.coil.svg)
+                implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.6")
             }
         }
     }

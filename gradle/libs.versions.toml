@@ -6,16 +6,16 @@ kord = "0.14.0"
 mikbot = "3.37.3"
 ksp = "2.0.20-1.0.24"
 kordex = "1.9.0-SNAPSHOT"
-android = "8.6.1"
+android = "8.8.0-alpha03"
 compose = "1.7.0-beta02"
 compose-wear = "1.4.0"
 lyricist = "1.7.0"
 google-play = "2.1.0"
 coroutines = "1.9.0"
 play-services-wearable = "18.2.0"
-horologist = "0.6.18"
+horologist = "0.7.2-alpha"
 protobuf = "4.27.3"
-coil = "3.0.0-SNAPSHOT"
+coil = "3.0.0-alpha10"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.3" }
@@ -49,7 +49,7 @@ ktor-sse = { group = "io.ktor", name = "ktor-sse", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
-mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.9.0-SNAPSHOT" }
+mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.11.5-SNAPSHOT" }
 
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.0" }
 
