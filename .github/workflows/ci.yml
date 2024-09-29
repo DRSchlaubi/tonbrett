@@ -255,6 +255,11 @@ jobs:
         id: tagName
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+      - name: Cache Kotlin Toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan/dependencies/cache
+          key: kotlin-native-toolchain--${{ hashFiles('gradle/libs.versions.toml') }}
       - run: ./gradlew :app:ios:podInstall :app:ios:linkPodReleaseFrameworkIosArm64
       - name: Deploy iOS Beta to TestFlight via Fastlane
         uses: maierj/fastlane-action@v3.1.0
