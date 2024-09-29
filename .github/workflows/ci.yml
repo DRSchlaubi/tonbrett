@@ -334,7 +334,7 @@ jobs:
           api-token: ${{ secrets.SIGNPATH_KEY }}
           organization-id: e6101c42-2f2b-468e-9bf4-225c01ba183f
           project-slug: tonbrett
-          signing-policy-slug: test-signing
+          signing-policy-slug: release-signing
           artifact-configuration-slug: tonbrett
           github-artifact-id: '${{ steps.upload.outputs.artifact-id }}'
           wait-for-completion-timeout-in-seconds: 36288000 # SignPath needs to manually validate this, so let's give this a week
