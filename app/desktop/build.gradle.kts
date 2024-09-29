@@ -17,8 +17,9 @@ dependencies {
     implementation(project.dependencies.compose.materialIconsExtended)
     implementation(project.dependencies.compose.material3)
     implementation(libs.logback)
+    implementation(compose.components.resources)
 
-    if(windowsBuild) {
+    if (windowsBuild) {
         implementation(projects.app.desktop.uwpHelper)
     } else {
         implementation(libs.ktor.server.netty)
@@ -28,7 +29,9 @@ dependencies {
 
 sourceSets {
     main {
-        if(windowsBuild) {
+        kotlin.srcDir("build/generated/compose/resourceGenerator/kotlin/commonResClass")
+        kotlin.srcDir("build/generated/compose/resourceGenerator/kotlin/mainResourceAccessors")
+        if (windowsBuild) {
             kotlin.srcDir("src/windowsMain/kotlin")
         } else {
             kotlin.srcDir("src/nonWindowsMain/kotlin")
@@ -90,6 +93,15 @@ compose.desktop {
             }
         }
     }
+}
+
+compose.resources {
+    publicResClass = false
+    packageOfResClass = "dev.schlaubi.tonbrett.app.desktop"
+    customDirectory(
+        sourceSetName = "main",
+        directoryProvider = provider { layout.projectDirectory.dir("src/main/composeResources") }
+    )
 }
 
 tasks {

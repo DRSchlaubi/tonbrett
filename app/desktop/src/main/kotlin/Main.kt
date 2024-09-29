@@ -16,8 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.res.loadImageBitmap
-import androidx.compose.ui.res.useResource
 import androidx.compose.ui.window.*
 import cafe.adriel.lyricist.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
@@ -29,6 +27,7 @@ import dev.schlaubi.tonbrett.app.desktop.Platform.start
 import dev.schlaubi.tonbrett.app.title
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.serialization.*
+import org.jetbrains.compose.resources.imageResource
 import java.net.URI
 import java.awt.Window as AWTWindow
 
@@ -103,7 +102,7 @@ private fun ApplicationScope.startActualApplication(
 fun ApplicationScope.TonbrettWindow(content: @Composable FrameWindowScope.() -> Unit) = Window(
     onCloseRequest = ::exitApplication,
     title = title,
-    icon = BitmapPainter(useResource("logo.png", ::loadImageBitmap)),
+    icon = BitmapPainter(imageResource(Res.drawable.logo))
 ) {
     ProvideLocalWindow(window) {
         content()
