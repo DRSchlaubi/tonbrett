@@ -1,4 +1,4 @@
-@file:Suppress("INVISIBLE_MEMBER", "NON_PUBLIC_CALL_FROM_PUBLIC_INLINE", "INVISIBLE_REFERENCE")
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
 
 package dev.schlaubi.tonbrett.client
 
@@ -11,17 +11,14 @@ import io.ktor.utils.io.core.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktor.client.plugins.HttpRetryDelayContext
+import io.ktor.util.AttributeKey
+import kotlinx.io.EOFException
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 private val LOG = KotlinLogging.logger {  }
 
-/**
- * WebSocket version of the [HttpRequestRetry] plugin.
- *
- * @see retryingWebSocket
- */
-val WebSocketRetry = createClientPlugin("WebSocketRetry", { HttpRequestRetry.Configuration() }) {}
 
 /**
  * Exception used for logging WebSocket connection errors.
@@ -36,21 +33,21 @@ class DisconnectedException(protocolCause: CloseReason?) :
  */
 suspend fun HttpClient.retryingWebSocket(
     httpRequestBuilder: HttpRequestBuilder.() -> Unit,
+    config: HttpRequestRetryConfig,
     handler: suspend DefaultClientWebSocketSession.() -> Unit
 ) {
-    val plugin = plugin(WebSocketRetry)
-    val context = WebSocketRetryContext(this, plugin.config, httpRequestBuilder, handler)
+    val context = WebSocketRetryContext(this, config, httpRequestBuilder, handler)
     context.connect()
 }
 
 private class WebSocketRetryContext(
     val client: HttpClient,
-    val config: HttpRequestRetry.Configuration,
+    val config: HttpRequestRetryConfig,
     val httpRequestBuilder: HttpRequestBuilder.() -> Unit,
     val handler: suspend DefaultClientWebSocketSession.() -> Unit
 ) {
     lateinit var session: DefaultClientWebSocketSession
-    private var delayContext: HttpRequestRetry.DelayContext? = null
+    private var delayContext: HttpRetryDelayContext? = null
     private var tries = 1
 
     fun reset() {
@@ -63,7 +60,7 @@ private class WebSocketRetryContext(
 
     suspend fun reconnect(e: Throwable, isRetry: Boolean = true) {
         if (!isRetry) {
-            delayContext = HttpRequestRetry.DelayContext(
+            delayContext = HttpRetryDelayContext(
                 HttpRequestBuilder(),
                 session.call.response,
                 e

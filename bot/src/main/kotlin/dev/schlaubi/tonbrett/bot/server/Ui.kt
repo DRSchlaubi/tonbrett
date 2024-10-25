@@ -2,8 +2,10 @@ package dev.schlaubi.tonbrett.bot.server
 
 import dev.schlaubi.tonbrett.common.Route.AuthDeepLink
 import dev.schlaubi.tonbrett.common.Route.Ui
+import io.ktor.events.Events
 import io.ktor.http.HttpHeaders
 import io.ktor.server.application.*
+import io.ktor.server.application.Application
 import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
 import io.ktor.server.resources.*
@@ -11,10 +13,12 @@ import io.ktor.server.response.header
 import io.ktor.server.routing.*
 import kotlin.reflect.jvm.javaField
 
+private val ClassLoaderFixer = createRouteScopedPlugin("ClassLoaderFixer") {
+    onCall { call -> call.fixClassLoader() }
+}
+
 private inline fun <reified T : Any> Route.staticUi(index: String? = "index.html") = resource<T> {
-    intercept(ApplicationCallPipeline.Plugins) {
-        call.fixClassLoader()
-    }
+    install(ClassLoaderFixer)
     staticResources("", "web", index = index)
 }
 
@@ -25,9 +29,17 @@ fun Route.ui() {
     staticUi<Ui.DiscordActivity>(index = "discord-activity.html")
 }
 
+
 private fun ApplicationCall.fixClassLoader() {
-    val fixedApplication = Application(HackedEnvironment(application.environment))
-    val call = (this as RoutingApplicationCall).engineCall
+    @Suppress("INVISIBLE_REFERENCE")
+    val fixedApplication = Application(
+        HackedEnvironment(application.environment),
+        false,
+        "/",
+        Events(),
+        coroutineContext,
+        { error("Unsupported") })
+    val call = (this as RoutingPipelineCall).engineCall
     BaseApplicationCall::application.javaField!!.apply {
         isAccessible = true
         set(call, fixedApplication)

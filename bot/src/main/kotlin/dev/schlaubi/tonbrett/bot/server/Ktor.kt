@@ -31,7 +31,7 @@ class Ktor : KtorExtensionPoint, KordExKoinComponent {
             val json = Json {
                 serializersModule = IdKotlinXSerializationModule
             }
-            pingPeriod = 30.seconds.toJavaDuration()
+            pingPeriod = 30.seconds
             contentConverter = KotlinxWebsocketSerializationConverter(json)
         }
         installAuth()

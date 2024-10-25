@@ -26,7 +26,7 @@ dependencies {
 kotlin {
     compilerOptions {
         languageVersion = KotlinVersion.KOTLIN_2_0
-        freeCompilerArgs.add("-Xcontext-receivers")
+        freeCompilerArgs.addAll("-Xcontext-receivers", "-Xdont-warn-on-error-suppression")
     }
 }
 

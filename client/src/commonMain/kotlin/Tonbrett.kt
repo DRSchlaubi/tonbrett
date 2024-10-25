@@ -42,6 +42,11 @@ private var HttpRequestBuilder.useUnicode: Boolean
  */
 class ReauthorizationRequiredException : Exception()
 
+private val webSocketRetryStrategy = HttpRequestRetryConfig().apply {
+    maxRetries = 5
+    exponentialDelay()
+}
+
 /**
  * API client for the Tonbrett api.
  *
@@ -64,10 +69,6 @@ class Tonbrett(
         install(ContentNegotiation) {
             json(json)
         }
-        install(WebSocketRetry) {
-            maxRetries = 5
-            exponentialDelay()
-        }
         install(WebSockets) {
             contentConverter = KotlinxWebsocketSerializationConverter(json)
         }
@@ -83,7 +84,7 @@ class Tonbrett(
                         expectSuccess = false
                         authorize = false
                         contentType(ContentType.Application.Json)
-                        setBody(AuthRefreshRequest(expiredJwt = oldTokens!!.refreshToken))
+                        setBody(AuthRefreshRequest(expiredJwt = oldTokens!!.refreshToken!!))
                     }
                     if (!response.status.isSuccess()) {
                         throw ReauthorizationRequiredException()
@@ -105,7 +106,7 @@ class Tonbrett(
                             url {
                                 protocol = if (baseUrl.protocol.isSecure()) URLProtocol.WSS else URLProtocol.WS
                                 port = baseUrl.port
-                                pathSegments = baseUrl.pathSegments + url.pathSegments
+                                pathSegments = baseUrl.rawSegments + url.pathSegments
                             }
                         }
                     }
@@ -178,7 +179,7 @@ class Tonbrett(
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun connect(useUnicode: Boolean = false) {
-        client.retryingWebSocket({ this.useUnicode = useUnicode }) {
+        client.retryingWebSocket({ this.useUnicode = useUnicode }, webSocketRetryStrategy) {
             while (!incoming.isClosedForReceive) {
                 try {
                     val event = receiveDeserialized<Event>()

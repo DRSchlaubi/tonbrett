@@ -1,21 +1,21 @@
 [versions]
-kotlin = "2.0.20"
-ktor = "2.3.12"
+kotlin = "2.0.21"
+ktor = "3.0.0"
 kmongo = "5.1.0"
 kord = "0.14.0"
-mikbot = "3.37.3"
-ksp = "2.0.20-1.0.24"
-kordex = "1.9.0-SNAPSHOT"
-android = "8.8.0-alpha03"
-compose = "1.7.0-beta02"
+mikbot = "3.37.19"
+ksp = "2.0.21-1.0.26"
+kordex = "1.9.12-mikbot-SNAPSHOT"
+android = "8.7.1"
+compose = "1.7.0"
 compose-wear = "1.4.0"
 lyricist = "1.7.0"
 google-play = "2.1.0"
 coroutines = "1.9.0"
 play-services-wearable = "18.2.0"
-horologist = "0.7.2-alpha"
-protobuf = "4.27.3"
-coil = "3.0.0-alpha10"
+horologist = "0.7.3-alpha"
+protobuf = "4.28.3"
+coil = "3.0.0-rc01"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.3" }
@@ -49,20 +49,20 @@ ktor-sse = { group = "io.ktor", name = "ktor-sse", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
-mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.11.5-SNAPSHOT" }
+mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "3.12.0-SNAPSHOT" }
 
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.0" }
 
 lyricist = { group = "cafe.adriel.lyricist", name = "lyricist", version.ref = "lyricist" }
 lyricist-processor = { group = "cafe.adriel.lyricist", name = "lyricist-processor", version.ref = "lyricist" }
 
-logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.8" }
+logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.11" }
 
 kvault = { group = "com.liftric", name = "kvault", version = "1.12.0" }
 
-androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.2" }
+androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
-androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.13.1" }
+androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.15.0-rc01" }
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.8.0" }
 mdc-android = { group = "com.google.android.material", name = "material", version = "1.12.0" }
 google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
@@ -85,7 +85,7 @@ horologist-datalayer = { group = "com.google.android.horologist", name = "horolo
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-gif = { group = "io.coil-kt.coil3", name = "coil-gif", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
-coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor2", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 

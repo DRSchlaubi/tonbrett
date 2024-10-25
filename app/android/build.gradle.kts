@@ -8,10 +8,6 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-repositories {
-    maven("https://androidx.dev/storage/compose-compiler/repository/")
-}
-
 dependencies {
     implementation(projects.app.shared)
     implementation(projects.app.android.androidShared)

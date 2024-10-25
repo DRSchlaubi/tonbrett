@@ -10,7 +10,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
-import coil3.network.ktor2.KtorNetworkFetcherFactory
+import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.schlaubi.tonbrett.app.api.AppContext
@@ -63,7 +63,7 @@ fun newImageLoader(appContext: AppContext): ImageLoader = ImageLoader.Builder(ap
         // Set the max size to 25% of the app's available memory.
         .maxSizePercent(appContext.platformContext, percent = 0.25).build()
 }
-//    .diskCache { newDiskCache() }
+    .diskCache { newDiskCache() }
     .crossfade(false)
     .build()
 

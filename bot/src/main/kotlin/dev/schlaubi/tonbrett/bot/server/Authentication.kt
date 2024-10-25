@@ -30,6 +30,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -40,6 +41,7 @@ import io.ktor.server.routing.Route as KtorRoute
 private const val discordAuth = "discord"
 private const val jwtAuth = "jwt"
 
+@Serializable
 data class Session(val type: Route.Auth.Type)
 
 private val jwtVerifier = JWT
@@ -66,7 +68,6 @@ private val oauthSettings = OAuthServerSettings.OAuth2ServerSettings(
     clientSecret = Config.DISCORD_CLIENT_SECRET,
     defaultScopes = listOf("identify")
 )
-
 
 fun Application.installAuth() {
     install(Sessions) {

@@ -17,7 +17,9 @@ import kotlinx.coroutines.cancel
 fun startAuthorizationServer(onAuth: () -> Unit) {
     val scope = CoroutineScope(Dispatchers.Default)
     scope.embeddedServer(Netty, port = authServerPort, module = { authModule(onAuth, scope) })
-        .start().stopServerOnCancellation()
+        .start().also {
+            it.engine.stopServerOnCancellation(it.application)
+        }
 }
 
 fun Application.authModule(onAuth: () -> Unit, scope: CoroutineScope) {
