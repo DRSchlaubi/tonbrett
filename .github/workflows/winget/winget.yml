@@ -1,0 +1,26 @@
+name: 'Bump winget version'
+description: 'Bumps the winget manifest'
+runs:
+  using: "composite"
+  steps:
+    name: Update winget manifest
+    runs-on: windows-latest
+    steps:
+      - name: Setup winget-create
+        run: choco install wingetcreate
+      - name: Bump Winget manifest
+        shell: pwsh
+        env:
+          WINGET_GITHUB_TOKEN: '${{ secrets.WINGET_UPLOAD_GITHUB_TOKEN }}'
+        run: >
+          $tagname = $env:GITHUB_REF.Replace("refs/tags/", "")
+
+          $version = $tagname.Replace("v", "")
+
+          $url = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett.msix"
+
+          wingetcreate.exe update Schlaubi.Tonbrett -u $url --version $version
+
+          if ($version -notmatch "-") {
+            wingetcreate.exe submit .\manifests\s\Schlaubi\Tonbrett\${version}\ --token $env:WINGET_GITHUB_TOKEN
+          }

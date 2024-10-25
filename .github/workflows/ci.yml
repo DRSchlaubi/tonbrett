@@ -348,4 +348,4 @@ jobs:
         with:
           files: signed/Tonbrett.msix
       - name: Upload to winget
-        uses: ./.github/workflows/winget.yml
+        uses: ./.github/workflows/winget
