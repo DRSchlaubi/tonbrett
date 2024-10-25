@@ -17,7 +17,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.window.*
-import cafe.adriel.lyricist.LocalStrings
+import dev.schlaubi.tonbrett.app.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.ProvideLocalWindow
 import dev.schlaubi.tonbrett.app.TonbrettApp
