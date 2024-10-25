@@ -101,7 +101,8 @@ kotlin {
 }
 
 dependencies {
-    kspCommonMainMetadata(libs.lyricist.processor)
+    // This is buggy * ios 18
+//    kspCommonMainMetadata(libs.lyricist.processor)
     "desktopMainImplementation"(libs.kord.common) {
         exclude(group = "io.ktor")
     }
@@ -121,24 +122,24 @@ android {
     }
 }
 
-tasks {
-    afterEvaluate {
-        val compilationTasks = kotlin.targets.flatMap {
-            buildList {
-                if (it.name != "android") {
-                    add("compileKotlin${it.name.replaceFirstChar { it.titlecase() }}")
-                    val sourcesJarName = "${it.name}SourcesJar"
-                    add(sourcesJarName)
-                } else {
-                    add("compileDebugKotlinAndroid")
-                    add("compileReleaseKotlinAndroid")
-                }
-            }
-        }
-        for (task in compilationTasks) {
-            named(task) {
-                dependsOn("kspCommonMainKotlinMetadata")
-            }
-        }
-    }
-}
+//tasks {
+//    afterEvaluate {
+//        val compilationTasks = kotlin.targets.flatMap {
+//            buildList {
+//                if (it.name != "android") {
+//                    add("compileKotlin${it.name.replaceFirstChar { it.titlecase() }}")
+//                    val sourcesJarName = "${it.name}SourcesJar"
+//                    add(sourcesJarName)
+//                } else {
+//                    add("compileDebugKotlinAndroid")
+//                    add("compileReleaseKotlinAndroid")
+//                }
+//            }
+//        }
+//        for (task in compilationTasks) {
+//            named(task) {
+//                dependsOn("kspCommonMainKotlinMetadata")
+//            }
+//        }
+//    }
+//}

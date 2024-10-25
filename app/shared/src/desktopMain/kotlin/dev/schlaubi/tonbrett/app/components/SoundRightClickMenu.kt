@@ -3,7 +3,7 @@ package dev.schlaubi.tonbrett.app.components
 import androidx.compose.foundation.ContextMenuArea
 import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.runtime.Composable
-import cafe.adriel.lyricist.LocalStrings
+import dev.schlaubi.tonbrett.app.LocalStrings
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.Route
