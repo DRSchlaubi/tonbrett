@@ -2,7 +2,7 @@
 kotlin = "2.0.21"
 ktor = "3.0.0"
 kmongo = "5.1.0"
-kord = "0.14.0"
+kord = "0.15.0"
 mikbot = "3.37.19"
 ksp = "2.0.21-1.0.26"
 kordex = "1.9.12-mikbot-SNAPSHOT"
