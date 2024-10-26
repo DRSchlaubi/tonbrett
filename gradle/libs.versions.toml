@@ -102,5 +102,5 @@ android-base = { id = "com.android.base", version.ref = "android" }
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.4.0" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.5.0" }
 protobuf = { id = "com.google.protobuf", version = "0.9.4" }
