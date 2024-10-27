@@ -323,10 +323,6 @@ jobs:
     runs-on: windows-latest
     needs: [create_release, build_desktop_app]
     steps:
-      - uses: actions/checkout@v4
-        name: Download Winget publish action
-        with:
-          sparse-checkout: .github
       - uses: actions/download-artifact@v4
         name: Download Artifacts from Windows
         with:
@@ -353,4 +349,4 @@ jobs:
         with:
           files: signed/Tonbrett.msix
       - name: Upload to winget
-        uses: ./.github/workflows/winget
+        uses: DRSchlaubi/tonbrett/.github/workflows/winget@main
