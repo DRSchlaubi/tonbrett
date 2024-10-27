@@ -460,7 +460,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dev.schlaubi.tonbrett.iosApp;
 				PRODUCT_NAME = Tonbrett;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore dev.schlaubi.tonbrett.iosApp 1729906195";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AppStore dev.schlaubi.tonbrett.iosApp 1730053722";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
