@@ -1,7 +1,10 @@
+@file:OptIn(UnsafeAPI::class)
+
 package dev.schlaubi.tonbrett.bot
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.extensions.primaryEntryPointCommand
+import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import dev.kord.common.entity.EntryPointCommandHandlerType
 import dev.kord.gateway.Intent
 import dev.schlaubi.mikbot.plugin.api.Plugin

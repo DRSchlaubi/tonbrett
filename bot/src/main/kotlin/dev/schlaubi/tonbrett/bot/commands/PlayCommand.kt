@@ -1,25 +1,15 @@
 package dev.schlaubi.tonbrett.bot.commands
 
-import dev.kord.rest.builder.message.actionRow
+import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
+import com.kotlindiscord.kord.extensions.modules.unsafe.extensions.unsafeSlashCommand
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
-import dev.schlaubi.mikbot.util_plugins.ktor.api.buildBotUrl
-import io.ktor.http.*
 
-fun SubCommandModule.playCommand() = ephemeralSubCommand {
+@OptIn(UnsafeAPI::class)
+suspend fun SubCommandModule.playCommand() = unsafeSlashCommand {
     name = "play"
     description = "commands.play.description"
 
     action {
-        respond {
-            content = translate("commands.play")
-
-            actionRow {
-                linkButton(buildBotUrl {
-                    path("soundboard", "ui")
-                }.toString()) {
-                    label = translate("commands.play.button")
-                }
-            }
-        }
+        event.interaction.openActivity()
     }
 }
