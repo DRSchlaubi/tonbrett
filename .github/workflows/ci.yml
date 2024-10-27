@@ -319,10 +319,12 @@ jobs:
             *.zip
             *-signed.apk
   sign_windows_binary:
+    name: Sign Windows binary
     runs-on: windows-latest
     needs: [create_release, build_desktop_app]
     steps:
       - uses: actions/checkout@v4
+        name: Download Winget publish action
         with:
           sparse-checkout: .github
       - uses: actions/download-artifact@v4
