@@ -5,6 +5,7 @@ import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 
 @OptIn(UnsafeAPI::class)
 fun SubCommandModule.playCommand() = unsafeSubCommand("play") {
+    name = "play"
     description = "commands.play.description"
 
     action {

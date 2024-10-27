@@ -5,7 +5,7 @@ package dev.schlaubi.tonbrett.bot
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.extensions.primaryEntryPointCommand
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
-import dev.kord.common.entity.EntryPointCommandHandlerType
+import dev.kord.common.entity.PrimaryEntryPointCommandHandlerType
 import dev.kord.gateway.Intent
 import dev.schlaubi.mikbot.plugin.api.Plugin
 import dev.schlaubi.mikbot.plugin.api.PluginContext
@@ -44,7 +44,7 @@ private class Module(context: PluginContext) : SubCommandModule(context) {
             name = "Tonbrett"
             description = "commands.entry_point.description"
 
-            handler = EntryPointCommandHandlerType.DiscordLaunchActivity
+            handler = PrimaryEntryPointCommandHandlerType.DiscordLaunchActivity
         }
     }
 }

@@ -251,7 +251,7 @@ fun SoundCard(
                         modifier = Modifier.fillMaxSize().padding(horizontal = 3.dp)
                     ) {
                         require(emoji is Sound.Emoji.HasUrl?) { "This emoji is invalid: $emoji" }
-                        OptionalWebImage(emoji?.url, modifier = Modifier.size(32.dp).padding(end = 5.dp))
+                        OptionalWebImage(emoji?.url?.proxyUrl(), modifier = Modifier.size(32.dp).padding(end = 5.dp))
                         Text(
                             name,
                             color = ColorScheme.current.textColor,
@@ -285,3 +285,5 @@ fun SoundCard(
         }
     }
 }
+
+expect fun String.proxyUrl(): String
