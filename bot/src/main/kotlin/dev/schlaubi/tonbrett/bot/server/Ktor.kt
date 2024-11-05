@@ -1,6 +1,6 @@
 package dev.schlaubi.tonbrett.bot.server
 
-import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import dev.kordex.core.koin.KordExKoinComponent
 import dev.schlaubi.mikbot.plugin.api.config.Environment
 import dev.schlaubi.mikbot.util_plugins.ktor.api.KtorExtensionPoint
 import dev.schlaubi.tonbrett.common.Route
@@ -21,7 +21,6 @@ import kotlinx.serialization.modules.SerializersModule
 import org.litote.kmongo.id.serialization.IdKotlinXSerializationModule
 import org.pf4j.Extension
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.toJavaDuration
 import dev.schlaubi.mikbot.plugin.api.config.Config as BotConfig
 
 @Extension

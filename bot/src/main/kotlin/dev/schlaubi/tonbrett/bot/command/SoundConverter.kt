@@ -1,23 +1,27 @@
 package dev.schlaubi.tonbrett.bot.command
 
-import com.kotlindiscord.kord.extensions.DiscordRelayedException
-import com.kotlindiscord.kord.extensions.commands.Argument
-import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.Validator
-import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
-import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
-import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
-import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
+import dev.kordex.core.DiscordRelayedException
+import dev.kordex.core.annotations.InternalAPI
+import dev.kordex.core.annotations.converters.Converter
+import dev.kordex.core.annotations.converters.ConverterType
+import dev.kordex.core.commands.Argument
+import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
+import dev.kordex.core.commands.converters.SingleConverter
+import dev.kordex.core.commands.converters.Validator
+import dev.kordex.core.commands.converters.builders.ConverterBuilder
+import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.parser.StringParser
 import dev.schlaubi.mikbot.plugin.api.util.safeInput
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.io.search
+import dev.schlaubi.tonbrett.bot.translations.SoundboardTranslations
 import dev.schlaubi.tonbrett.common.Sound
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.take
@@ -32,7 +36,7 @@ private const val idPrefix = "id:"
     types = [ConverterType.SINGLE]
 )
 class SoundConverter(validator: Validator<Sound>) : SingleConverter<Sound>(validator) {
-    override val signatureTypeString: String = "Sound"
+    override val signatureType: Key = EMPTY_KEY
     override fun withBuilder(builder: ConverterBuilder<Sound>): SingleConverter<Sound> {
         val builderWithAutoComplete = builder.apply {
             autoComplete { onAutoComplete() }
@@ -69,7 +73,11 @@ class SoundConverter(validator: Validator<Sound>) : SingleConverter<Sound>(valid
                 parsed = foundByName
             } else {
                 handleError(
-                    DiscordRelayedException(context.translate("commands.generic.not_found", arrayOf(text))),
+                    DiscordRelayedException(
+                        SoundboardTranslations.Commands.Generic.notFound.withOrdinalPlaceholders(
+                            text
+                        )
+                    ),
                     context
                 )
             }
@@ -78,8 +86,9 @@ class SoundConverter(validator: Validator<Sound>) : SingleConverter<Sound>(valid
         return true
     }
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+    @OptIn(InternalAPI::class)
+    override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<*> =
+        OptionWrapper(arg.displayName, arg.description, { required = true }, StringChoiceBuilder::class)
 
     private suspend fun AutoCompleteInteraction.onAutoComplete() {
         val input = focusedOption.safeInput

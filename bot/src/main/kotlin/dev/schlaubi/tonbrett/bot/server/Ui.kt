@@ -2,14 +2,11 @@ package dev.schlaubi.tonbrett.bot.server
 
 import dev.schlaubi.tonbrett.common.Route.AuthDeepLink
 import dev.schlaubi.tonbrett.common.Route.Ui
-import io.ktor.events.Events
-import io.ktor.http.HttpHeaders
+import io.ktor.events.*
 import io.ktor.server.application.*
-import io.ktor.server.application.Application
 import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
 import io.ktor.server.resources.*
-import io.ktor.server.response.header
 import io.ktor.server.routing.*
 import kotlin.reflect.jvm.javaField
 
@@ -31,14 +28,14 @@ fun Route.ui() {
 
 
 private fun ApplicationCall.fixClassLoader() {
-    @Suppress("INVISIBLE_REFERENCE")
+    @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
     val fixedApplication = Application(
         HackedEnvironment(application.environment),
         false,
         "/",
         Events(),
-        coroutineContext,
-        { error("Unsupported") })
+        coroutineContext
+    ) { error("Unsupported") }
     val call = (this as RoutingPipelineCall).engineCall
     BaseApplicationCall::application.javaField!!.apply {
         isAccessible = true

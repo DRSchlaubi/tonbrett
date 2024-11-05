@@ -1,7 +1,7 @@
 package dev.schlaubi.tonbrett.bot.util
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.koin.KordExContext
+import dev.kordex.core.ExtensibleBot
+import dev.kordex.core.koin.KordExContext
 import dev.kord.core.behavior.GuildBehavior
 import dev.schlaubi.mikmusic.core.MusicModule
 import dev.schlaubi.mikmusic.player.MusicPlayer

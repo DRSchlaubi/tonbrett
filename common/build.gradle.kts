@@ -21,7 +21,7 @@ kotlin {
             }
         }
 
-        desktopMain {
+        named("jvmMain") {
             dependencies {
                 compileOnly(libs.kmongo.id.serialization)
                 compileOnly(libs.kord.common)

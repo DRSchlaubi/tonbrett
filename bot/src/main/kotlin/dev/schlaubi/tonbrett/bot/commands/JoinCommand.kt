@@ -1,12 +1,14 @@
 package dev.schlaubi.tonbrett.bot.commands
 
-import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
+import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
+import dev.schlaubi.mikbot.plugin.api.util.translate
 import dev.schlaubi.mikmusic.checks.joinSameChannelCheck
+import dev.schlaubi.tonbrett.bot.translations.SoundboardTranslations
 
 suspend fun SubCommandModule.joinCommand() = ephemeralSlashCommand {
-    name = "join"
-    description = "commands.join.description"
+    name = SoundboardTranslations.Commands.Join.name
+    description = SoundboardTranslations.Commands.Join.description
 
     check {
         joinSameChannelCheck(bot)
@@ -14,7 +16,7 @@ suspend fun SubCommandModule.joinCommand() = ephemeralSlashCommand {
 
     action {
         respond {
-            content = translate("commands.join.success")
+            content = translate(SoundboardTranslations.Commands.Join.success)
         }
     }
 }

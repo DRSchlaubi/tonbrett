@@ -1,15 +1,14 @@
 package dev.schlaubi.tonbrett.bot.core
 
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.event
-import com.kotlindiscord.kord.extensions.koin.KordExContext
 import dev.kord.cache.api.query
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
-import dev.kord.common.entity.DiscordUser
 import dev.kord.core.Kord
 import dev.kord.core.cache.data.VoiceStateData
 import dev.kord.core.event.user.VoiceStateUpdateEvent
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.event
+import dev.kordex.core.koin.KordExContext
 import dev.schlaubi.tonbrett.bot.server.sendEvent
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.User

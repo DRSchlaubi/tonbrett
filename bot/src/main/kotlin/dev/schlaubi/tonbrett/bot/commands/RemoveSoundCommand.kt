@@ -1,28 +1,30 @@
  package dev.schlaubi.tonbrett.bot.commands
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
+import dev.kordex.core.commands.Arguments
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
+import dev.schlaubi.mikbot.plugin.api.util.translate
 import dev.schlaubi.tonbrett.bot.command.sound
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.server.broadcastEvent
+import dev.schlaubi.tonbrett.bot.translations.SoundboardTranslations
 import dev.schlaubi.tonbrett.common.SoundDeletedEvent
 
  class RemoveSoundArguments : Arguments() {
     val sound by sound {
-        name = "sound"
-        description = "commands.remove_sound.arguments.sound.description"
+        name = SoundboardTranslations.Commands.RemoveSound.Arguments.Sound.name
+        description = SoundboardTranslations.Commands.RemoveSound.Arguments.Sound.description
     }
 }
 
 fun SubCommandModule.removeCommand() = ephemeralSubCommand(::RemoveSoundArguments) {
-    name = "remove"
-    description = "commands.remove.description"
+    name = SoundboardTranslations.Commands.Remove.name
+    description = SoundboardTranslations.Commands.Remove.description
 
     action {
         SoundBoardDatabase.sounds.deleteOneById(arguments.sound.id)
 
         respond {
-            content = translate("commands.remove_sound.success")
+            content = translate(SoundboardTranslations.Commands.RemoveSound.success)
         }
 
         broadcastEvent(SoundDeletedEvent(arguments.sound.id))

@@ -7,7 +7,6 @@ import dev.schlaubi.tonbrett.bot.util.soundNotFound
 import dev.schlaubi.tonbrett.common.Route.Sounds
 import io.ktor.client.content.*
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*

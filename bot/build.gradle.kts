@@ -1,6 +1,5 @@
 import dev.schlaubi.mikbot.gradle.mikbot
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import java.util.Locale
 
 plugins {
     alias(libs.plugins.ksp)
@@ -40,13 +39,15 @@ mikbotPlugin {
     pluginId = "tonbrett"
     license = "MIT"
     enableKordexProcessor = true
+
+    i18n {
+        classPackage = "dev.schlaubi.tonbrett.bot.translations"
+        translationBundle = "soundboard"
+        className = "SoundboardTranslations"
+    }
 }
 
 tasks {
-    generateDefaultTranslationBundle {
-        defaultLocale = Locale.Builder().setLanguage("en").setRegion("US").build()
-    }
-
     val buildWebApp = register<Copy>("buildWebApp") {
         val webApp = project(":app:web")
         from(webApp.tasks.named("jsBrowserDistribution"))

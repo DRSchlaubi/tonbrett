@@ -1,6 +1,6 @@
 package dev.schlaubi.tonbrett.bot.io
 
-import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import dev.kordex.core.koin.KordExKoinComponent
 import com.mongodb.client.model.Collation
 import dev.schlaubi.mikbot.plugin.api.io.getCollection
 import dev.schlaubi.mikbot.plugin.api.util.database

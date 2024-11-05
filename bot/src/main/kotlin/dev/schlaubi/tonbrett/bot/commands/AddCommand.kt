@@ -1,18 +1,20 @@
 package dev.schlaubi.tonbrett.bot.commands
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.*
+import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.converters.impl.*
 import dev.arbjerg.lavalink.protocol.v4.LoadResult
 import dev.schlaubi.lavakord.rest.loadItem
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.mikbot.plugin.api.util.kord
 import dev.schlaubi.mikbot.plugin.api.util.safeGuild
+import dev.schlaubi.mikbot.plugin.api.util.translate
 import dev.schlaubi.tonbrett.bot.command.emoji
 import dev.schlaubi.tonbrett.bot.command.tagArgument
 import dev.schlaubi.tonbrett.bot.command.toEmoji
 import dev.schlaubi.tonbrett.bot.config.Config
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.server.broadcastEvent
+import dev.schlaubi.tonbrett.bot.translations.SoundboardTranslations
 import dev.schlaubi.tonbrett.bot.util.player
 import dev.schlaubi.tonbrett.common.Sound
 import dev.schlaubi.tonbrett.common.SoundCreatedEvent
@@ -30,42 +32,42 @@ import kotlin.time.toDuration
 
 class AddSoundCommandArguments : Arguments() {
     val sound by attachment {
-        name = "attachment"
-        description = "commands.add_sound.arguments.attachment.description"
+        name = SoundboardTranslations.Commands.AddSound.Arguments.Attachment.name
+        description = SoundboardTranslations.Commands.AddSound.Arguments.Attachment.description
     }
 
     val name by string {
-        name = "name"
-        description = "commands.add_sound.arguments.name.description"
+        name = SoundboardTranslations.Commands.AddSound.Arguments.Name.name
+        description = SoundboardTranslations.Commands.AddSound.Arguments.Name.description
         maxLength = NAME_MAX_LENGTH
     }
 
     val description by optionalString {
-        name = "description"
-        description = "commands.add_sound.arguments.description.description"
+        name = SoundboardTranslations.Commands.AddSound.Arguments.Description.name
+        description = SoundboardTranslations.Commands.AddSound.Arguments.Description.description
     }
 
-    val emoji by emoji("emoji", "commands.add_sound.arguments.emoji.description")
+    val emoji by emoji(SoundboardTranslations.Commands.AddSound.Arguments.Emoji.name, SoundboardTranslations.Commands.AddSound.Arguments.Emoji.description)
 
-    val tag by tagArgument("tag", "commands.add_sound.arguments.tag.description")
+    val tag by tagArgument(SoundboardTranslations.Commands.AddSound.Arguments.Tag.name, SoundboardTranslations.Commands.AddSound.Arguments.Tag.description)
 
     val public by defaultingBoolean {
-        name = "public"
-        description = "commands.add_sound.arguments.public.description"
+        name = SoundboardTranslations.Commands.AddSound.Arguments.Public.name
+        description = SoundboardTranslations.Commands.AddSound.Arguments.Public.description
         defaultValue = true
     }
 
     val volume by optionalInt {
-        name = "volume"
-        description = "commands.add_sound.arguments.volume.description"
+        name = SoundboardTranslations.Commands.AddSound.Arguments.Volume.name
+        description = SoundboardTranslations.Commands.AddSound.Arguments.Volume.description
         minValue = 0
         maxValue = 1000
     }
 }
 
 fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArguments) {
-    name = "add"
-    description = "commands.add_sound.description"
+    name = SoundboardTranslations.Commands.AddSound.name
+    description = SoundboardTranslations.Commands.AddSound.description
 
     action {
         val found = SoundBoardDatabase.sounds.countDocuments(
@@ -74,7 +76,7 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
 
         if (found >= 1) {
             respond {
-                content = translate("commands.add_sound.taken")
+                content = translate(SoundboardTranslations.Commands.AddSound.taken)
             }
             return@action
         }
@@ -86,20 +88,20 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
         if (audioInfo !is LoadResult.TrackLoaded) {
             respond {
                 val message = (audioInfo as? LoadResult.LoadFailed)?.data?.message
-                content = translate("commands.add_sound.invalid_file", arrayOf(message))
+                content = translate(SoundboardTranslations.Commands.AddSound.invalidFile, message)
             }
             return@action
         }
         if (audioInfo.data.info.length.toDuration(DurationUnit.MILLISECONDS) > Config.MAX_SOUND_LENGTH) {
             respond {
-                content = translate("commands.add_sound.too_long", arrayOf(Config.MAX_SOUND_LENGTH))
+                content = translate(SoundboardTranslations.Commands.AddSound.tooLong, Config.MAX_SOUND_LENGTH)
             }
             return@action
         }
         val cdnResponse = kord.resources.httpClient.get(arguments.sound.proxyUrl)
         if (!cdnResponse.status.isSuccess()) {
             respond {
-                content = translate("commands.add_sound.invalid_cdn_response", arrayOf(cdnResponse.status))
+                content = translate(SoundboardTranslations.Commands.AddSound.invalidCdnResponse, cdnResponse.status)
             }
             return@action
         }
@@ -119,7 +121,7 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
         SoundBoardDatabase.sounds.save(sound)
 
         respond {
-            content = translate("commands.add_sound.success")
+            content = translate(SoundboardTranslations.Commands.AddSound.success)
         }
 
         broadcastEvent(SoundCreatedEvent(sound.convertForNonJvmPlatforms()))

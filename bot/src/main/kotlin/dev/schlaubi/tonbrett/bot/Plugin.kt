@@ -2,17 +2,20 @@
 
 package dev.schlaubi.tonbrett.bot
 
-import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.extensions.primaryEntryPointCommand
-import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
+import dev.kordex.core.extensions.primaryEntryPointCommand
 import dev.kord.common.entity.PrimaryEntryPointCommandHandlerType
 import dev.kord.gateway.Intent
+import dev.kordex.core.builders.ExtensionsBuilder
+import dev.kordex.core.i18n.toKey
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.schlaubi.mikbot.plugin.api.Plugin
 import dev.schlaubi.mikbot.plugin.api.PluginContext
 import dev.schlaubi.mikbot.plugin.api.PluginMain
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.tonbrett.bot.commands.*
 import dev.schlaubi.tonbrett.bot.core.VoiceStateWatcher
+import dev.schlaubi.tonbrett.bot.translations.SoundboardTranslations
 import dev.schlaubi.tonbrett.common.TonbrettSerializersModule
 import org.litote.kmongo.serialization.registerModule
 
@@ -22,7 +25,7 @@ class Plugin(context: PluginContext) : Plugin(context) {
         registerModule(TonbrettSerializersModule)
     }
 
-    override fun ExtensibleBotBuilder.ExtensionsBuilder.addExtensions() {
+    override fun ExtensionsBuilder.addExtensions() {
         add(::Module)
         add(::VoiceStateWatcher)
     }
@@ -30,8 +33,7 @@ class Plugin(context: PluginContext) : Plugin(context) {
 
 private class Module(context: PluginContext) : SubCommandModule(context) {
     override val name: String = "tonbrett"
-    override val bundle: String = "soundboard"
-    override val commandName: String = "sound"
+    override val commandName: Key = SoundboardTranslations.Commands.Sound.name
     override suspend fun overrideSetup() {
         intents.add(Intent.GuildVoiceStates)
         addCommand()
@@ -41,8 +43,8 @@ private class Module(context: PluginContext) : SubCommandModule(context) {
         playCommand()
 
         primaryEntryPointCommand {
-            name = "Tonbrett"
-            description = "commands.entry_point.description"
+            name = "Tonbrett".toKey()
+            description = SoundboardTranslations.Commands.EntryPoint.description
 
             handler = PrimaryEntryPointCommandHandlerType.DiscordLaunchActivity
         }
