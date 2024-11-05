@@ -12,6 +12,7 @@ import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.commands.converters.builders.OptionalCoalescingConverterBuilder
 import dev.kordex.core.commands.converters.impl.emoji
 import dev.kordex.core.commands.converters.impl.string
+import dev.kordex.core.i18n.EMPTY_KEY
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.converters.union
@@ -37,7 +38,7 @@ fun Arguments.emoji(name: Key, description: Key): OptionalCoalescingConverter<An
         }
     }
 
-    val brokenConverter =  union(name, description, converters = arrayOf(emoji, string))
+    val brokenConverter = union(name, description, typeName = EMPTY_KEY, converters = arrayOf(emoji, string))
     args.removeIf { it.converter == brokenConverter }
     return arg(name, description, brokenConverter.toOptional().withBuilder(DummyBuilder))
 }
