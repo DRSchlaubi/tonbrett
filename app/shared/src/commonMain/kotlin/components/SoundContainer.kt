@@ -45,6 +45,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -266,12 +267,10 @@ fun SoundCard(
                                 horizontalArrangement = Arrangement.Center,
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                IconButton({
-                                    play()
-                                }) {
+                                IconButton({ play() }) {
                                     Icon(Icons.Default.Refresh, null, tint = ColorScheme.current.textColor)
                                 }
-                                HorizontalDivider(Modifier.width(1.dp).height(15.dp))
+                                VerticalDivider(Modifier.width(1.dp).height(15.dp))
                                 IconButton({
                                     stop()
                                 }) {
