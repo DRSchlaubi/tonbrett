@@ -1,15 +1,11 @@
 package dev.schlaubi.tonbrett.app.util
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 
 /**
  * Grid-like layout based on [FlowRow].
@@ -34,7 +30,14 @@ fun <T> FlowGrid(
     val density = LocalDensity.current
     val spacingPx = remember(density) { with(density) { horizontalArrangement.spacing.roundToPx() } }
     val widths =
-        remember(density, constraints) { with(gridCells) { density.calculateCrossAxisCellSizes(constraints.maxWidth, spacingPx) } }
+        remember(density, constraints) {
+            with(gridCells) {
+                density.calculateCrossAxisCellSizes(
+                    constraints.maxWidth,
+                    spacingPx
+                )
+            }
+        }
 
     fun getWidth(index: Int) = with(density) { widths[index % widths.size].toDp() }
 
