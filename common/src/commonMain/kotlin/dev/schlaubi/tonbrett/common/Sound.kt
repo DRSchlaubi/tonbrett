@@ -17,6 +17,7 @@ import kotlinx.serialization.json.JsonClassDiscriminator
  * @property description an optional description of this sound
  * @property emoji an optional [Emoji] representing this sound
  * @property tag an optional tag for this sound
+ * @property isDiscord whether this sound is imported from discord
  * @property volume the volume used to play the sound
  */
 @OptIn(ExperimentalSerializationApi::class)
@@ -25,13 +26,14 @@ public data class Sound(
     @SerialName("_id")
     val id: Id<Sound>,
     val name: String,
-    val owner: SerializableSnowflake,
+    val owner: SerializableSnowflake?,
     @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val description: String? = null,
     @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val emoji: Emoji? = null,
     @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val public: Boolean = true,
+    val isDiscord: Boolean = false,
     val tag: String? = null,
     val volume: Int = 100
 ) {

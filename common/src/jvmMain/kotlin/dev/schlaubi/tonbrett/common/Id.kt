@@ -29,7 +29,14 @@ internal value class WrappedId<T>(private val id: org.litote.kmongo.Id<T>) : Id<
     override fun toString(): String = id.toString()
 }
 
+@JvmInline
+internal value class SnowflakeId<T>(val snowflake: dev.kord.common.entity.Snowflake) : Id<T> {
+    override fun toString(): String = snowflake.toString()
+}
+
 public fun <T> newId(): Id<T> = WrappedId(org.litote.kmongo.newId())
+
+public fun <T> Snowflake.toId(): Id<T> = SnowflakeId<T>(this)
 
 public object IdSerializer : KSerializer<Id<*>> {
     override val descriptor: SerialDescriptor =

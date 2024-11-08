@@ -6,6 +6,7 @@ import dev.schlaubi.lavakord.audio.TrackEndEvent
 import dev.schlaubi.mikbot.util_plugins.ktor.api.buildBotUrl
 import dev.schlaubi.tonbrett.bot.server.sendEvent
 import dev.schlaubi.tonbrett.bot.util.player
+import dev.schlaubi.tonbrett.common.Id
 import dev.schlaubi.tonbrett.common.InterfaceAvailabilityChangeEvent
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.Sound
@@ -67,9 +68,13 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         val alreadyLocked = locked
         locked = true
         updateAvailability(false, sound, user)
-        val url = buildBotUrl {
-            path("soundboard", "sounds", sound.id.toString(), "audio")
-        }.toString()
+        val url = if(sound.isDiscord) {
+            "https://cdn.discordapp.com/soundboard-sounds/${sound.id}"
+        } else {
+            buildBotUrl {
+                path("soundboard", "sounds", sound.id.toString(), "audio")
+            }.toString()
+        }
         currentUser = user
         player.injectTrack(url, noReplace = alreadyLocked) {
             volume = sound.volume

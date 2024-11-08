@@ -78,7 +78,7 @@ fun Route.webSocket() {
                 val sessionId =
                     call.parameters["session_token"] ?: badRequest("Missing auth information")
                 snowflake(verifyJwt(sessionId).getClaim("userId").asLong())
-            } catch (e: JWTVerificationException) {
+            } catch (_: JWTVerificationException) {
                 call.respond(HttpStatusCode.Unauthorized)
                 finish()
                 return@intercept
