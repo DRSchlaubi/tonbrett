@@ -8,13 +8,10 @@ import dev.schlaubi.tonbrett.common.Route.Me
 import dev.schlaubi.tonbrett.common.Snowflake
 import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.ApplicationCallPipeline
-import io.ktor.server.application.call
 import io.ktor.server.application.createRouteScopedPlugin
 import io.ktor.server.resources.resource
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import io.ktor.server.routing.intercept
 import io.ktor.server.websocket.DefaultWebSocketServerSession
 import io.ktor.server.websocket.sendSerialized
 import io.ktor.server.websocket.webSocket
@@ -25,7 +22,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.io.IOException
 import mu.KotlinLogging
-import special.anonymous
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set

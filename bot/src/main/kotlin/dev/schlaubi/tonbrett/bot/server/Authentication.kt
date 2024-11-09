@@ -32,7 +32,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import special.anonymous
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import dev.kord.common.entity.Snowflake as snowflake
