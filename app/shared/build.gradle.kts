@@ -62,6 +62,7 @@ kotlin {
 
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network)
+                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
             }
         }
 

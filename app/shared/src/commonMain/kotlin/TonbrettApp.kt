@@ -3,6 +3,7 @@ package dev.schlaubi.tonbrett.app
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -14,35 +15,50 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.app.components.ErrorText
 import dev.schlaubi.tonbrett.app.components.SoundList
 import dev.schlaubi.tonbrett.client.ReauthorizationRequiredException
+import dev.schlaubi.tonbrett.client.Tonbrett
 import dev.schlaubi.tonbrett.common.User
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.plugins.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 
 typealias ErrorReporter = suspend (Exception) -> Unit
 
 private val LOG = KotlinLogging.logger {}
 
-@Composable
-fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableStateOf(false) }) {
-    val scaffoldState = rememberScaffoldState()
-    var sessionExpired by sessionExpiredState
-    var crashed by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    var initialUser: User? by remember { mutableStateOf(null) }
+data class TonbrettState(
+    val sessionExpired: Boolean = false,
+    val crashed: Boolean = false,
+    val initialUser: User? = null,
+    val loading: Boolean = true
+)
 
-    val lyricist = rememberStrings()
+class TonbrettViewModel(val scaffoldState: ScaffoldState) : ViewModel() {
+    private val _uiState = MutableStateFlow(TonbrettState())
+    val uiState = _uiState.asStateFlow()
+
+    fun updateSessionExpired(to: Boolean) {
+        _uiState.update { it.copy(sessionExpired = to) }
+    }
 
     suspend fun reportError(exception: Exception) {
         if (exception is ReauthorizationRequiredException) {
-            sessionExpired = true
-            crashed = false
+            _uiState.update {
+                it.copy(
+                    sessionExpired = true,
+                    crashed = false
+                )
+            }
         } else if (exception.message.isNullOrBlank()) {
             LOG.error(exception) { "An error happened during a rest request" }
         } else {
@@ -51,61 +67,98 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
         }
     }
 
-    if (initialUser == null) {
-        LaunchedEffect(context.api) {
-            withContext(Dispatchers.Default) {
-                try {
-                    initialUser = context.api.getMe()
-                } catch (e: ClientRequestException) {
-                    if (e.response.status.value in 400..499) {
-                        reportError(ReauthorizationRequiredException())
-                    }
-                } catch (e: ReauthorizationRequiredException) {
-                    reportError(e)
-                }
+    suspend fun fetchInitialUser(api: Tonbrett) {
+        try {
+            val initialUser = api.getMe()
+
+            _uiState.update {
+                it.copy(
+                    initialUser = initialUser,
+                    sessionExpired = false,
+                    crashed = false
+                )
+            }
+        } catch (e: ClientRequestException) {
+            if (e.response.status.value in 400..499) {
+                reportError(ReauthorizationRequiredException())
+            }
+        } catch (e: ReauthorizationRequiredException) {
+            reportError(e)
+        }
+    }
+
+    suspend fun connectToGateway(api: Tonbrett) {
+        try {
+            api.connect()
+        } catch (e: Exception) {
+            reportError(e)
+        }
+        _uiState.update {
+            it.copy(crashed = !it.sessionExpired)
+        }
+    }
+
+    fun restart() {
+        _uiState.update {
+            it.copy(sessionExpired = false, crashed = false)
+        }
+    }
+
+    fun updateLoading(to: Boolean) {
+        _uiState.update { it.copy(loading = to) }
+    }
+}
+
+@Composable
+fun TonbrettApp(
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    model: TonbrettViewModel = viewModel { TonbrettViewModel(scaffoldState) }
+) {
+    val state by model.uiState.collectAsState()
+    val context = LocalContext.current
+
+    val lyricist = rememberStrings()
+
+    LaunchedEffect(context.api) {
+        withContext(Dispatchers.IO) {
+            if (state.initialUser == null) {
+                model.fetchInitialUser(context.api)
             }
         }
     }
 
-    ProvideImageLoader(newImageLoader(context)) {
-        ProvideStrings(lyricist) {
-            val user = initialUser
-            if (!crashed && !sessionExpired && user != null) {
-                Scaffold(
-                    containerColor = ColorScheme.current.container,
-                    snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) }) { padding ->
-                    Column(Modifier.padding(padding)) {
-                        SoundList(::reportError, user.voiceState)
-                    }
-                }
-
-                LaunchedEffect(context.token) {
-                    withContext(Dispatchers.IO) {
-                        try {
-                            context.api.connect()
-                        } catch (e: Exception) {
-                            reportError(e)
+    Scaffold(
+        containerColor = ColorScheme.current.container,
+        snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) }) { padding ->
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(padding)
+        ) {
+            ProvideImageLoader(newImageLoader(context)) {
+                ProvideStrings(lyricist) {
+                    val user = state.initialUser
+                    if (!state.crashed && !state.sessionExpired) {
+                        LaunchedEffect(context.token) {
+                            withContext(Dispatchers.IO) {
+                                model.connectToGateway(context.api)
+                            }
                         }
-                        crashed = !sessionExpired
-                    }
-                }
-            } else {
-                if (user == null && !sessionExpired) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.background(ColorScheme.current.container)
-                            .fillMaxSize()
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                } else {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.background(ColorScheme.current.container)
-                            .fillMaxSize()
-                    ) {
-                        if (sessionExpired) {
+                        if (state.loading || user == null) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.background(ColorScheme.current.container)
+                                    .fillMaxSize()
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                        if (user != null) {
+                            SoundList(model)
+                        }
+                    } else {
+                        if (state.sessionExpired) {
                             CrashErrorScreen(LocalStrings.current.sessionExpiredExplainer) {
                                 Button({ context.reAuthorize() }) {
                                     Icon(Icons.Default.Refresh, LocalStrings.current.reAuthorize)
@@ -115,11 +168,14 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
                                     )
                                 }
                             }
-                        } else if (crashed) {
+                        } else if (state.crashed) {
                             CrashErrorScreen(LocalStrings.current.crashedExplainer) {
-                                Button({ crashed = false }) {
+                                Button({ model.restart() }) {
                                     Icon(Icons.Default.Refresh, LocalStrings.current.reload)
-                                    Text(LocalStrings.current.reload, color = ColorScheme.current.textColor)
+                                    Text(
+                                        LocalStrings.current.reload,
+                                        color = ColorScheme.current.textColor
+                                    )
                                 }
                             }
                         }
@@ -128,7 +184,6 @@ fun TonbrettApp(sessionExpiredState: MutableState<Boolean> = remember { mutableS
             }
         }
     }
-
 }
 
 @Composable

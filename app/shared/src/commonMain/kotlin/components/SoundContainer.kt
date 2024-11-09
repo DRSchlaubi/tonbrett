@@ -56,6 +56,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -90,19 +91,18 @@ import kotlin.math.ceil
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SoundContainer(
-    sounds: List<SoundGroup>,
-    errorReporter: ErrorReporter,
-    playingSound: Id<Sound>?,
-    unavailableFor: String?,
-    soundUpdater: SoundUpdater
-) {
-    var lastDisabledReason by remember { mutableStateOf(unavailableFor) }
-    if (unavailableFor != null) {
-        lastDisabledReason = unavailableFor
-    }
+fun SoundContainer(model: SoundListViewModel) {
+    val state by model.uiState.collectAsState()
+    val strings = LocalStrings.current
 
     Column {
+        val unavailableFor = when {
+            state.offline -> strings.offline
+            state.channelMismatch -> strings.wrongChannelExplainer
+            state.sounds.isEmpty() -> strings.noSounds
+            !state.available -> strings.playerBusy
+            else -> null
+        }
         AnimatedVisibility(
             unavailableFor != null,
             exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
@@ -115,7 +115,7 @@ fun SoundContainer(
                     .background(ColorScheme.current.error)
             ) {
                 Text(
-                    lastDisabledReason!!,
+                    unavailableFor!!,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 25.sp
@@ -123,15 +123,15 @@ fun SoundContainer(
             }
         }
 
-        SearchBar(soundUpdater)
+        SearchBar(model::updateSounds)
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(5.dp),
             modifier = Modifier.fillMaxSize()
                 .padding(vertical = 5.dp)
                 .scrollable(rememberScrollState(), Orientation.Vertical)
         ) {
-            items(sounds) { group ->
-                SoundGroup(group, playingSound, errorReporter, unavailableFor)
+            items(state.sounds) { group ->
+                SoundGroup(group, state.playingSound, model::reportError, unavailableFor)
             }
         }
     }
@@ -145,45 +145,52 @@ private fun SoundGroup(
     unavailableFor: String?
 ) = BoxWithConstraints(Modifier.padding(horizontal = 5.dp)) {
     val maxWidth = constraints.maxWidth
-    Column {
-        var visible = remember { MutableTransitionState(true) }
+    var visible by remember { mutableStateOf(true) }
 
-        val strings = LocalStrings.current
+    val strings = LocalStrings.current
+
+    Column {
+        // Header section with title and collapse icon
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             Text(group.tag ?: strings.otherSounds, color = ColorScheme.current.textColor)
-            CollapseIcon(visible, Modifier.clickable { visible.targetState = !visible.currentState })
+            CollapseIcon(
+                visible,
+                Modifier.clickable { visible = !visible }
+            )
             HorizontalDivider(Modifier.fillMaxWidth().padding(5.dp))
         }
 
         val density = LocalDensity.current
         val cells = remember { GridCells.Adaptive(160.dp) }
         val spacing = remember(density) { with(density) { 3.dp.roundToPx() } }
+
+        // Rows calculation memoized based on parameters
         val rows = remember(spacing, maxWidth, group.sounds.size) {
             val itemsPerRow = with(cells) {
                 density.calculateCrossAxisCellSizes(maxWidth, spacing).size.toDouble()
             }
-
             ceil(group.sounds.size / itemsPerRow).toInt()
         }
 
+        // Efficiently control visibility animation
         AnimatedVisibility(visible) {
             Box(Modifier.height((64.dp + 3.dp) * rows)) {
                 LazyVerticalGrid(
-                    cells,
+                    columns = cells,
                     horizontalArrangement = Arrangement.spacedBy(3.dp),
                     verticalArrangement = Arrangement.spacedBy(3.dp),
-                    userScrollEnabled = false,
+                    userScrollEnabled = false,  // If you want no scrolling
                     modifier = Modifier.canClearFocus().fillMaxWidth()
                 ) {
-                    items(group.sounds, { it.id.toString() }) { (id, name, _, description, emoji) ->
+                    items(group.sounds, { it.id.toString() }) { sound ->
                         SoundCard(
-                            id,
-                            name,
-                            emoji,
-                            description,
-                            id == playingSound,
-                            errorReporter,
-                            unavailableFor != null
+                            id = sound.id,
+                            name = sound.name,
+                            emoji = sound.emoji,
+                            description = sound.description,
+                            playing = sound.id == playingSound,
+                            reportError = errorReporter,
+                            disabled = unavailableFor != null
                         )
                     }
                 }
@@ -193,8 +200,8 @@ private fun SoundGroup(
 }
 
 @Composable
-private fun CollapseIcon(visible: MutableTransitionState<Boolean>, modifier: Modifier = Modifier) {
-    val transition = rememberTransition(visible)
+private fun CollapseIcon(visible: Boolean, modifier: Modifier = Modifier) {
+    val transition = updateTransition(visible)
     val iconRotation by transition.animateFloat { visible ->
         if (!visible) -90f else 0f
     }
@@ -227,7 +234,7 @@ fun SoundCard(
     val api = LocalContext.current.api
     var waiting by remember { mutableStateOf(false) }
 
-    fun request(block: suspend CoroutineScope.() -> Unit) = coroutineScope.launch(Dispatchers.IO) {
+    fun request(block: suspend CoroutineScope.() -> Unit) = coroutineScope.launch {
         waiting = true
         try {
             block()

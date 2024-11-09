@@ -21,6 +21,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.schlaubi.tonbrett.app.ColorScheme
 import dev.schlaubi.tonbrett.app.LocalStrings
 import dev.schlaubi.tonbrett.app.api.IO
@@ -117,7 +119,10 @@ fun SearchBar(updateSounds: SoundUpdater) {
                             color = ColorScheme.current.textColor.copy(alpha = .7f)
                         )
                     },
-                    colors = TextFieldDefaults.colors(unfocusedTextColor = ColorScheme.current.textColor, focusedTextColor = ColorScheme.current.textColor)
+                    colors = TextFieldDefaults.colors(
+                        unfocusedTextColor = ColorScheme.current.textColor,
+                        focusedTextColor = ColorScheme.current.textColor
+                    )
                 )
             },
             showSuggestions, ::showSuggestions,

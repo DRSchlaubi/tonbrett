@@ -91,7 +91,7 @@ private fun ApplicationScope.startActualApplication(
             } else {
                 context.resetApi()
                 ProvideContext(context) {
-                    TonbrettApp(sessionExpired)
+                    TonbrettApp()
                 }
             }
         }
