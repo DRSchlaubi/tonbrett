@@ -10,6 +10,7 @@ import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.call
+import io.ktor.server.application.createRouteScopedPlugin
 import io.ktor.server.resources.resource
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -24,6 +25,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.io.IOException
 import mu.KotlinLogging
+import special.anonymous
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -71,22 +73,24 @@ suspend fun broadcastEvent(event: Event) = coroutineScope {
 
 private val DISCORD_USER = AttributeKey<Snowflake>("DISCORD_USER")
 
+private val WebsocketAuthentification = createRouteScopedPlugin("WebsocketAuthentification") {
+    onCall { call ->
+        val discordUser = try {
+            val sessionId =
+                call.parameters["session_token"] ?: badRequest("Missing auth information")
+            snowflake(verifyJwt(sessionId).getClaim("userId").asLong())
+        } catch (_: JWTVerificationException) {
+            call.respond(HttpStatusCode.Unauthorized)
+            return@onCall
+        }
+
+        call.attributes.put(DISCORD_USER, discordUser)
+    }
+}
+
 fun Route.webSocket() {
     resource<Me.Events> {
-        intercept(ApplicationCallPipeline.Plugins) {
-            val discordUser = try {
-                val sessionId =
-                    call.parameters["session_token"] ?: badRequest("Missing auth information")
-                snowflake(verifyJwt(sessionId).getClaim("userId").asLong())
-            } catch (_: JWTVerificationException) {
-                call.respond(HttpStatusCode.Unauthorized)
-                finish()
-                return@intercept
-            }
-
-            call.attributes.put(DISCORD_USER, discordUser)
-            proceed()
-        }
+        install(WebsocketAuthentification)
         webSocket {
             val discordUser = call.attributes[DISCORD_USER]
 

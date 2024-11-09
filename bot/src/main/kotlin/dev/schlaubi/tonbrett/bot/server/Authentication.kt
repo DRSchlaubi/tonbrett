@@ -32,6 +32,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import special.anonymous
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import dev.kord.common.entity.Snowflake as snowflake
@@ -69,6 +70,13 @@ private val oauthSettings = OAuthServerSettings.OAuth2ServerSettings(
     defaultScopes = listOf("identify")
 )
 
+private val SessionType = createRouteScopedPlugin("SessionType") {
+    onCall { call ->
+        val type = call.parameters["type"]?.let(Route.Auth.Type::valueOf) ?: return@intercept
+        call.sessions.set(Session(type))
+    }
+}
+
 fun Application.installAuth() {
     install(Sessions) {
         cookie<Session>("AUTH_SESSION")
@@ -93,10 +101,8 @@ fun Application.installAuth() {
     routing {
         authenticate(discordAuth) {
             resource<Route.Auth> {
-                intercept(ApplicationCallPipeline.Plugins) {
-                    val type = call.parameters["type"]?.let(Route.Auth.Type::valueOf) ?: return@intercept
-                    call.sessions.set(Session(type))
-                }
+                install(SessionType)
+
                 get {
                     call.respond("Well this is awkward")
                 }
