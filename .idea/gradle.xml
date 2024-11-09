@@ -32,6 +32,7 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/client" />
             <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/lavalink-plugin" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

@@ -1,5 +1,9 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import dev.schlaubi.tonbrett.gradle.androidSdk
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 plugins {
     `multiplatform-module`
@@ -12,6 +16,11 @@ repositories {
 }
 
 kotlin {
+    targets.named<KotlinJvmTarget>("desktop") {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
+    }
     macosArm64()
     macosX64()
     mingwX64()
