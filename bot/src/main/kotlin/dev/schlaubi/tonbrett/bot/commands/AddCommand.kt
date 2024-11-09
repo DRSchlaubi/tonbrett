@@ -12,6 +12,7 @@ import dev.schlaubi.tonbrett.bot.command.emoji
 import dev.schlaubi.tonbrett.bot.command.tagArgument
 import dev.schlaubi.tonbrett.bot.command.toEmoji
 import dev.schlaubi.tonbrett.bot.config.Config
+import dev.schlaubi.tonbrett.bot.core.syncSound
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.server.broadcastEvent
 import dev.schlaubi.tonbrett.bot.translations.SoundboardTranslations
@@ -23,6 +24,8 @@ import dev.schlaubi.tonbrett.common.util.convertForNonJvmPlatforms
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
 import java.nio.file.StandardOpenOption
@@ -124,6 +127,13 @@ fun SubCommandModule.addCommand() = ephemeralSubCommand(::AddSoundCommandArgumen
             content = translate(SoundboardTranslations.Commands.AddSound.success)
         }
 
-        broadcastEvent(SoundCreatedEvent(sound.convertForNonJvmPlatforms()))
+        coroutineScope {
+            launch {
+                bot.syncSound(sound)
+            }
+            launch {
+                broadcastEvent(SoundCreatedEvent(sound.convertForNonJvmPlatforms()))
+            }
+        }
     }
 }

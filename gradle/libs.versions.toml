@@ -16,6 +16,7 @@ play-services-wearable = "18.2.0"
 horologist = "0.7.3-alpha"
 protobuf = "4.28.3"
 coil = "3.0.0-rc01"
+lavalink-api = "4.0.8"
 
 [libraries]
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.3" }
@@ -49,7 +50,7 @@ ktor-sse = { group = "io.ktor", name = "ktor-sse", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
-mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "4.0.0-SNAPSHOT" }
+mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "4.1.0-SNAPSHOT" }
 
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.0" }
 
@@ -104,3 +105,4 @@ android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.5.0" }
 protobuf = { id = "com.google.protobuf", version = "0.9.4" }
+lavalink = { id = "dev.arbjerg.lavalink.gradle-plugin", version = "1.1.2" }

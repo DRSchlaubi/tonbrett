@@ -5,6 +5,8 @@ pluginManagement {
         google()
         maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
         maven("https://releases-repo.kordex.dev")
+
+        mavenLocal()
     }
 }
 
@@ -16,7 +18,7 @@ rootProject.name = "tonbrett"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-include(":common", ":bot", ":client")
+include(":common", ":bot", ":client", ":lavalink-plugin")
 
 include(
     ":app",
@@ -27,7 +29,7 @@ include(
     ":app:android",
     ":app:android:shared",
 //    ":app:android:wear",
-    ":app:ios"
+    ":app:ios",
 )
 
 project(":app:android:shared").name = "androidShared"

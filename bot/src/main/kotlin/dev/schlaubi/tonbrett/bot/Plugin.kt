@@ -17,15 +17,22 @@ import dev.schlaubi.mikbot.plugin.api.PluginContext
 import dev.schlaubi.mikbot.plugin.api.PluginMain
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.mikbot.plugin.api.util.AllShardsReadyEvent
+import dev.schlaubi.mikmusic.core.MusicModule
+import dev.schlaubi.mikmusic.core.audio.LavalinkManager
 import dev.schlaubi.tonbrett.bot.commands.*
 import dev.schlaubi.tonbrett.bot.core.DiscordSoundboardWatcher
 import dev.schlaubi.tonbrett.bot.core.VoiceStateWatcher
+import dev.schlaubi.tonbrett.bot.core.syncSounds
+import dev.schlaubi.tonbrett.bot.server.newServiceKey
 import dev.schlaubi.tonbrett.bot.translations.SoundboardTranslations
 import dev.schlaubi.tonbrett.common.TonbrettSerializersModule
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
+import org.koin.core.component.get
 import org.litote.kmongo.serialization.registerModule
+import kotlin.time.Duration.Companion.seconds
 
 private val LOG = KotlinLogging.logger { }
 
@@ -33,6 +40,8 @@ private val LOG = KotlinLogging.logger { }
 class Plugin(context: PluginContext) : Plugin(context) {
     override fun start() {
         registerModule(TonbrettSerializersModule)
+
+        LOG.info { "Generated new service token: ${newServiceKey()}" }
     }
 
     override fun ExtensionsBuilder.addExtensions() {
@@ -71,6 +80,10 @@ private class Module(context: PluginContext) : SubCommandModule(context) {
                 val sounds = kord.requestSoundboardSounds(guilds).toList()
 
                 LOG.info { "Successfully fetched ${sounds.size} sounds from Discord" }
+
+                bot.findExtension<LavalinkManager>()!!.lavalink.nodes.forEach {
+                    it.syncSounds()
+                }
             }
         }
     }

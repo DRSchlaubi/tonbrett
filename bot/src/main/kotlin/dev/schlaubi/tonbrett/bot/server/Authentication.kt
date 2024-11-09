@@ -159,6 +159,13 @@ fun KtorRoute.authenticated(block: KtorRoute.() -> Unit) = authenticate(
     jwtAuth, build = block
 )
 
+val ApplicationCall.isLavalink: Boolean
+    get() {
+        val audience = principal<JWTPrincipal>()!!.payload.audience?.firstOrNull() ?: return false
+
+        return audience == "lavalink"
+    }
+
 val ApplicationCall.userId: Snowflake
     get() {
         val idRaw = principal<JWTPrincipal>()!!.payload.getClaim("userId")
@@ -183,4 +190,9 @@ private fun newKey(userId: Snowflake, refreshToken: String, expiresIn: Duration)
     .withClaim("userId", userId.value.toLong())
     .withClaim("refreshToken", refreshToken)
     .withExpiresAt((Clock.System.now() + expiresIn).toJavaInstant())
+    .sign(Algorithm.HMAC256(Config.JWT_SECRET))
+
+fun newServiceKey() = JWT.create()
+    .withIssuer(KtorConfig.WEB_SERVER_URL.toString())
+    .withAudience("lavalink")
     .sign(Algorithm.HMAC256(Config.JWT_SECRET))

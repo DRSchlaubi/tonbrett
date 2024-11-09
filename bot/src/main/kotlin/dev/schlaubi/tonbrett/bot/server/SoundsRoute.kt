@@ -60,7 +60,8 @@ fun Route.sounds() {
     }
 
     get<Sounds.ListSounds> { (onlyMine, queryString, useUnicode) ->
-        val userGuild = call.userId.voiceState?.guildId
+        val isLavalink = call.isLavalink
+        val userGuild = if (isLavalink) null else call.userId.voiceState?.guildId
         val discordSound = kord.cache.query<SoundboardSoundData>().toCollection()
             .sortedBy {
                 when (it.guildId.value) {
@@ -79,7 +80,7 @@ fun Route.sounds() {
             }
 
         call.respond(
-            (SoundBoardDatabase.sounds.searchGrouped(queryString, onlyMine, call.userId)
+            (SoundBoardDatabase.sounds.searchGrouped(queryString, onlyMine, if(isLavalink) Snowflake.min else call.userId)
                 .toList() + discordSound)
                 .convertForNonJvmPlatforms(!useUnicode)
         )

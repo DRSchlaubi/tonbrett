@@ -5,7 +5,6 @@ import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.event.guild.GuildSoundboardSoundCreateEvent
 import dev.kord.core.event.guild.GuildSoundboardSoundDeletEvent
 import dev.kord.core.event.guild.GuildSoundboardSoundUpdateEvent
-import dev.kord.core.event.guild.VoiceChannelEffectSentEvent
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.event
 import dev.schlaubi.tonbrett.bot.server.broadcastEvent
@@ -14,6 +13,8 @@ import dev.schlaubi.tonbrett.common.SoundCreatedEvent
 import dev.schlaubi.tonbrett.common.SoundDeletedEvent
 import dev.schlaubi.tonbrett.common.SoundUpdatedEvent
 import dev.schlaubi.tonbrett.common.toId
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.coroutineScope
 
 class DiscordSoundboardWatcher : Extension() {
     override val name: String = "soundboard-watcher"
@@ -22,7 +23,15 @@ class DiscordSoundboardWatcher : Extension() {
     override suspend fun setup() {
         event<GuildSoundboardSoundCreateEvent> {
             action {
-                broadcastEvent(SoundCreatedEvent(event.sound.data.toSound()))
+                coroutineScope {
+                    val sound = event.sound.data.toSound()
+                    launch {
+                        bot.syncSound(sound)
+                    }
+                    launch {
+                        broadcastEvent(SoundCreatedEvent(sound))
+                    }
+                }
             }
         }
 
@@ -34,7 +43,15 @@ class DiscordSoundboardWatcher : Extension() {
 
         event<GuildSoundboardSoundDeletEvent> {
             action {
-                broadcastEvent(SoundDeletedEvent(event.soundId.toId()))
+                val id = event.soundId
+                coroutineScope {
+                    launch {
+                        bot.deleteSound(id.toString())
+                    }
+                    launch {
+                        broadcastEvent(SoundDeletedEvent(id.toId()))
+                    }
+                }
             }
         }
     }

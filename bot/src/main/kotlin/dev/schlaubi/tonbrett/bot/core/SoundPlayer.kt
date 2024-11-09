@@ -68,15 +68,9 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         val alreadyLocked = locked
         locked = true
         updateAvailability(false, sound, user)
-        val url = if(sound.isDiscord) {
-            "https://cdn.discordapp.com/soundboard-sounds/${sound.id}"
-        } else {
-            buildBotUrl {
-                path("soundboard", "sounds", sound.id.toString(), "audio")
-            }.toString()
-        }
+        val uri = "tonbrett:${sound.id}"
         currentUser = user
-        player.injectTrack(url, noReplace = alreadyLocked) {
+        player.injectTrack(uri, noReplace = alreadyLocked) {
             volume = sound.volume
         }
         launch {

@@ -54,11 +54,13 @@ private val webSocketRetryStrategy = HttpRequestRetryConfig().apply {
  * @param initialToken the initial API token to authenticate
  * @param baseUrl the url of the API
  * @param onTokenRefresh a callback invoked if the token got refreshed
+ * @param isService whether to use service authentication
  */
 class Tonbrett(
     initialToken: String,
     @PublishedApi internal val baseUrl: Url,
-    private val onTokenRefresh: (String) -> Unit = {}
+    private val onTokenRefresh: (String) -> Unit = {},
+    private val isService: Boolean = false
 ) {
     private val eventFlow = MutableSharedFlow<Event>()
     private val json = Json {
@@ -73,25 +75,31 @@ class Tonbrett(
             contentConverter = KotlinxWebsocketSerializationConverter(json)
         }
         install(Resources)
-        install(Auth) {
-            bearer {
-                loadTokens {
-                    BearerTokens(accessToken = initialToken, refreshToken = initialToken)
-                }
-                sendWithoutRequest { it.authorize }
-                refreshTokens {
-                    val response = client.post(Route.Auth.Refresh()) {
-                        expectSuccess = false
-                        authorize = false
-                        contentType(ContentType.Application.Json)
-                        setBody(AuthRefreshRequest(expiredJwt = oldTokens!!.refreshToken!!))
+        if (isService) {
+            defaultRequest {
+                header(HttpHeaders.Authorization, "Bearer $initialToken")
+            }
+        } else {
+            install(Auth) {
+                bearer {
+                    loadTokens {
+                        BearerTokens(accessToken = initialToken, refreshToken = initialToken)
                     }
-                    if (!response.status.isSuccess()) {
-                        throw ReauthorizationRequiredException()
+                    sendWithoutRequest { it.authorize }
+                    refreshTokens {
+                        val response = client.post(Route.Auth.Refresh()) {
+                            expectSuccess = false
+                            authorize = false
+                            contentType(ContentType.Application.Json)
+                            setBody(AuthRefreshRequest(expiredJwt = oldTokens!!.refreshToken!!))
+                        }
+                        if (!response.status.isSuccess()) {
+                            throw ReauthorizationRequiredException()
+                        }
+                        val (newJwt) = response.body<AuthRefreshResponse>()
+                        onTokenRefresh(newJwt)
+                        BearerTokens(accessToken = newJwt, refreshToken = newJwt)
                     }
-                    val (newJwt) = response.body<AuthRefreshResponse>()
-                    onTokenRefresh(newJwt)
-                    BearerTokens(accessToken = newJwt, refreshToken = newJwt)
                 }
             }
         }

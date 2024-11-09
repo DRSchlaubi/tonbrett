@@ -60,3 +60,6 @@ app/ios/iosApp.xcodeproj/*
 app/ios/ios.podspec
 
 **/target
+
+sounds/
+logs/
