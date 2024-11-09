@@ -71,7 +71,7 @@ private val oauthSettings = OAuthServerSettings.OAuth2ServerSettings(
 
 private val SessionType = createRouteScopedPlugin("SessionType") {
     onCall { call ->
-        val type = call.parameters["type"]?.let(Route.Auth.Type::valueOf) ?: return@intercept
+        val type = call.parameters["type"]?.let(Route.Auth.Type::valueOf) ?: return@onCall
         call.sessions.set(Session(type))
     }
 }
