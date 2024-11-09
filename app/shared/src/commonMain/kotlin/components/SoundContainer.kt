@@ -3,7 +3,10 @@
 package dev.schlaubi.tonbrett.app.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.TransitionState
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
@@ -24,14 +27,20 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -55,6 +64,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,6 +86,7 @@ import dev.schlaubi.tonbrett.common.SoundGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.ceil
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -114,7 +125,10 @@ fun SoundContainer(
 
         SearchBar(soundUpdater)
         LazyColumn(
-            modifier = Modifier.fillMaxSize().scrollable(rememberScrollState(), Orientation.Vertical)
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.fillMaxSize()
+                .padding(vertical = 5.dp)
+                .scrollable(rememberScrollState(), Orientation.Vertical)
         ) {
             items(sounds) { group ->
                 SoundGroup(group, playingSound, errorReporter, unavailableFor)
@@ -129,41 +143,60 @@ private fun SoundGroup(
     playingSound: Id<Sound>?,
     errorReporter: ErrorReporter,
     unavailableFor: String?
-) = Column(Modifier.padding(5.dp)) {
-    var collapsed by remember { mutableStateOf(false) }
-    val strings = LocalStrings.current
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-        Text(group.tag ?: strings.otherSounds, color = ColorScheme.current.textColor)
-        CollapseIcon(collapsed, Modifier.clickable { collapsed = !collapsed })
-        HorizontalDivider(Modifier.fillMaxWidth().padding(5.dp))
-    }
+) = BoxWithConstraints(Modifier.padding(horizontal = 5.dp)) {
+    val maxWidth = constraints.maxWidth
+    Column {
+        var visible = remember { MutableTransitionState(true) }
 
-    AnimatedVisibility(!collapsed) {
-        FlowGrid(
-            GridCells.Adaptive(160.dp),
-            group.sounds,
-            horizontalArrangement = Arrangement.spacedBy(3.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp),
-            modifier = Modifier.canClearFocus()
-        ) { (id, name, _, description, emoji) ->
-            SoundCard(
-                id,
-                name,
-                emoji,
-                description,
-                id == playingSound,
-                errorReporter,
-                unavailableFor != null
-            )
+        val strings = LocalStrings.current
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+            Text(group.tag ?: strings.otherSounds, color = ColorScheme.current.textColor)
+            CollapseIcon(visible, Modifier.clickable { visible.targetState = !visible.currentState })
+            HorizontalDivider(Modifier.fillMaxWidth().padding(5.dp))
+        }
+
+        val density = LocalDensity.current
+        val cells = remember { GridCells.Adaptive(160.dp) }
+        val spacing = remember(density) { with(density) { 3.dp.roundToPx() } }
+        val rows = remember(spacing, maxWidth, group.sounds.size) {
+            val itemsPerRow = with(cells) {
+                density.calculateCrossAxisCellSizes(maxWidth, spacing).size.toDouble()
+            }
+
+            ceil(group.sounds.size / itemsPerRow).toInt()
+        }
+
+        AnimatedVisibility(visible) {
+            Box(Modifier.height((64.dp + 3.dp) * rows)) {
+                LazyVerticalGrid(
+                    cells,
+                    horizontalArrangement = Arrangement.spacedBy(3.dp),
+                    verticalArrangement = Arrangement.spacedBy(3.dp),
+                    userScrollEnabled = false,
+                    modifier = Modifier.canClearFocus().fillMaxWidth()
+                ) {
+                    items(group.sounds, { it.id.toString() }) { (id, name, _, description, emoji) ->
+                        SoundCard(
+                            id,
+                            name,
+                            emoji,
+                            description,
+                            id == playingSound,
+                            errorReporter,
+                            unavailableFor != null
+                        )
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun CollapseIcon(collapsed: Boolean, modifier: Modifier = Modifier) {
-    val transition = updateTransition(targetState = collapsed)
-    val iconRotation by transition.animateFloat { searching ->
-        if (searching) -90f else 0f
+private fun CollapseIcon(visible: MutableTransitionState<Boolean>, modifier: Modifier = Modifier) {
+    val transition = rememberTransition(visible)
+    val iconRotation by transition.animateFloat { visible ->
+        if (!visible) -90f else 0f
     }
     Icon(
         Icons.Default.ExpandMore,
@@ -187,7 +220,7 @@ fun SoundCard(
     reportError: ErrorReporter,
     disabled: Boolean
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope { Dispatchers.IO }
     val corners = RoundedCornerShape(10.dp)
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
