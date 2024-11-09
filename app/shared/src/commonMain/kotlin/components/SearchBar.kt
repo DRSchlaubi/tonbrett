@@ -48,7 +48,7 @@ fun SearchBar(updateSounds: SoundUpdater) {
     var showSuggestions by remember { mutableStateOf(false) }
     var selectedSuggestion by remember(showSuggestions) { mutableStateOf(-1) }
     val scope = rememberCoroutineScope()
-    val updates = remember { MutableStateFlow(value) }
+    val updates = remember { MutableStateFlow<String?>(null) }
 
     fun updateSearch(to: String) {
         updates.tryEmit(to)
@@ -65,6 +65,7 @@ fun SearchBar(updateSounds: SoundUpdater) {
 
     LaunchedEffect(Unit) {
         updates
+            .filterNotNull()
             .debounce(300.milliseconds)
             .onEach {
                 withContext(Dispatchers.IO) {
