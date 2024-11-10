@@ -115,7 +115,7 @@ fun SoundContainer(model: SoundListViewModel) {
                     .background(ColorScheme.current.error)
             ) {
                 Text(
-                    unavailableFor!!,
+                     unavailableFor ?: "",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 25.sp
