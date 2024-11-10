@@ -32,12 +32,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import kotlin.time.Duration.Companion.milliseconds
 
+private val discordIdPattern = Regex("\\d{18,}")
+
 @OptIn(KordUnsafe::class, KordExperimental::class)
 fun Route.sounds() {
     val kord by lazy { KordExContext.get().get<Kord>() }
 
     suspend fun getSoundById(id: String): Sound? {
-        return if (id.all(Char::isDigit)) {
+        return if (id.matches(discordIdPattern)) {
             val cachedSound = kord.cache.query<SoundboardSoundData> {
                 idEq(SoundboardSoundData::id, Snowflake(id))
             }.singleOrNull() ?: return null
