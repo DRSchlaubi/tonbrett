@@ -35,6 +35,7 @@ private val LOG = KotlinLogging.logger {}
 data class SoundListState(
     val playingSound: Id<Sound>? = null,
     val sounds: List<SoundGroup> = emptyList(),
+    val canBeStopped: Boolean = true,
     val available: Boolean = false,
     val channelMismatch: Boolean = false,
     val offline: Boolean = false
@@ -87,7 +88,7 @@ class SoundListViewModel(
         when (event) {
             is VoiceStateUpdateEvent -> handle(event.voiceState)
             is InterfaceAvailabilityChangeEvent -> {
-                _uiState.update { it.copy(available = event.available, playingSound = event.playingSongId) }
+                _uiState.update { it.copy(available = event.available, playingSound = event.playingSongId, canBeStopped = event.canBeStopped) }
             }
 
             is SoundDeletedEvent -> {
@@ -160,7 +161,6 @@ fun SoundList(
             model.reload(coroutineScope, api)
         }
     }
-
 
     AnimatedVisibility(!baseState.loading, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.fillMaxSize()) {
         SoundContainer(model)

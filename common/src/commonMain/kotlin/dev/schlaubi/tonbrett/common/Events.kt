@@ -32,10 +32,15 @@ public sealed interface HasSound {
  *
  * @property available whether the player is now locked or not
  * @property playingSongId the id of the sound which is currently playing if any
+ * @property canBeStopped whether the current sound can be stopped
  */
 @Serializable
 @SerialName("interface_availability_change")
-public data class InterfaceAvailabilityChangeEvent(val available: Boolean, val playingSongId: Id<Sound>?) : Event
+public data class InterfaceAvailabilityChangeEvent(
+    val available: Boolean,
+    val playingSongId: Id<Sound>?,
+    val canBeStopped: Boolean
+) : Event
 
 /**
  * Event indicating that the current users voice state has updated.

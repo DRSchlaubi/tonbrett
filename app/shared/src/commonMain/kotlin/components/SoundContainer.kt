@@ -131,7 +131,7 @@ fun SoundContainer(model: SoundListViewModel) {
                 .scrollable(rememberScrollState(), Orientation.Vertical)
         ) {
             items(state.sounds) { group ->
-                SoundGroup(group, state.playingSound, model::reportError, unavailableFor)
+                SoundGroup(group, state.playingSound, model::reportError, unavailableFor, !state.canBeStopped)
             }
         }
     }
@@ -142,7 +142,8 @@ private fun SoundGroup(
     group: SoundGroup,
     playingSound: Id<Sound>?,
     errorReporter: ErrorReporter,
-    unavailableFor: String?
+    unavailableFor: String?,
+    disabled: Boolean
 ) = BoxWithConstraints(Modifier.padding(horizontal = 5.dp)) {
     val maxWidth = constraints.maxWidth
     var visible by remember { mutableStateOf(true) }
@@ -190,7 +191,7 @@ private fun SoundGroup(
                             description = sound.description,
                             playing = sound.id == playingSound,
                             reportError = errorReporter,
-                            disabled = unavailableFor != null
+                            disabled = unavailableFor != null || disabled
                         )
                     }
                 }
@@ -225,7 +226,7 @@ fun SoundCard(
     description: String?,
     playing: Boolean,
     reportError: ErrorReporter,
-    disabled: Boolean
+    disabled: Boolean,
 ) {
     val coroutineScope = rememberCoroutineScope { Dispatchers.IO }
     val corners = RoundedCornerShape(10.dp)
