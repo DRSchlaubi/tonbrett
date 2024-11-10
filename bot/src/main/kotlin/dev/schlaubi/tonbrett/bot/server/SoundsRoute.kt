@@ -4,7 +4,6 @@ import dev.kord.cache.api.query
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.Kord
-import dev.kord.core.behavior.edit
 import dev.kord.core.cache.data.SoundboardSoundData
 import dev.kord.core.cache.idEq
 import dev.kordex.core.koin.KordExContext
@@ -13,7 +12,6 @@ import dev.schlaubi.tonbrett.bot.core.soundPlayer
 import dev.schlaubi.tonbrett.bot.core.voiceState
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.io.findAllTags
-import dev.schlaubi.tonbrett.bot.io.findById
 import dev.schlaubi.tonbrett.bot.io.searchGrouped
 import dev.schlaubi.tonbrett.bot.util.badRequest
 import dev.schlaubi.tonbrett.bot.util.soundNotFound
@@ -30,6 +28,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.Route
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
+import org.bson.types.ObjectId
+import org.litote.kmongo.toId
 import kotlin.time.Duration.Companion.milliseconds
 
 private val discordIdPattern = Regex("\\d{18,}")
@@ -45,7 +45,7 @@ fun Route.sounds() {
             }.singleOrNull() ?: return null
             cachedSound.toSound()
         } else {
-            SoundBoardDatabase.sounds.findOneById(id)
+            SoundBoardDatabase.sounds.findOneById(ObjectId(id))
         }
     }
 
@@ -91,7 +91,11 @@ fun Route.sounds() {
             }
 
         call.respond(
-            (SoundBoardDatabase.sounds.searchGrouped(queryString, onlyMine, if(isLavalink) Snowflake.min else call.userId)
+            (SoundBoardDatabase.sounds.searchGrouped(
+                queryString,
+                onlyMine,
+                if (isLavalink) Snowflake.min else call.userId
+            )
                 .toList() + discordSound)
                 .convertForNonJvmPlatforms(!useUnicode)
         )

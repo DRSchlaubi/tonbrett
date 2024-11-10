@@ -20,10 +20,12 @@ import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.ContentType.Application
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import io.ktor.http.appendPathSegments
+import io.ktor.http.contentType
 import io.ktor.http.isSecure
 import io.ktor.http.takeFrom
 import io.ktor.resources.Resource
@@ -47,6 +49,7 @@ object Tonbrett : Plugin {
 suspend fun Node.syncSounds() = request(HttpMethod.Post, "v4", "sounds", "sync")
 suspend fun Node.deleteSound(id: String) = request(HttpMethod.Delete, "v4", "sounds", id)
 suspend fun Node.syncSound(sound: Sound) = request(HttpMethod.Put, "v4", "sounds") {
+    contentType(Application.Json)
     setBody(sound)
 }
 
