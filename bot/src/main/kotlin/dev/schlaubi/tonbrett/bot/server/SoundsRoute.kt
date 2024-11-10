@@ -75,6 +75,15 @@ fun Route.sounds() {
                     else -> it.guildId.value
                 }
             }
+            .filter { sound ->
+                if (queryString?.startsWith("name:") == true) {
+                    sound.name.contains(queryString.substringAfter("name:"))
+                } else if (queryString?.startsWith("tag:") == true) {
+                    sound.guildId.value.toString().contains(queryString.substringAfter("tag:"))
+                } else {
+                    true
+                }
+            }
             .groupBy { it.guildId }
             .map { (guildId, sounds) ->
                 val name = guildId.value?.let { kord.getGuild(it) }?.name ?: "Discord"
