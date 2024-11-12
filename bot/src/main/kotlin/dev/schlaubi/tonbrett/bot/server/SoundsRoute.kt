@@ -29,10 +29,9 @@ import io.ktor.server.routing.Route
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import org.bson.types.ObjectId
-import org.litote.kmongo.toId
 import kotlin.time.Duration.Companion.milliseconds
 
-private val discordIdPattern = Regex("\\d{18,}")
+private val discordIdPattern = Regex("\\d(?:\\d{17,})?")
 
 @OptIn(KordUnsafe::class, KordExperimental::class)
 fun Route.sounds() {
