@@ -53,7 +53,7 @@ class SoundPlayer(guild: GuildBehavior) : CoroutineScope {
         locked = !available
         coroutineScope {
             getUsersInChannel(channel).forEach {
-                sendEvent(it, InterfaceAvailabilityChangeEvent(available || it == user, playingSound?.id, playingSound?.isDiscord != true))
+                sendEvent(it, InterfaceAvailabilityChangeEvent(available || it == user, playingSound?.id, true))
             }
         }
     }
