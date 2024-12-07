@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 
 plugins {
     alias(libs.plugins.kotlin.serialization) apply false
@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = "dev.schlaubi.tonbrett"
-    version = "2.1.5"
+    version = "2.2.0"
 
     repositories {
         mavenCentral()
@@ -18,7 +18,7 @@ allprojects {
 
 subprojects {
     afterEvaluate {
-        extensions.findByType<KotlinTopLevelExtension>()?.apply {
+        extensions.findByType<KotlinBaseExtension>()?.apply {
             jvmToolchain(22)
         }
     }

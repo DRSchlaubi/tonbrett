@@ -9,6 +9,7 @@ config.plugins.push(new HtmlWebpackPlugin({
 }));
 config.plugins.push(new HtmlWebpackPlugin({
     filename: 'discord-activity.html',
+    publicPath: "/.proxy/static/",
     template: '../../../../app/web/src/templates/discord-activity.template.html'
 }));
 config.resolve.fallback = { "os": require.resolve("os-browserify/browser"), "path": require.resolve("path-browserify") }

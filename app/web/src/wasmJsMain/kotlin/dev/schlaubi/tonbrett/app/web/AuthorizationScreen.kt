@@ -7,12 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
@@ -26,35 +21,34 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import dev.schlaubi.tonbrett.app.LocalStrings
 import dev.schlaubi.tonbrett.app.ColorScheme
+import dev.schlaubi.tonbrett.app.LocalStrings
 import dev.schlaubi.tonbrett.common.authServerPort
-import io.ktor.client.fetch.*
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.coroutines.delay
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.w3c.dom.url.URLSearchParams
+import org.w3c.fetch.RequestInit
+import org.w3c.xhr.XMLHttpRequest
 import kotlin.time.Duration.Companion.seconds
 
 private val LOG = KotlinLogging.logger { }
+
+private fun post(): RequestInit = js("{method: 'POST'}")
 
 @Composable
 fun AuthorizationScreen(cli: Boolean, protocol: Boolean) {
     val strings = LocalStrings.current
     val token =
-        remember { URLSearchParams(window.location.search).get("token") ?: error("Missing token") }
+        remember { URLSearchParams(window.location.search.toJsString()).get("token") ?: error("Missing token") }
     if (!cli) {
         LaunchedEffect(Unit) {
             try {
                 if (protocol) {
                     window.location.href = "tonbrett://login?token=$token"
                 } else {
-                    fetch(
-                        "http://localhost:$authServerPort/login?token=$token",
-                        object : RequestInit {
-                            override var method: String? = "POST"
-                        }).await()
+                    window.fetch("http://localhost:$authServerPort/login?token=$token").await()
                 }
             } catch (e: Throwable) {
                 LOG.error(e) { "Could not propagate token" }

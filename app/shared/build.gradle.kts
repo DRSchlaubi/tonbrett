@@ -24,6 +24,7 @@ kotlin {
                 withApple()
                 withJvm()
                 withJs()
+                withWasmJs()
             }
 
             group("mobile") {
@@ -37,6 +38,7 @@ kotlin {
                 withJs()
                 withApple()
                 withAndroidTarget()
+                withWasmJs()
             }
         }
     }
@@ -63,12 +65,6 @@ kotlin {
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network)
                 implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
-            }
-        }
-
-        jsMain {
-            dependencies {
-                api("org.jetbrains.kotlin:kotlinx-atomicfu-runtime:2.0.20")
             }
         }
 

@@ -14,17 +14,15 @@ import dev.schlaubi.tonbrett.app.api.getUrl
 import dev.schlaubi.tonbrett.app.title
 import dev.schlaubi.tonbrett.common.AuthRefreshResponse
 import dev.schlaubi.tonbrett.common.Route
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.resources.Resources
-import io.ktor.client.plugins.resources.post
-import io.ktor.http.takeFrom
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.util.generateNonce
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.resources.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.util.*
 import kotlinx.coroutines.await
-import org.jetbrains.skiko.wasm.onWasmReady
 
 private val apiClient by lazy {
     HttpClient {
@@ -49,13 +47,13 @@ private enum class State {
 
 private val context = AppContext()
 
-fun discordActivity() = onWasmReady {
+fun discordActivity() {
     try {
         CanvasBasedWindow(title) {
             var state by remember { mutableStateOf(State.INITIALIZING) }
 
             LaunchedEffect(Unit) {
-                discordSdk.ready().await()
+                discordSdk.ready().await<JsAny?>()
 
                 state = if (context.isSignedIn) State.RUNNING else State.AUTHORIZING
                 println("Switching state to $state")
@@ -84,14 +82,9 @@ fun discordActivity() = onWasmReady {
 
 private suspend fun requestToken(): AuthRefreshResponse {
     val state = generateNonce()
-    val input = Any().asDynamic()
-    input.client_id = appId
-    input.scope = arrayOf("identify")
-    input.response_type = "code"
-    input.state = state
 
-    val response = discordSdk.commands.authorize(input).await()
-    return apiClient.exchangeToken(response.code, state)
+    val response = discordSdk.authorize(appId, state).await<AuthorizeResponse>()
+    return apiClient.exchangeToken(response.code.toString(), state)
 }
 
 /**

@@ -26,10 +26,10 @@ fun Application.authModule(onAuth: () -> Unit, scope: CoroutineScope) {
     install(CORS) {
         allowMethod(HttpMethod.Post)
         val baseUrl = getUrl()
-        allowHost(baseUrl.host, listOf(baseUrl.protocol.name))
+        allowHost(baseUrl.hostWithPortIfSpecified, listOf(baseUrl.protocol.name))
     }
     routing {
-        post("login") {
+        get("login") {
             val token = call.parameters["token"] ?: throw BadRequestException("Missing token")
 
             saveConfig(Config(token))

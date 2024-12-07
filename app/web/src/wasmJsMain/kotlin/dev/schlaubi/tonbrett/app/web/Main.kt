@@ -11,7 +11,6 @@ import dev.schlaubi.tonbrett.common.Route
 import kotlinx.browser.document
 import kotlinx.browser.sessionStorage
 import kotlinx.browser.window
-import org.jetbrains.skiko.wasm.onWasmReady
 import org.w3c.dom.get
 
 private val context = AppContext()

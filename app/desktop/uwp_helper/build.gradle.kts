@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.org.jline.utils.OSUtils
+import org.jetbrains.kotlin.konan.target.HostManager
 
 plugins {
     java
@@ -27,7 +27,7 @@ tasks {
         outputs.dir(jextractOutput)
 
         // I cannot figure out how to change the path on GitHub Actions
-        val command = if (OSUtils.IS_WINDOWS) {
+        val command = if (HostManager.hostIsMingw) {
             "jextract.bat"
         } else {
             "jextract"

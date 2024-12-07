@@ -34,7 +34,7 @@ kotlin {
         }
     }
     jvm("desktop")
-    js(IR) {
+    wasmJs {
         browser()
     }
     iosSimulatorArm64()

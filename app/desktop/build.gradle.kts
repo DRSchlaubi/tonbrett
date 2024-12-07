@@ -1,6 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.konan.target.HostManager
-import org.jetbrains.kotlin.org.jline.utils.OSUtils
 
 plugins {
     alias(libs.plugins.kotlin.compose)
@@ -49,8 +48,8 @@ compose.desktop {
                 "java.naming" // required by logback
             )
             when {
-                OSUtils.IS_WINDOWS -> targetFormats(TargetFormat.AppImage)
-                OSUtils.IS_OSX -> targetFormats(TargetFormat.Pkg)
+                HostManager.hostIsMingw -> targetFormats(TargetFormat.AppImage)
+                HostManager.hostIsMac -> targetFormats(TargetFormat.Pkg)
                 else -> targetFormats(TargetFormat.Deb)
             }
 
@@ -113,7 +112,7 @@ tasks {
         archiveExtension = "tar.gz"
     }
 
-    if (OSUtils.IS_WINDOWS) {
+    if (true) {
         registerMsixTasks()
         registerMsixTasks("MSStore", msStore = true)
     }
@@ -169,7 +168,7 @@ fun TaskContainerScope.registerMsixTasks(prefix: String = "", msStore: Boolean =
 
     afterEvaluate {
         "packageReleaseDistributionForCurrentOS" {
-            if (OSUtils.IS_WINDOWS) {
+            if (HostManager.hostIsMingw) {
                 dependsOn(finalizeMsixWorkspace)
             }
         }

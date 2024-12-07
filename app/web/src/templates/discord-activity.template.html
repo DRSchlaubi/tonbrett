@@ -3,9 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Tonbrett</title>
-  <script src="/.proxy/api/soundboard/ui/skiko.js"> </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+<script>
+  // glue code for Kotlin/WASM
+  // noinspection JSUnusedGlobalSymbols
+  function authorize(discordSdk, appId, state) {
+    return discordSdk.commands.authorize({
+      client_id: appId,
+      scope: ["identify"],
+      response_type: "code",
+      state: state
+    });
+  }
+</script>
 <style>
   body {
     background-color: rgb(17, 18, 20);

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     alias(libs.plugins.kotlin.compose)
     kotlin("multiplatform")
@@ -9,8 +11,13 @@ repositories {
 }
 
 kotlin {
-    js(IR) {
-        browser()
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser {
+            webpackTask {
+                mainOutputFileName = ".proxy/web.js"
+            }
+        }
         binaries.executable()
         compilations.all {
             packageJson {
@@ -41,7 +48,7 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
-                implementation(npm("@discord/embedded-app-sdk", "1.4.2"))
+                implementation(npm("@discord/embedded-app-sdk", "1.7.1"))
             }
         }
     }
@@ -50,11 +57,11 @@ kotlin {
 tasks {
     val copyIcon by creating(Copy::class) {
         from(rootProject.file("icons/logo.ico"))
-        into(layout.buildDirectory.dir("distributions"))
+        into(layout.buildDirectory.dir("dist/wasmJs/productionExecutable"))
         rename { "favicon.ico" }
     }
 
-    named("jsMainClasses") {
+    named("wasmJsMainClasses") {
         dependsOn(copyIcon)
     }
 }

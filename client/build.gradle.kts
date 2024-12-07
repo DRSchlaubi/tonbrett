@@ -38,7 +38,7 @@ kotlin {
             }
         }
 
-        jsMain {
+        wasmJsMain {
             dependencies {
                 implementation(libs.ktor.client.js)
             }

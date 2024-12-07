@@ -10,7 +10,6 @@ import io.ktor.resources.serialization.*
 import kotlinx.browser.window
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.serializer
-import org.jetbrains.skiko.wasm.onWasmReady
 
 @PublishedApi
 internal val format = ResourcesFormat(TonbrettSerializersModule)
@@ -41,16 +40,16 @@ inline fun <reified R : Any> routeHandler(body: (R) -> Unit) {
  * @see routeHandler
  */
 @Suppress("FunctionName")
-inline fun <reified R : Any> ComposeRouteHandler(crossinline content: @Composable (R) -> Unit) = routeHandler<R> { resource ->
-    onWasmReady {
+inline fun <reified R : Any> ComposeRouteHandler(crossinline content: @Composable (R) -> Unit) =
+    routeHandler<R> { resource ->
         CanvasBasedWindow(title) {
             content(resource)
         }
     }
-}
 
 @PublishedApi
 internal fun String.dropLeadingSlash() = dropLeading('/')
+
 @PublishedApi
 internal fun String.dropLeadingQuery() = dropLeading('?')
 

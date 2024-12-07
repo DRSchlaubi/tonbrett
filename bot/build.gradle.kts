@@ -17,6 +17,7 @@ dependencies {
     ktorDependency(libs.ktor.server.auth)
     ktorDependency(libs.ktor.server.cors)
     ktorDependency(libs.ktor.server.auth.jwt)
+    ktorDependency(libs.ktor.server.compression)
     implementation(libs.kmongo.id.serialization)
     plugin(mikbot(libs.mikbot.ktor))
     plugin(libs.mikbot.music)
@@ -50,7 +51,7 @@ mikbotPlugin {
 tasks {
     val buildWebApp = register<Copy>("buildWebApp") {
         val webApp = project(":app:web")
-        from(webApp.tasks.named("jsBrowserDistribution"))
+        from(webApp.tasks.named("wasmJsBrowserDistribution"))
         into(layout.buildDirectory.dir("resources/main/web"))
     }
 

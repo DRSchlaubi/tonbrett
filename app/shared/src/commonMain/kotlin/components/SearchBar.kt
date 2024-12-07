@@ -121,7 +121,9 @@ fun SearchBar(updateSounds: SoundUpdater) {
                     },
                     colors = TextFieldDefaults.colors(
                         unfocusedTextColor = ColorScheme.current.textColor,
-                        focusedTextColor = ColorScheme.current.textColor
+                        focusedTextColor = ColorScheme.current.textColor,
+                        focusedContainerColor = ColorScheme.current.searchBarColor,
+                        unfocusedContainerColor = ColorScheme.current.searchBarColor,
                     )
                 )
             },
