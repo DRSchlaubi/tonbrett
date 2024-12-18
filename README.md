@@ -44,7 +44,7 @@ using [Mikbot](https://github.com/DRSchlaubi/mikbot) and
 
 Note that some downloads are only available to beta testers:
 
-[![Microsoft Store logo](https://get.microsoft.com/images/en-US%20dark.svg)](https://apps.microsoft.com/store/detail/9P61S67DVWM2?launch=true&mode=mini)
+[![Microsoft Store logo](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/store/detail/9P61S67DVWM2?launch=true&mode=mini)
 
 [![Download on Flathub](https://dl.flathub.org/assets/badges/flathub-badge-en.png)](https://flathub.org/apps/dev.schlaubi.Tonbrett)
 
