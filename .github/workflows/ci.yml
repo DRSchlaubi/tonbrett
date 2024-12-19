@@ -320,11 +320,11 @@ jobs:
             *-signed.apk
   sign_windows_binary:
     name: Sign Windows binary
-    runs-on: windows-latest
+    runs-on: windows-2025
     needs: [create_release, build_desktop_app]
     steps:
       - name: Setup winget-create
-        run: choco install wingetcreate
+        run: winget install wingetcreate -s winget
       - uses: actions/download-artifact@v4
         name: Download Artifacts from Windows
         with:
