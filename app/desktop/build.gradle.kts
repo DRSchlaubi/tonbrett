@@ -50,7 +50,7 @@ compose.desktop {
             when {
                 HostManager.hostIsMingw -> targetFormats(TargetFormat.AppImage)
                 HostManager.hostIsMac -> targetFormats(TargetFormat.Pkg)
-                else -> targetFormats(TargetFormat.Deb)
+                else -> targetFormats(TargetFormat.Deb, TargetFormat.Rpm)
             }
 
             licenseFile = rootProject.file("LICENSE")
@@ -107,7 +107,7 @@ tasks {
     register<Tar>("packageDistributable") {
         from(named("createReleaseDistributable"))
         archiveBaseName = "tonbrett"
-        archiveClassifier = "linux"
+        archiveClassifier = "linux-${System.getProperty("os.arch")}"
         compression = Compression.GZIP
         archiveExtension = "tar.gz"
     }
