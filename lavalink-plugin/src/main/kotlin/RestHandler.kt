@@ -23,7 +23,7 @@ class RestHandler(private val soundDownloader: SoundDownloader) : CoroutineScope
     override val coroutineContext: CoroutineContext = Dispatchers.IO + SupervisorJob()
 
     @PutMapping(value = ["/v4/sounds"])
-    fun downloadSound(@RequestBody sound: Sound) = runBlocking {
+    fun downloadSound(@RequestBody sound: Sound): ResponseEntity<Any> = runBlocking {
         soundDownloader.downloadSound(sound)
 
         ResponseEntity.accepted().build<Any>()
