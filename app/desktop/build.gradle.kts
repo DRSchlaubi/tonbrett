@@ -56,7 +56,7 @@ compose.desktop {
             licenseFile = rootProject.file("LICENSE")
             vendor = "Schlaubi"
             description = "Companion App for Discord Tonbrett bot"
-            copyright = "(c) 2023 Michael Rittmeister"
+            copyright = "(c) 2025 Michael Rittmeister"
 
             packageName = "Tonbrett"
             packageVersion = project.version.toString()
@@ -65,6 +65,10 @@ compose.desktop {
                 iconFile = rootProject.file("icons/logo.ico")
                 menuGroup = "Tonbrett"
                 upgradeUuid = "c8bce0ed-113c-4d78-879b-78ed5c7d9f7f"
+            }
+
+            linux {
+                iconFile = rootProject.file("icons/logo.png")
             }
 
             macOS {
