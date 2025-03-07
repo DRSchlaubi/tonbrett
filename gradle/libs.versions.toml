@@ -1,21 +1,21 @@
 [versions]
 kotlin = "2.1.10"
-ktor = "3.0.3"
-kmongo = "5.1.0"
+ktor = "3.1.1"
+kmongo = "5.2.0"
 kord = "0.15.0"
-mikbot = "4.2.0"
-ksp = "2.1.10-1.0.29"
+mikbot = "4.3.0"
+ksp = "2.1.10-1.0.31"
 kordex = "2.3.1-MIKBOT.4"
-android = "8.8.0"
-compose = "1.8.0-alpha03"
-compose-wear = "1.4.0"
+android = "8.9.0"
+compose = "1.8.0-alpha04"
+compose-wear = "1.4.1"
 lyricist = "1.7.0"
 google-play = "2.1.0"
 coroutines = "1.10.1"
 play-services-wearable = "19.0.0"
 horologist = "0.7.3-alpha"
 protobuf = "4.28.3"
-coil = "3.0.4"
+coil = "3.1.0"
 lavalink-api = "4.0.8"
 
 [libraries]
@@ -45,6 +45,7 @@ ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "kt
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-client-winhttp = { group = "io.ktor", name = "ktor-client-winhttp", version.ref = "ktor" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-java = { group = "io.ktor", name = "ktor-client-java", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
 ktor-sse = { group = "io.ktor", name = "ktor-sse", version.ref = "ktor" }
@@ -53,16 +54,16 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
 mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "4.2.0-SNAPSHOT" }
 
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.3" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.4" }
 
 lyricist = { group = "cafe.adriel.lyricist", name = "lyricist", version.ref = "lyricist" }
 lyricist-processor = { group = "cafe.adriel.lyricist", name = "lyricist-processor", version.ref = "lyricist" }
 
-logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.16" }
+logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.17" }
 
 kvault = { group = "com.liftric", name = "kvault", version = "1.12.0" }
 
-androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.10.0" }
+androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.10.1" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
 androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.15.0" }
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.8.0" }

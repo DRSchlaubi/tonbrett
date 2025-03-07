@@ -45,7 +45,8 @@ compose.desktop {
         jvmArgs("--enable-native-access=ALL-UNNAMED", "--enable-preview")
         nativeDistributions {
             modules(
-                "java.naming" // required by logback
+                "java.naming", // required by logback
+                "java.net.http" // Http client
             )
             when {
                 HostManager.hostIsMingw -> targetFormats(TargetFormat.AppImage)

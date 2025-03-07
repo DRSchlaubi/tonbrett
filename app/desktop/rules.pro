@@ -1,6 +1,6 @@
 # Ktor
 -keepclassmembers class io.ktor.** { volatile <fields>; }
--keep class io.ktor.client.engine.okhttp.OkHttpEngineContainer
+-keep class io.ktor.client.engine.java.JavaHttpEngineContainer
 -keep class io.ktor.serialization.kotlinx.json.KotlinxSerializationJsonExtensionProvider
 # even though we don't use log4j, proguard fails preverification if this class gets optimized
 -keep class io.netty.util.internal.logging.Log4J2LoggerFactory { *; }
@@ -60,6 +60,10 @@
 -keepclasseswithmembers class **.*$Companion {
     kotlinx.serialization.KSerializer serializer(...);
 }
+# https://github.com/Kotlin/kotlinx.serialization/issues/2719
+-keepclassmembers public class **$$serializer {
+    private ** descriptor;
+}
 # If a companion has the serializer function, keep the companion field on the original type so that
 # the reflective lookup succeeds.
 -if class **.*$Companion {
@@ -69,8 +73,10 @@
   <1>.<2>$Companion Companion;
 }
 
+-optimizations !method/specialization/parametertype
+
 # Coil
 -keep class coil3.network.ktor3.internal.KtorNetworkFetcherServiceLoaderTarget
 
-# https://github.com/Guardsquare/proguard/issues/349
--dontoptimize
+# Compose
+-keep,allowshrinking,allowobfuscation class androidx.compose.runtime.* { *; }
