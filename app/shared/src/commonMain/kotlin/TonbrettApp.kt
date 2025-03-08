@@ -139,6 +139,7 @@ fun TonbrettApp(
     }
 
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         containerColor = ColorScheme.current.container,
         snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) },
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets.only(WindowInsetsSides.Top)
