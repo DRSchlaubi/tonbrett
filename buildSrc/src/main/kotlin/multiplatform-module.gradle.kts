@@ -25,15 +25,15 @@ kotlin {
     }
 
     androidTarget {
-        compilations.all {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget = JvmTarget.JVM_22
-                }
-            }
+        compilerOptions {
+            jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
         }
     }
-    jvm("desktop")
+    jvm("desktop") {
+        compilerOptions {
+            jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
+        }
+    }
     wasmJs {
         browser()
     }

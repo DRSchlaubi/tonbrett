@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  JAVA_VERSION: 22
+  JAVA_VERSION: 24
 
 permissions:
   contents: write
@@ -36,22 +36,29 @@ jobs:
     name: Build Desktop App
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-14, windows-latest, ubuntu-24.04-arm ]
+        os: [ ubuntu-latest, ubuntu-24.04-arm, macos-14, windows-latest, windows-11-arm ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: 'Set up latest JDK code tool jextract'
+      - name: 'Set up jextract'
         uses: oracle-actions/setup-java@v1
         if: matrix.os == 'windows-latest'
         with:
           website: jdk.java.net
-          release: jextract      
+          release: jextract
+      - name: Set up jextract (ARM)
+        if: matrix.os == 'windows-11-arm'
+        shell: bash
+        run: |
+          curl -L -o jextract.tar.gz https://github.com/DRSchlaubi/jextract-builds/releases/download/14869504918/openjdk-23-jextract-windows_aarch64.tar.gz
+          tar xzf jextract.tar.gz
+          echo "export PATH=\$PATH:$(pwd)/bin" >> $GITHUB_ENV
       - uses: actions/setup-java@v4
         with:
-          distribution: 'oracle'
+          distribution: ${{ matrix.os == 'windows-11-arm' && 'liberica' || 'oracle' }}
           java-version: ${{env.JAVA_VERSION}}
       - uses: actions-rust-lang/setup-rust-toolchain@v1
-        if: matrix.os == 'windows-latest'
+        if: startsWith(matrix.os, 'windows')
         with:
           cache-workspaces: app/desktop/uwp_helper
       # https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development#add-a-step-to-your-workflow
@@ -90,10 +97,10 @@ jobs:
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'
         run: ./gradlew packageDistributable
       - name: Setup MSbuild
-        if: matrix.os == 'windows-latest'
+        if: startsWith(matrix.os, 'windows')
         uses: microsoft/setup-msbuild@v2
       - name: Build MSIX
-        if: matrix.os == 'windows-latest'
+        if: startsWith(matrix.os, 'windows')
         run: |
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d app/desktop/build/msix-workspace /p Tonbrett.msix
       - name: Notarize MacOS installer
@@ -114,9 +121,9 @@ jobs:
             app/desktop/build/distributions/*.tar.gz
       - name: Upload MSIX workspace
         uses: actions/upload-artifact@v4
-        if: matrix.os == 'windows-latest'
+        if: startsWith(matrix.os, 'windows')
         with:
-          name: msstore-workspace
+          name: msstore-workspace-${{ matrix.os }}
           path: app/desktop/build/MSStore-msix-workspace/*
   build_android_app:
     runs-on: ubuntu-latest
@@ -192,7 +199,12 @@ jobs:
       - uses: actions/download-artifact@v4
         name: Download Artifacts from Windows
         with:
-          name: msstore-workspace
+          name: msstore-workspace-windows-latest
+      - uses: actions/download-artifact@v4
+        name: Download Artifacts from Windows (ARM)
+        with:
+          name: msstore-workspace-windows-11-arm
+          path: arm
       - name: Setup MSbuild
         uses: microsoft/setup-msbuild@v2
       - name: Configure the Microsoft Store CLI
@@ -201,6 +213,9 @@ jobs:
       - name: Build MSIX
         run: |
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d . /p Tonbrett.msix
+      - name: Build MSIX (ARM)
+        run: |
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d arm /p Tonbrett_arm.msix
       - name: Upload to MSStore
         env:
           CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
@@ -215,16 +230,19 @@ jobs:
           $global:SBDisableTelemetry = $true
           # Create submission package
           New-SubmissionPackage -ConfigPath .\submission.json -AppxPath .\Tonbrett.msix -OutPath out -OutName package
+          New-SubmissionPackage -ConfigPath .\submission.json -AppxPath .\Tonbrett_arm.msix -OutPath out_arm -OutName package
           # Create new submission
           $sub = New-ApplicationSubmission -AppId $appId -Force
           # Parse submission meta
           $json = (Get-Content out\package.json -Encoding UTF8) | ConvertFrom-Json
+          $json_arm = (Get-Content out_arm\package.json -Encoding UTF8) | ConvertFrom-Json
           # Delete old packages
           foreach ($package in $sub.applicationPackages) {
             $package.fileStatus = "PendingDelete"
           }
           # add new packages
           $sub.applicationPackages += $json.applicationPackages
+          $sub.applicationPackages += $json_arm.applicationPackages
           # Upload submission meta
           Set-ApplicationSubmission -AppId $appId -UpdatedSubmission $sub
           # Upload submission package
@@ -338,12 +356,19 @@ jobs:
         with:
           name: desktopapp-windows-latest
           path: artifact
+      - uses: actions/download-artifact@v4
+        name: Download Artifacts from Windows
+        with:
+          name: desktopapp-windows-11-arm
+          path: artifact_arm
+      - run: cp artifact/Tonbrett.msix .
+      - run: cp artifact_arm/Tonbrett.msix Tonbrett_arm64.msix
       - name: Upload Artifact
         id: upload
         uses: actions/upload-artifact@v4
         with:
           name: windows-unsigned
-          path: artifact/*.msix
+          path: "*.msix"
       - uses: SignPath/github-action-submit-signing-request@v1
         with:
           api-token: ${{ secrets.SIGNPATH_KEY }}
@@ -357,7 +382,7 @@ jobs:
       - name: Update Release
         uses: softprops/action-gh-release@v2
         with:
-          files: signed/Tonbrett.msix
+          files: signed/*.msix
       - name: Bump Winget manifest
         shell: pwsh
         env:
@@ -368,8 +393,10 @@ jobs:
           $version = $tagname.Replace("v", "")
 
           $url = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett.msix"
+          $url_arm = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett_arm64.msix"
 
           wingetcreate.exe update Schlaubi.Tonbrett -u $url --version $version
+          wingetcreate.exe update Schlaubi.Tonbrett -u $url_arm --version $version
 
           if ($version -notmatch "-") {
             wingetcreate.exe submit .\manifests\s\Schlaubi\Tonbrett\${version}\ --token $env:WINGET_GITHUB_TOKEN

@@ -1,3 +1,4 @@
+import dev.schlaubi.tonbrett.gradle.javaVersion
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.konan.target.HostManager
 
@@ -36,6 +37,16 @@ sourceSets {
             kotlin.srcDir("src/nonWindowsMain/kotlin")
         }
     }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
+    }
+}
+
+java {
+    sourceCompatibility = javaVersion
 }
 
 compose.desktop {
@@ -91,7 +102,7 @@ compose.desktop {
         buildTypes {
             release {
                 proguard {
-                    version = "7.5.0"
+                    version = "7.7.0"
                     configurationFiles.from(files("rules.pro"))
                 }
             }

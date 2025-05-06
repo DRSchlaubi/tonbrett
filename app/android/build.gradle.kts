@@ -1,3 +1,4 @@
+import dev.schlaubi.tonbrett.gradle.javaVersion
 import dev.schlaubi.tonbrett.gradle.sdkInt
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -65,12 +66,12 @@ android {
     }
 
     compileOptions {
-        targetCompatibility = JavaVersion.VERSION_22
+        sourceCompatibility = javaVersion
     }
 
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_22
+            jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
         }
     }
 }
