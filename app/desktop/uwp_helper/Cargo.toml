@@ -8,18 +8,17 @@ build = "build.rs"
 crate-type = ["cdylib"]
 
 [dependencies.windows]
-version = "0.58.0"
-git = "https://github.com/microsoft/windows-rs.git"
-rev = "0.60.0"
-features = ["System", "Foundation", "Win32_Foundation", "Security_Credentials", "Services_Store", "Foundation_Collections", "Storage"]
+version = "^0.61.0"
+features = ["System", "Foundation", "Win32_Foundation", "Security_Credentials", "Services_Store", "Foundation_Collections", "Storage", "Storage_Search", "Storage_FileProperties"]
 
 [dependencies.tokio]
-version = "1.40.0"
+version = "1.44.2"
 features = ["macros", "rt-multi-thread"]
 
 [build-dependencies.cbindgen]
-version = "0.27.0"
+version = "0.28.0"
 default-features = false
 
 [dependencies]
-log = "0.4.22"
+windows-future = "0.2"
+log = "0.4.27"

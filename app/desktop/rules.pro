@@ -30,7 +30,6 @@
 -dontwarn com.typesafe.**
 -dontwarn org.slf4j.**
 -dontwarn ch.qos.logback.**
--dontwarn okhttp3.**
 -dontwarn io.ktor.**
 -dontwarn dev.schlaubi.tonbrett.app.desktop.uwp_helper.**
 
@@ -77,6 +76,7 @@
 
 # Coil
 -keep class coil3.network.ktor3.internal.KtorNetworkFetcherServiceLoaderTarget
+-keep class okio.** { *; }
 
 # Compose
 -keep,allowshrinking,allowobfuscation class androidx.compose.runtime.* { *; }
