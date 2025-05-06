@@ -4,6 +4,7 @@
 -keep class io.ktor.serialization.kotlinx.json.KotlinxSerializationJsonExtensionProvider
 # even though we don't use log4j, proguard fails preverification if this class gets optimized
 -keep class io.netty.util.internal.logging.Log4J2LoggerFactory { *; }
+-dontwarn io.github.oshai.kotlinlogging.internal.**
 
 # ServiceLoader support
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}

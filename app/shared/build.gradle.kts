@@ -1,3 +1,4 @@
+import com.github.gmazzo.buildconfig.generators.BuildConfigKotlinGenerator
 import dev.schlaubi.tonbrett.gradle.androidSdk
 import dev.schlaubi.tonbrett.gradle.apiUrl
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -87,7 +88,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.android)
                 implementation(libs.coil.gif)
                 implementation(libs.coil.svg)
-                implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.6")
             }
         }
     }
@@ -104,6 +104,12 @@ dependencies {
 buildConfig {
     packageName("dev.schlaubi.tonbrett.app.shared")
     buildConfigField("String", "API_URL", "\"${project.apiUrl}\"")
+
+    sourceSets {
+        all {
+            generator = BuildConfigKotlinGenerator()
+        }
+    }
 }
 
 android {
@@ -115,24 +121,3 @@ android {
     }
 }
 
-//tasks {
-//    afterEvaluate {
-//        val compilationTasks = kotlin.targets.flatMap {
-//            buildList {
-//                if (it.name != "android") {
-//                    add("compileKotlin${it.name.replaceFirstChar { it.titlecase() }}")
-//                    val sourcesJarName = "${it.name}SourcesJar"
-//                    add(sourcesJarName)
-//                } else {
-//                    add("compileDebugKotlinAndroid")
-//                    add("compileReleaseKotlinAndroid")
-//                }
-//            }
-//        }
-//        for (task in compilationTasks) {
-//            named(task) {
-//                dependsOn("kspCommonMainKotlinMetadata")
-//            }
-//        }
-//    }
-//}
