@@ -1,6 +1,7 @@
 param (
     [Parameter(Mandatory=$true)][String]$Version,
-    [Parameter(Mandatory=$false)][String]$IsMsix = "false"
+    [Parameter(Mandatory=$false)][String]$IsMsix = "false",
+    [Parameter(Mandatory=$false)][String]$IsArm = "false"
 )
 
 $file = 'appxmanifest.xml'
@@ -9,6 +10,11 @@ $xml.Load($file)
 
 $identity = $xml.GetElementsByTagName("Identity")[0]
 $identity.SetAttribute("Version", $Version)
+
+if ($IsArm.Equals("true"))
+{
+    $identity.SetAttribute("ProcessorArchitecture", "arm64")
+}
 
 if ($IsMsix.Equals("true"))
 {

@@ -66,12 +66,11 @@ android {
     }
 
     compileOptions {
+        targetCompatibility = javaVersion
         sourceCompatibility = javaVersion
     }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
-        }
+    kotlinOptions {
+        jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget.target
     }
 }

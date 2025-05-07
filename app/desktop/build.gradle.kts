@@ -1,4 +1,6 @@
 import dev.schlaubi.tonbrett.gradle.javaVersion
+import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.internal.impldep.org.apache.sshd.common.util.OsUtils
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.konan.target.HostManager
 
@@ -172,6 +174,10 @@ fun TaskContainerScope.registerMsixTasks(prefix: String = "", msStore: Boolean =
             append("Powershell -File ${script.asFile.absolutePath} -Version ${project.version}.0")
             if (msStore) {
                 append(" -IsMsix true")
+            }
+            val arch =System.getProperty("os.arch")
+            if (arch.contains("arm") || arch.contains("aarch")) {
+                append(" -IsArm true")
             }
         }
         commandLine("cmd", "/c", command)

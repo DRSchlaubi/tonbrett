@@ -200,6 +200,7 @@ jobs:
         name: Download Artifacts from Windows
         with:
           name: msstore-workspace-windows-latest
+          path: x86
       - uses: actions/download-artifact@v4
         name: Download Artifacts from Windows (ARM)
         with:
@@ -212,7 +213,7 @@ jobs:
           Install-Module -Name StoreBroker -Force
       - name: Build MSIX
         run: |
-          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d . /p Tonbrett.msix
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d x86 /p Tonbrett.msix
       - name: Build MSIX (ARM)
         run: |
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/makeappx.exe' pack /d arm /p Tonbrett_arm.msix
@@ -229,8 +230,8 @@ jobs:
           $appId = "9P61S67DVWM2"
           $global:SBDisableTelemetry = $true
           # Create submission package
-          New-SubmissionPackage -ConfigPath .\submission.json -AppxPath .\Tonbrett.msix -OutPath out -OutName package
-          New-SubmissionPackage -ConfigPath .\submission.json -AppxPath .\Tonbrett_arm.msix -OutPath out_arm -OutName package
+          New-SubmissionPackage -ConfigPath x86\submission.json -AppxPath .\Tonbrett.msix -OutPath out -OutName package
+          New-SubmissionPackage -ConfigPath arm\submission.json -AppxPath .\Tonbrett_arm.msix -OutPath out_arm -OutName package
           # Create new submission
           $sub = New-ApplicationSubmission -AppId $appId -Force
           # Parse submission meta

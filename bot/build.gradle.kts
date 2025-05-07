@@ -1,5 +1,6 @@
-import dev.schlaubi.mikbot.gradle.mikbot
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+ import dev.schlaubi.mikbot.gradle.mikbot
+ import dev.schlaubi.tonbrett.gradle.javaVersion
+ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     alias(libs.plugins.ksp)
@@ -25,9 +26,12 @@ dependencies {
 
 kotlin {
     compilerOptions {
-        languageVersion = KotlinVersion.KOTLIN_2_0
-        freeCompilerArgs.addAll("-Xcontext-receivers", "-Xdont-warn-on-error-suppression")
+        freeCompilerArgs.addAll("-Xdont-warn-on-error-suppression")
     }
+}
+
+java {
+    sourceCompatibility = javaVersion
 }
 
 fun DependencyHandlerScope.ktorDependency(dependency: ProviderConvertible<*>) = ktorDependency(dependency.asProvider())
