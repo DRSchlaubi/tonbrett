@@ -230,8 +230,7 @@ jobs:
           $appId = "9P61S67DVWM2"
           $global:SBDisableTelemetry = $true
           # Create submission package
-          New-SubmissionPackage -ConfigPath x86\submission.json -AppxPath .\Tonbrett.msix -OutPath out -OutName package
-          New-SubmissionPackage -ConfigPath arm\submission.json -AppxPath .\Tonbrett_arm.msix -OutPath out_arm -OutName package
+          New-SubmissionPackage -ConfigPath x86\submission.json -AppxPath .\Tonbrett.msix -AppxPath .\Tonbrett_arm.msix -OutPath out -OutName package
           # Create new submission
           $sub = New-ApplicationSubmission -AppId $appId -Force
           # Parse submission meta
@@ -243,7 +242,6 @@ jobs:
           }
           # add new packages
           $sub.applicationPackages += $json.applicationPackages
-          $sub.applicationPackages += $json_arm.applicationPackages
           # Upload submission meta
           Set-ApplicationSubmission -AppId $appId -UpdatedSubmission $sub
           # Upload submission package
@@ -396,8 +394,7 @@ jobs:
           $url = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett.msix"
           $url_arm = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett_arm64.msix"
 
-          wingetcreate.exe update Schlaubi.Tonbrett -u $url --version $version
-          wingetcreate.exe update Schlaubi.Tonbrett -u $url_arm --version $version
+          wingetcreate.exe update Schlaubi.Tonbrett -u $url $url_arm --version $version
 
           if ($version -notmatch "-") {
             wingetcreate.exe submit .\manifests\s\Schlaubi\Tonbrett\${version}\ --token $env:WINGET_GITHUB_TOKEN
