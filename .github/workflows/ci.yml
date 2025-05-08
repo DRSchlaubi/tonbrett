@@ -241,7 +241,6 @@ jobs:
           $sub = New-ApplicationSubmission -AppId $appId -Force
           # Parse submission meta
           $json = (Get-Content out\package.json -Encoding UTF8) | ConvertFrom-Json
-          $json_arm = (Get-Content out_arm\package.json -Encoding UTF8) | ConvertFrom-Json
           # Delete old packages
           foreach ($package in $sub.applicationPackages) {
             $package.fileStatus = "PendingDelete"
