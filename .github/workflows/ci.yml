@@ -221,6 +221,7 @@ jobs:
         env:
           CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.MS_CLIENT_SECRET }}
+        #language=PowerShell
         run: |
           # Login
           $user = $Env:CLIENT_ID
@@ -230,12 +231,16 @@ jobs:
           $appId = "9P61S67DVWM2"
           $global:SBDisableTelemetry = $true
           # Create submission package
-          New-SubmissionPackage -ConfigPath x86\submission.json -AppxPath .\Tonbrett.msix -AppxPath .\Tonbrett_arm.msix -OutPath out -OutName package
+          $packages = @(
+            "Tonbrett.msix",
+            "Tonbrett_arm.msix"
+          )
+          
+          New-SubmissionPackage -ConfigPath x86\submission.json -AppxPath $packages -OutPath out -OutName package
           # Create new submission
           $sub = New-ApplicationSubmission -AppId $appId -Force
           # Parse submission meta
           $json = (Get-Content out\package.json -Encoding UTF8) | ConvertFrom-Json
-          $json_arm = (Get-Content out_arm\package.json -Encoding UTF8) | ConvertFrom-Json
           # Delete old packages
           foreach ($package in $sub.applicationPackages) {
             $package.fileStatus = "PendingDelete"
