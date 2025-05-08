@@ -393,14 +393,16 @@ jobs:
           WINGET_GITHUB_TOKEN: '${{ secrets.WINGET_UPLOAD_GITHUB_TOKEN }}'
         run: >
           $tagname = $env:GITHUB_REF.Replace("refs/tags/", "")
-
           $version = $tagname.Replace("v", "")
 
           $url = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett.msix"
           $url_arm = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett_arm64.msix"
 
-          wingetcreate.exe update Schlaubi.Tonbrett -u $url $url_arm --version $version
+          $urls = @($url,$url_arm)
+
+          wingetcreate.exe update Schlaubi.Tonbrett -u $urls --version $version
 
           if ($version -notmatch "-") {
-            wingetcreate.exe submit .\manifests\s\Schlaubi\Tonbrett\${version}\ --token $env:WINGET_GITHUB_TOKEN
+            wingetcreate.exe submit ".\manifests\s\Schlaubi\Tonbrett\${version}\" --token $env:WINGET_GITHUB_TOKEN
           }
+          
