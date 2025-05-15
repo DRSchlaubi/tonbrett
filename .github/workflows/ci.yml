@@ -91,7 +91,7 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true
+      - run: ./gradlew packageReleaseDistributionForCurrentOS -Pcompose.desktop.mac.sign=true --stacktrace
         shell: bash
       - name: Package Linux Distribution
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04-arm'
