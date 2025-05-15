@@ -49,10 +49,11 @@ jobs:
       - name: Set up jextract (ARM)
         if: matrix.os == 'windows-11-arm'
         shell: bash
+        working-directory: jextract
         run: |
           curl -L -o jextract.tar.gz https://github.com/DRSchlaubi/jextract-builds/releases/download/14869504918/openjdk-23-jextract-windows_aarch64.tar.gz
           tar xzf jextract.tar.gz
-          echo "export PATH=\$PATH:$(pwd)/bin" >> $GITHUB_ENV
+          echo "export JEXTRACT=$(pwd)" >> $GITHUB_ENV
       - uses: actions/setup-java@v4
         with:
           distribution: ${{ matrix.os == 'windows-11-arm' && 'liberica' || 'oracle' }}

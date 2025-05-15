@@ -1,4 +1,7 @@
 import org.jetbrains.kotlin.konan.target.HostManager
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.div
 
 plugins {
     java
@@ -33,6 +36,12 @@ tasks {
             "jextract"
         }
 
+        val jextractCommand = if (System.getenv("JEXTRACT") != null) {
+            Path(System.getenv("JEXTRACT")) / "bin" / command
+        } else {
+            Path(command)
+        }
+
         val libraryPath = if (System.getenv("GITHUB_REF") != null) {
             "uwp_helper"
         } else {
@@ -40,7 +49,7 @@ tasks {
         }
 
         commandLine(
-            command,
+            jextractCommand.absolutePathString(),
             "--header-class-name", "UwpHelper",
             "--target-package", "dev.schlaubi.tonbrett.app.desktop.uwp_helper",
             "--library", libraryPath,
