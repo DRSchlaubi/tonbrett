@@ -20,7 +20,7 @@ fn main() {
     config.language = Language::C;
 
     // This is required to for the StringResult, otherwise jextract wil fail
-    config.includes.push(String::from("Hstring.h"));
+    config.includes.push(String::from("Hstring_copy.h"));
 
     cbindgen::generate_with_config(&crate_dir, config)
         .unwrap()

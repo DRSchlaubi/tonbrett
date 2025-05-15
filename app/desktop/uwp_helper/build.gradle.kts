@@ -37,9 +37,9 @@ tasks {
         }
 
         val jextractCommand = if (System.getenv("JEXTRACT") != null) {
-            Path(System.getenv("JEXTRACT")) / "bin" / command
+            (Path(System.getenv("JEXTRACT")) / "bin" / command).absolutePathString()
         } else {
-            Path(command)
+            command
         }
 
         val libraryPath = if (System.getenv("GITHUB_REF") != null) {
@@ -49,7 +49,7 @@ tasks {
         }
 
         commandLine(
-            jextractCommand.absolutePathString(),
+            jextractCommand,
             "--header-class-name", "UwpHelper",
             "--target-package", "dev.schlaubi.tonbrett.app.desktop.uwp_helper",
             "--library", libraryPath,
