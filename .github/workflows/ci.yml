@@ -393,13 +393,13 @@ jobs:
         env:
           WINGET_GITHUB_TOKEN: '${{ secrets.WINGET_UPLOAD_GITHUB_TOKEN }}'
         run: >
-          $tagname = $env:GITHUB_REF.Replace("refs/tags/", "")
-          $version = $tagname.Replace("v", "")
+          $tagname = $env:GITHUB_REF.Replace("refs/tags/", "");
+          $version = $tagname.Replace("v", "");
 
-          $url = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett.msix"
-          $url_arm = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett_arm64.msix"
+          $url = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett.msix";
+          $url_arm = "https://github.com/DRSchlaubi/tonbrett/releases/download/${tagname}/Tonbrett_arm64.msix";
 
-          $urls = @($url,$url_arm)
+          $urls = @($url,$url_arm);
 
           wingetcreate.exe update Schlaubi.Tonbrett -u $urls --version $version
 
