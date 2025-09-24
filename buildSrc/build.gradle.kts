@@ -20,13 +20,13 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_20
+    sourceCompatibility = JavaVersion.VERSION_24
 }
 
 tasks {
     withType<KotlinCompile> {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_20
+            jvmTarget = JvmTarget.JVM_24
         }
     }
 }

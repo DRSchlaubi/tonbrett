@@ -2,7 +2,9 @@ package dev.schlaubi.tonbrett.common.util
 
 import dev.schlaubi.tonbrett.common.Sound
 import dev.schlaubi.tonbrett.common.SoundGroup
-import kotlin.streams.toList
+import kotlin.collections.List
+import kotlin.collections.map
+import kotlin.toList
 
 @Suppress("USELESS_CAST") // IntelliJ is weird here
 private fun Sound.DiscordEmoji.toTwemoji(): Sound.Twemoji =

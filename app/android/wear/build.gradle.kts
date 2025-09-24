@@ -1,8 +1,8 @@
 import dev.schlaubi.tonbrett.gradle.sdkInt
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("android")
+    kotlin("plugin.compose")
     id("com.android.application")
     id("org.jetbrains.compose")
 }
@@ -40,9 +40,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
     packaging {
         resources {
             pickFirsts.add("META-INF/versions/9/previous-compilation-data.bin")
@@ -55,7 +52,7 @@ android {
 
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_20
+            jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
         }
     }
 }

@@ -81,3 +81,6 @@
 
 # Compose
 -keep,allowshrinking,allowobfuscation class androidx.compose.runtime.* { *; }
+
+# We don't use these classes
+-dontwarn kotlinx.datetime.**

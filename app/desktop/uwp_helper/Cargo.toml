@@ -8,17 +8,17 @@ build = "build.rs"
 crate-type = ["cdylib"]
 
 [dependencies.windows]
-version = "^0.61.0"
+version = "^0.62.0"
 features = ["System", "Foundation", "Win32_Foundation", "Security_Credentials", "Services_Store", "Foundation_Collections", "Storage", "Storage_Search", "Storage_FileProperties"]
 
 [dependencies.tokio]
-version = "1.44.2"
+version = "1.47.1"
 features = ["macros", "rt-multi-thread"]
 
 [build-dependencies.cbindgen]
-version = "0.28.0"
+version = "0.29.0"
 default-features = false
 
 [dependencies]
-windows-future = "0.2"
+windows-future = "0.3"
 log = "0.4.27"

@@ -1,7 +1,5 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import dev.schlaubi.tonbrett.gradle.androidSdk
-import org.gradle.kotlin.dsl.named
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
@@ -32,7 +30,7 @@ kotlin {
             }
         }
 
-        named("jvmMain") {
+        javaMain {
             dependencies {
                 compileOnly(libs.kmongo.id.serialization)
                 compileOnly(libs.kord.common)
@@ -48,9 +46,4 @@ kotlin {
             }
         }
     }
-}
-
-android {
-    namespace = "dev.schlaubi.tonbrett.common"
-    compileSdkVersion = androidSdk
 }

@@ -1,11 +1,10 @@
 import dev.schlaubi.tonbrett.gradle.javaVersion
 import dev.schlaubi.tonbrett.gradle.sdkInt
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.compose)
+    com.android.application
     kotlin("android")
-    id("com.android.application")
     id("org.jetbrains.compose")
 }
 
@@ -23,8 +22,8 @@ dependencies {
     implementation(compose.materialIconsExtended)
     implementation(libs.kotlinx.coroutines.play.services)
 
-    implementation(libs.horologist.datalayer)
-    implementation(libs.horologist.auth.data.phone)
+    coreLibraryDesugaring(libs.horologist.datalayer)
+    coreLibraryDesugaring(libs.horologist.auth.data.phone)
 }
 
 base {
@@ -43,7 +42,7 @@ android {
     }
 
     buildTypes {
-        release {
+        all {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -69,8 +68,10 @@ android {
         targetCompatibility = javaVersion
         sourceCompatibility = javaVersion
     }
+}
 
-    kotlinOptions {
-        jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget.target
+kotlin {
+    compilerOptions {
+        jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
     }
 }

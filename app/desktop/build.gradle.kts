@@ -1,6 +1,4 @@
 import dev.schlaubi.tonbrett.gradle.javaVersion
-import org.apache.tools.ant.taskdefs.condition.Os
-import org.gradle.internal.impldep.org.apache.sshd.common.util.OsUtils
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.konan.target.HostManager
 
@@ -91,12 +89,12 @@ compose.desktop {
                 entitlementsFile.set(file("entitlements.entitlements"))
                 appStore = false
                 signing {
-                    identity = "Michael Rittmeister"
+//                    identity = "Michael Rittmeister"
                 }
                 notarization {
-                    appleID = "michael@rittmeister.in"
-                    password = System.getenv("NOTARIZATION_PASSWORD")
-                    teamID = "U5M3TPJ3J7"
+//                    appleID = "michael@rittmeister.in"
+//                    password = System.getenv("NOTARIZATION_PASSWORD")
+//                    teamID = "U5M3TPJ3J7"
                 }
             }
         }

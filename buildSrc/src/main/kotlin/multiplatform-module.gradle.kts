@@ -1,10 +1,11 @@
+import dev.schlaubi.tonbrett.gradle.sdkInt
+import dev.schlaubi.tonbrett.gradle.withAndroidMP
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
+    com.android.kotlin.multiplatform.library
 }
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalWasmDsl::class)
@@ -17,18 +18,28 @@ kotlin {
                 withWasmJs()
             }
 
-            group("jvm") {
+            group("java") {
                 withJvm()
                 withAndroidTarget()
+                withAndroidMP()
             }
         }
     }
 
-    androidTarget {
+    androidLibrary {
+        compileSdk = sdkInt
+        namespace = "dev.schlaubi.tonbrett.${project.name}"
+
         compilerOptions {
             jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
         }
+
+        lint {
+            checkReleaseBuilds = false
+            abortOnError = false
+        }
     }
+
     jvm("desktop") {
         compilerOptions {
             jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
@@ -49,20 +60,9 @@ kotlin {
                 }
             }
         }
-    }    
+    }
 }
 
 java {
-    targetCompatibility = JavaVersion.VERSION_22
-}
-
-android {
-    compileOptions {
-        targetCompatibility = JavaVersion.VERSION_22
-    }
-
-    lint {
-        checkReleaseBuilds = false
-        abortOnError = false
-    }
+    targetCompatibility = JavaVersion.VERSION_24
 }

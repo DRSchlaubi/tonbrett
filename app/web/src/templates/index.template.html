@@ -5,14 +5,28 @@
     <link rel="icon" type="image/png" href="/soundboard/ui/favicon.ico"/>
     <title>Tonbrett</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body, html {
+            background-color: rgb(17, 18, 20);
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
+            overflow: hidden;
+        }
+        #app {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-<style>
-    body {
-        background-color: rgb(17, 18, 20);
-        overflow: hidden;
-    }
-</style>
-<canvas id="ComposeTarget"></canvas>
+<div id="app"></div>
 </body>
 </html>

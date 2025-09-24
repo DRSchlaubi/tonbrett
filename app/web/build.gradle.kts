@@ -48,9 +48,13 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
-                implementation(npm("@discord/embedded-app-sdk", "1.7.1"))
+                implementation(npm("@discord/embedded-app-sdk", "2.4.0"))
             }
         }
+    }
+
+    compilerOptions {
+        optIn.add("kotlin.js.ExperimentalWasmJsInterop")
     }
 }
 

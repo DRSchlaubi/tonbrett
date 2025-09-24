@@ -1,25 +1,25 @@
 [versions]
-kotlin = "2.1.20"
-ktor = "3.1.3"
-kmongo = "5.2.1"
-kord = "0.15.0"
-mikbot = "4.3.0"
-ksp = "2.1.20-2.0.1"
-kordex = "2.3.1-MIKBOT.4"
-android = "8.11.0-alpha09"
-compose = "1.8.0"
-compose-wear = "1.4.1"
+kotlin = "2.2.20"
+ktor = "3.3.0"
+kmongo = "5.5.1"
+kord = "0.17.0"
+mikbot = "5.0.1"
+ksp = "2.2.20-2.0.3"
+kordex = "2.3.5-MIKBOT.1-SNAPSHOT"
+android = "8.11.2"
+compose = "1.9.0"
+compose-wear = "1.5.1"
 lyricist = "1.7.0"
 google-play = "2.1.0"
 coroutines = "1.10.2"
 play-services-wearable = "19.0.0"
-horologist = "0.7.3-alpha"
-protobuf = "4.28.3"
-coil = "3.1.0"
+horologist = "0.7.15"
+protobuf = "4.32.1"
+coil = "3.3.0"
 lavalink-api = "4.0.8"
 
 [libraries]
-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.8.1" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.9.0" }
 kmongo-id-serialization = { group = "org.litote.kmongo", name = "kmongo-id-serialization", version.ref = "kmongo" }
 kmongo-serialization = { group = "org.litote.kmongo", name = "kmongo-serialization", version.ref = "kmongo" }
 kord-common = { group = "dev.kord", name = "kord-common", version.ref = "kord" }
@@ -52,9 +52,9 @@ ktor-sse = { group = "io.ktor", name = "ktor-sse", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
-mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "4.2.0-SNAPSHOT" }
+mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "5.0.1-SNAPSHOT" }
 
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.7" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.13" }
 
 lyricist = { group = "cafe.adriel.lyricist", name = "lyricist", version.ref = "lyricist" }
 lyricist-processor = { group = "cafe.adriel.lyricist", name = "lyricist-processor", version.ref = "lyricist" }
@@ -63,11 +63,11 @@ logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.1
 
 kvault = { group = "com.liftric", name = "kvault", version = "1.12.0" }
 
-androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.10.1" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
-androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.16.0" }
-androidx-browser = { group = "androidx.browser", name = "browser", version = "1.8.0" }
-mdc-android = { group = "com.google.android.material", name = "material", version = "1.12.0" }
+androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.11.0" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.1" }
+androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.17.0" }
+androidx-browser = { group = "androidx.browser", name = "browser", version = "1.9.0" }
+mdc-android = { group = "com.google.android.material", name = "material", version = "1.13.0" }
 google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
 google-play-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "google-play" }
 
@@ -105,6 +105,6 @@ android-base = { id = "com.android.base", version.ref = "android" }
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.6.2" }
-protobuf = { id = "com.google.protobuf", version = "0.9.4" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "5.6.8" }
+protobuf = { id = "com.google.protobuf", version = "0.9.5" }
 lavalink = { id = "dev.arbjerg.lavalink.gradle-plugin", version = "1.1.2" }

@@ -1,8 +1,7 @@
 package dev.schlaubi.tonbrett.app.web.resource
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.window.CanvasBasedWindow
-import dev.schlaubi.tonbrett.app.title
+import androidx.compose.ui.window.ComposeViewport
 import dev.schlaubi.tonbrett.common.TonbrettSerializersModule
 import io.ktor.http.*
 import io.ktor.resources.*
@@ -42,7 +41,9 @@ inline fun <reified R : Any> routeHandler(body: (R) -> Unit) {
 @Suppress("FunctionName")
 inline fun <reified R : Any> ComposeRouteHandler(crossinline content: @Composable (R) -> Unit) =
     routeHandler<R> { resource ->
-        CanvasBasedWindow(title) {
+        ComposeViewport("app", configure = {
+            this.isA11YEnabled
+        }) {
             content(resource)
         }
     }

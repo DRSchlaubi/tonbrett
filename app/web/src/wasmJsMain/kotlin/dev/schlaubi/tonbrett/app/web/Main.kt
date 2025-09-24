@@ -16,7 +16,6 @@ import org.w3c.dom.get
 private val context = AppContext()
 
 fun main() {
-    println("App start")
     if (document.location!!.host.endsWith("discordsays.com")) return discordActivity()
     routeHandler<Route.Ui.Login> { (token) ->
         context.token = token
@@ -26,7 +25,6 @@ fun main() {
         AuthorizationScreen(cli, protocol)
     }
     ComposeRouteHandler<Route.Ui> {
-        println("Trying to launch app")
         if (sessionStorage[tokenKey] == null) {
             window.location.href = href(Route.Auth(type = Route.Auth.Type.WEB))
         } else {

@@ -1,34 +1,21 @@
 package dev.schlaubi.tonbrett.app.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.schlaubi.tonbrett.app.ColorScheme
-import dev.schlaubi.tonbrett.app.LocalStrings
 import dev.schlaubi.tonbrett.app.TonbrettViewModel
 import dev.schlaubi.tonbrett.app.api.IO
 import dev.schlaubi.tonbrett.app.api.LocalContext
 import dev.schlaubi.tonbrett.client.Tonbrett
 import dev.schlaubi.tonbrett.common.*
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 private val LOG = KotlinLogging.logger {}
 
@@ -130,8 +117,6 @@ class SoundListViewModel(
                     handleEvent(SoundCreatedEvent(event.sound))
                 }
             }
-
-            else -> LOG.warn { "Unknown event type: $event" }
         }
     }
 

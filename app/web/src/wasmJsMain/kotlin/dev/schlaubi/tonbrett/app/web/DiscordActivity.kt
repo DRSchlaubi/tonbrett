@@ -1,17 +1,12 @@
 package dev.schlaubi.tonbrett.app.web
 
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.runtime.*
+import androidx.compose.ui.window.ComposeViewport
 import dev.schlaubi.tonbrett.app.TonbrettApp
 import dev.schlaubi.tonbrett.app.api.AppContext
 import dev.schlaubi.tonbrett.app.api.ProvideContext
 import dev.schlaubi.tonbrett.app.api.appId
 import dev.schlaubi.tonbrett.app.api.getUrl
-import dev.schlaubi.tonbrett.app.title
 import dev.schlaubi.tonbrett.common.AuthRefreshResponse
 import dev.schlaubi.tonbrett.common.Route
 import io.ktor.client.*
@@ -49,7 +44,7 @@ private val context = AppContext()
 
 fun discordActivity() {
     try {
-        CanvasBasedWindow(title) {
+        ComposeViewport("app") {
             var state by remember { mutableStateOf(State.INITIALIZING) }
 
             LaunchedEffect(Unit) {

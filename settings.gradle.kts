@@ -11,7 +11,7 @@ pluginManagement {
 }
 
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 rootProject.name = "tonbrett"
@@ -28,7 +28,7 @@ include(
     ":app:desktop:uwp_helper",
     ":app:android",
     ":app:android:shared",
-//    ":app:android:wear",
+    ":app:android:wear",
     ":app:ios",
 )
 

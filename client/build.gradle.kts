@@ -1,8 +1,6 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import dev.schlaubi.tonbrett.gradle.androidSdk
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 plugins {
@@ -18,7 +16,7 @@ repositories {
 kotlin {
     targets.named<KotlinJvmTarget>("desktop") {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
+            jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
         }
     }
     macosArm64()
@@ -72,9 +70,4 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xdont-warn-on-error-suppression")
     }
-}
-
-android {
-    namespace = "dev.schlaubi.tonbrett.client"
-    compileSdkVersion = androidSdk
 }

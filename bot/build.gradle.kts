@@ -1,6 +1,5 @@
- import dev.schlaubi.mikbot.gradle.mikbot
- import dev.schlaubi.tonbrett.gradle.javaVersion
- import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import dev.schlaubi.mikbot.gradle.mikbot
+import dev.schlaubi.tonbrett.gradle.javaVersion
 
 plugins {
     alias(libs.plugins.ksp)
@@ -27,6 +26,7 @@ dependencies {
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xdont-warn-on-error-suppression")
+        optIn.add("kotlin.time.ExperimentalTime")
     }
 }
 
@@ -55,7 +55,12 @@ mikbotPlugin {
 tasks {
     val buildWebApp = register<Copy>("buildWebApp") {
         val webApp = project(":app:web")
-        from(webApp.tasks.named("wasmJsBrowserDistribution"))
+        val source = if(System.getenv("GITHUB_SHA").isNullOrBlank()) {
+            "wasmJsBrowserDevelopmentExecutableDistribution"
+        } else {
+            "wasmJsBrowserDistribution"
+        }
+        from(webApp.tasks.named(source))
         into(layout.buildDirectory.dir("resources/main/web"))
     }
 

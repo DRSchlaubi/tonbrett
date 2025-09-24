@@ -1,6 +1,6 @@
 import com.github.gmazzo.buildconfig.generators.BuildConfigKotlinGenerator
-import dev.schlaubi.tonbrett.gradle.androidSdk
 import dev.schlaubi.tonbrett.gradle.apiUrl
+import dev.schlaubi.tonbrett.gradle.withAndroidMP
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -17,7 +17,7 @@ kotlin {
         common {
             group("nonWeb") {
                 withNative()
-                withAndroidTarget()
+                withAndroidMP()
                 withJvm()
             }
 
@@ -32,13 +32,13 @@ kotlin {
                 group("apple") {
                     withApple()
                 }
-                withAndroidTarget()
+                withAndroidMP()
 
             }
             group("nonDesktop") {
                 withJs()
                 withApple()
-                withAndroidTarget()
+                withAndroidMP()
                 withWasmJs()
             }
         }
@@ -111,13 +111,3 @@ buildConfig {
         }
     }
 }
-
-android {
-    namespace = "dev.schlaubi.tonbrett.app"
-    compileSdkVersion = androidSdk
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-    }
-}
-

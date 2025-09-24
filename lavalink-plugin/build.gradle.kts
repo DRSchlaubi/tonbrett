@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     kotlin("jvm")
     alias(libs.plugins.lavalink)
@@ -18,7 +16,7 @@ java {
 
 kotlin {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_17
+        jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
     }
 }
 
