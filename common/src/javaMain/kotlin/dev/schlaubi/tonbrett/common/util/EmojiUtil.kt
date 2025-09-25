@@ -2,13 +2,14 @@ package dev.schlaubi.tonbrett.common.util
 
 import dev.schlaubi.tonbrett.common.Sound
 import dev.schlaubi.tonbrett.common.SoundGroup
-import kotlin.collections.List
-import kotlin.collections.map
-import kotlin.toList
+import java.util.stream.Collectors
 
 @Suppress("USELESS_CAST") // IntelliJ is weird here
-private fun Sound.DiscordEmoji.toTwemoji(): Sound.Twemoji =
-    Sound.Twemoji(value, (value as String).codePoints().toList(), value.length)
+private fun Sound.DiscordEmoji.toTwemoji(): Sound.Twemoji {
+    val codePoints = (value as java.lang.String).codePoints().boxed().collect(Collectors.toList())
+
+    return Sound.Twemoji(value, codePoints, value.length)
+}
 
 /**
  * Converts this emoji to contain information needed on non JVM Platforms.

@@ -30,6 +30,8 @@ kotlin {
         compileSdk = sdkInt
         namespace = "dev.schlaubi.tonbrett.${project.name}"
 
+        minSdk = 24
+
         compilerOptions {
             jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
         }
