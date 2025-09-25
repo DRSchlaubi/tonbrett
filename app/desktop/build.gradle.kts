@@ -85,16 +85,16 @@ compose.desktop {
 
             macOS {
                 iconFile = rootProject.file("icons/logo.icns")
-                bundleID = "dev.schlaubi.tonbrett.app.mac"
+                bundleID = "dev.schlaubi.tonbrett.ios"
                 entitlementsFile.set(file("entitlements.entitlements"))
                 appStore = false
                 signing {
-//                    identity = "Michael Rittmeister"
+                    identity.set("BBN Holding Inc.")
                 }
                 notarization {
-//                    appleID = "michael@rittmeister.in"
-//                    password = System.getenv("NOTARIZATION_PASSWORD")
-//                    teamID = "U5M3TPJ3J7"
+                    appleID.set("michael@rittmeister.in")
+                    password.set(System.getenv("NOTARIZATION_PASSWORD"))
+                    teamID.set("H8563U643B")
                 }
             }
         }
