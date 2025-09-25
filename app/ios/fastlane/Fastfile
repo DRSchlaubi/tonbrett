@@ -85,7 +85,7 @@ platform :ios do
       app_identifier: "#{DEVELOPER_APP_IDENTIFIER}",
       distribute_external: true,
       notify_external_testers: true,
-      groups: ["Ultra Cool Boiiis"],
+      groups: ["extern"],
       ipa: "./Tonbrett.ipa",
       changelog: "New beta build"
     )
