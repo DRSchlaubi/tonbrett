@@ -66,5 +66,5 @@ kotlin {
 }
 
 java {
-    targetCompatibility = JavaVersion.VERSION_24
+    targetCompatibility = JavaVersion.VERSION_23
 }
