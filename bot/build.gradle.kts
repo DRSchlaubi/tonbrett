@@ -1,5 +1,5 @@
 import dev.schlaubi.mikbot.gradle.mikbot
-import dev.schlaubi.tonbrett.gradle.javaVersion
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.ksp)
@@ -27,11 +27,12 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xdont-warn-on-error-suppression")
         optIn.add("kotlin.time.ExperimentalTime")
+        jvmTarget = JvmTarget.JVM_24
     }
 }
 
 java {
-    sourceCompatibility = javaVersion
+    sourceCompatibility = JavaVersion.VERSION_24
 }
 
 fun DependencyHandlerScope.ktorDependency(dependency: ProviderConvertible<*>) = ktorDependency(dependency.asProvider())
