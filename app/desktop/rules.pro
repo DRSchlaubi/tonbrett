@@ -1,6 +1,6 @@
 # Ktor
 -keepclassmembers class io.ktor.** { volatile <fields>; }
--keep class io.ktor.client.engine.java.JavaHttpEngineContainer
+-keep class io.ktor.client.engine.okhttp.OkHttpEngineContainer
 -keep class io.ktor.serialization.kotlinx.json.KotlinxSerializationJsonExtensionProvider
 # even though we don't use log4j, proguard fails preverification if this class gets optimized
 -keep class io.netty.util.internal.logging.Log4J2LoggerFactory { *; }
@@ -84,3 +84,16 @@
 
 # We don't use these classes
 -dontwarn kotlinx.datetime.**
+
+# Okhttp
+# JSR 305 annotations are for embedding nullability information.
+-dontwarn javax.annotation.**
+
+# Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
+-dontwarn org.codehaus.mojo.animal_sniffer.*
+
+# OkHttp platform used only on JVM and when Conscrypt and other security providers are available.
+# May be used with robolectric or deliberate use of Bouncy Castle on Android
+-dontwarn okhttp3.internal.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
