@@ -3,12 +3,11 @@
 package dev.schlaubi.tonbrett.bot
 
 import dev.kord.cache.api.putAll
-import dev.kordex.core.extensions.primaryEntryPointCommand
 import dev.kord.common.entity.PrimaryEntryPointCommandHandlerType
-import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.gateway.Intent
 import dev.kordex.core.builders.ExtensionsBuilder
 import dev.kordex.core.extensions.event
+import dev.kordex.core.extensions.primaryEntryPointCommand
 import dev.kordex.core.i18n.toKey
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
@@ -17,7 +16,6 @@ import dev.schlaubi.mikbot.plugin.api.PluginContext
 import dev.schlaubi.mikbot.plugin.api.PluginMain
 import dev.schlaubi.mikbot.plugin.api.module.SubCommandModule
 import dev.schlaubi.mikbot.plugin.api.util.AllShardsReadyEvent
-import dev.schlaubi.mikmusic.core.MusicModule
 import dev.schlaubi.mikmusic.core.audio.LavalinkManager
 import dev.schlaubi.tonbrett.bot.commands.*
 import dev.schlaubi.tonbrett.bot.core.DiscordSoundboardWatcher
@@ -30,7 +28,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
-import org.koin.core.component.get
 import org.litote.kmongo.serialization.registerModule
 import kotlin.time.Duration.Companion.seconds
 
@@ -81,6 +78,8 @@ private class Module(context: PluginContext) : SubCommandModule(context) {
 
                 LOG.info { "Successfully fetched ${sounds.size} sounds from Discord" }
 
+                LOG.info { "Waiting 30s for ingresses to ready-up" }
+                delay(30.seconds)
                 bot.findExtension<LavalinkManager>()!!.lavalink.nodes.forEach {
                     it.syncSounds()
                 }
