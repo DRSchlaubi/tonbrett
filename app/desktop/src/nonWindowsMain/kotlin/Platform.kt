@@ -25,7 +25,9 @@ private class UnixPlatform : IPlatform {
         if (desktop.isSupported(Desktop.Action.BROWSE)) {
             desktop.browse(uri)
         } else {
-            Runtime.getRuntime().exec(arrayOf("xdg-open", uri.toString()))
+            ProcessBuilder("xdg-open", uri.toString()).apply {
+                inheritIO()
+            }.start()
         }
     }
 

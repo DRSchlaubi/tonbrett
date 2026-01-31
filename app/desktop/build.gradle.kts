@@ -53,7 +53,7 @@ compose.desktop {
     application {
         mainClass = "dev.schlaubi.tonbrett.app.desktop.MainKt"
 
-        jvmArgs("--enable-native-access=ALL-UNNAMED", "--enable-preview")
+        jvmArgs("--enable-native-access=ALL-UNNAMED", "--enable-preview", "-Djdk.lang.Process.launchMechanism=FORK")
         nativeDistributions {
             modules(
                 "java.naming", // required by logback
@@ -102,7 +102,7 @@ compose.desktop {
         buildTypes {
             release {
                 proguard {
-                    version = "7.7.0"
+                    version = "7.8.2"
                     configurationFiles.from(files("rules.pro"))
                 }
             }
