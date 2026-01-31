@@ -18,8 +18,8 @@ dependencies {
     implementation(libs.mdc.android)
     implementation(libs.google.play)
     implementation(libs.google.play.ktx)
-    implementation(compose.material3)
-    implementation(compose.materialIconsExtended)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
     implementation(libs.kotlinx.coroutines.play.services)
 
     coreLibraryDesugaring(libs.horologist.datalayer)

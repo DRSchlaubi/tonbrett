@@ -51,7 +51,6 @@ kotlin {
         browser()
     }
     iosSimulatorArm64()
-    iosX64()
     iosArm64()
 
     targets.all {

@@ -42,12 +42,12 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(projects.app.shared)
-                implementation(compose.runtime)
-                implementation(compose.ui)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.components.resources)
-                implementation(compose.materialIconsExtended)
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.ui)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material)
+                implementation(libs.compose.components.resources)
+                implementation(libs.compose.material.icons.extended)
                 implementation(npm("@discord/embedded-app-sdk", "2.4.0"))
             }
         }

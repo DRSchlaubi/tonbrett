@@ -54,18 +54,16 @@ kotlin {
             dependencies {
                 api(projects.client)
                 api(libs.lyricist)
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.material3)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
-                implementation(compose.materialIconsExtended)
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.components.resources)
+                implementation(libs.compose.material.icons.extended)
 
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network)
-                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
+                implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.9.6")
             }
         }
 

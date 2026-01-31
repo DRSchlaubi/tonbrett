@@ -53,6 +53,10 @@ mikbotPlugin {
     }
 }
 
+pluginPublishing {
+    targetDirectory = layout.buildDirectory.dir("mikbot/plugins")
+}
+
 tasks {
     val buildWebApp = register<Copy>("buildWebApp") {
         val webApp = project(":app:web")

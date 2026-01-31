@@ -14,10 +14,10 @@ val windowsBuild = HostManager.hostIsMingw && rootProject.property("dev.schlaubi
 dependencies {
     implementation(projects.app.shared)
     implementation(project.dependencies.compose.desktop.currentOs)
-    implementation(project.dependencies.compose.materialIconsExtended)
-    implementation(project.dependencies.compose.material3)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
     implementation(libs.logback)
-    implementation(compose.components.resources)
+    implementation(libs.compose.components.resources)
 
     if (windowsBuild) {
         implementation(projects.app.desktop.uwpHelper)
@@ -128,7 +128,7 @@ tasks {
         archiveExtension = "tar.gz"
     }
 
-    if (true) {
+    if (HostManager.hostIsMingw) {
         registerMsixTasks()
         registerMsixTasks("MSStore", msStore = true)
     }

@@ -7,7 +7,6 @@ plugins {
 
 kotlin {
     applyDefaultHierarchyTemplate()
-    iosX64()
     iosSimulatorArm64()
     iosArm64()
 
@@ -27,8 +26,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(projects.app.shared)
-                implementation(compose.runtime)
-                implementation(compose.foundation)
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.foundation)
             }
         }
     }
