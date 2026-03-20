@@ -1,21 +1,21 @@
 [versions]
-kotlin = "2.3.0"
-ktor = "3.4.0"
-kmongo = "5.5.1"
-kord = "0.17.0"
-mikbot = "5.0.3"
-ksp = "2.3.5"
+kotlin = "2.3.20"
+ktor = "3.4.1"
+kmongo = "5.6.0"
+kord = "0.18.1"
+mikbot = "5.1.1"
+ksp = "2.3.6"
 kordex = "2.3.5-MIKBOT.1-SNAPSHOT"
-android = "8.12.3"
-compose = "1.11.0-alpha02"
+android = "9.0.1"
+compose = "1.11.0-alpha04"
 compose-wear = "1.5.6"
 lyricist = "1.8.0"
 google-play = "2.1.0"
 coroutines = "1.10.2"
 play-services-wearable = "19.0.0"
 horologist = "0.7.15"
-protobuf = "4.33.5"
-coil = "3.3.0"
+protobuf = "4.34.0"
+coil = "3.4.0"
 lavalink-api = "4.0.8"
 
 [libraries]
@@ -54,18 +54,18 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 mikbot-ktor = { group = "dev.schlaubi", name = "mikbot-ktor", version.ref = "mikbot" }
 mikbot-music = { group = "dev.schlaubi", name = "mikbot-music-player", version = "5.0.1-SNAPSHOT" }
 
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.14" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "8.0.01" }
 
 lyricist = { group = "cafe.adriel.lyricist", name = "lyricist", version.ref = "lyricist" }
 lyricist-processor = { group = "cafe.adriel.lyricist", name = "lyricist-processor", version.ref = "lyricist" }
 
-logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.27" }
+logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.32" }
 
 kvault = { group = "com.liftric", name = "kvault", version = "1.12.0" }
 
-androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.12.3" }
+androidx-activity = { group = "androidx.activity", name = "activity-compose", version = "1.13.0" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.1" }
-androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.17.0" }
+androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.18.0" }
 androidx-browser = { group = "androidx.browser", name = "browser", version = "1.9.0" }
 mdc-android = { group = "com.google.android.material", name = "material", version = "1.13.0" }
 google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
@@ -113,6 +113,6 @@ android-base = { id = "com.android.base", version.ref = "android" }
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.7" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.9" }
 protobuf = { id = "com.google.protobuf", version = "0.9.6" }
 lavalink = { id = "dev.arbjerg.lavalink.gradle-plugin", version = "1.1.2" }

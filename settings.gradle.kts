@@ -27,9 +27,9 @@ include(
     ":app:desktop",
     ":app:desktop:uwp_helper",
     ":app:android",
-    ":app:android:shared",
-    ":app:android:wear",
+//    ":app:android:shared",
+//    ":app:android:wear",
     ":app:ios",
 )
 
-project(":app:android:shared").name = "androidShared"
+//project(":app:android:shared").name = "androidShared"

@@ -4,13 +4,12 @@ import dev.schlaubi.tonbrett.gradle.sdkInt
 plugins {
     alias(libs.plugins.kotlin.compose)
     com.android.application
-    kotlin("android")
     id("org.jetbrains.compose")
 }
 
 dependencies {
     implementation(projects.app.shared)
-    implementation(projects.app.android.androidShared)
+//    implementation(projects.app.android.androidShared)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core)

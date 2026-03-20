@@ -6,7 +6,7 @@ import java.util.stream.Collectors
 
 @Suppress("USELESS_CAST") // IntelliJ is weird here
 private fun Sound.DiscordEmoji.toTwemoji(): Sound.Twemoji {
-    val codePoints = (value as java.lang.String).codePoints().boxed().collect(Collectors.toList())
+    val codePoints = value.codePoints().boxed().collect(Collectors.toList())
 
     return Sound.Twemoji(value, codePoints, value.length)
 }

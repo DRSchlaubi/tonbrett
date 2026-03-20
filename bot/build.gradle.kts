@@ -27,12 +27,12 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xdont-warn-on-error-suppression")
         optIn.add("kotlin.time.ExperimentalTime")
-        jvmTarget = JvmTarget.JVM_24
+        jvmTarget = JvmTarget.JVM_25
     }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_24
+    sourceCompatibility = JavaVersion.VERSION_25
 }
 
 fun DependencyHandlerScope.ktorDependency(dependency: ProviderConvertible<*>) = ktorDependency(dependency.asProvider())

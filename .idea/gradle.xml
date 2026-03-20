@@ -22,8 +22,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/app/android" />
-            <option value="$PROJECT_DIR$/app/android/shared" />
-            <option value="$PROJECT_DIR$/app/android/wear" />
             <option value="$PROJECT_DIR$/app/desktop" />
             <option value="$PROJECT_DIR$/app/desktop/uwp_helper" />
             <option value="$PROJECT_DIR$/app/ios" />

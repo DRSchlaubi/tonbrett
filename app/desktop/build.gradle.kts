@@ -1,4 +1,6 @@
 import dev.schlaubi.tonbrett.gradle.javaVersion
+import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.internal.impldep.org.apache.sshd.common.util.OsUtils
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.konan.target.HostManager
 
@@ -128,7 +130,7 @@ tasks {
         archiveExtension = "tar.gz"
     }
 
-    if (HostManager.hostIsMingw) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         registerMsixTasks()
         registerMsixTasks("MSStore", msStore = true)
     }
@@ -173,7 +175,7 @@ fun TaskContainerScope.registerMsixTasks(prefix: String = "", msStore: Boolean =
             if (msStore) {
                 append(" -IsMsix true")
             }
-            val arch =System.getProperty("os.arch")
+            val arch = System.getProperty("os.arch")
             if (arch.contains("arm") || arch.contains("aarch")) {
                 append(" -IsArm true")
             }
@@ -188,9 +190,7 @@ fun TaskContainerScope.registerMsixTasks(prefix: String = "", msStore: Boolean =
 
     afterEvaluate {
         "packageReleaseDistributionForCurrentOS" {
-            if (HostManager.hostIsMingw) {
-                dependsOn(finalizeMsixWorkspace)
-            }
+            dependsOn(finalizeMsixWorkspace)
         }
     }
 }
