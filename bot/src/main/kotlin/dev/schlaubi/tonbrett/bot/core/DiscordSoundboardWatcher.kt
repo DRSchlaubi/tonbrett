@@ -1,7 +1,5 @@
 package dev.schlaubi.tonbrett.bot.core
 
-import dev.kord.common.annotation.KordExperimental
-import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.event.guild.GuildSoundboardSoundCreateEvent
 import dev.kord.core.event.guild.GuildSoundboardSoundDeleteEvent
 import dev.kord.core.event.guild.GuildSoundboardSoundUpdateEvent
@@ -19,7 +17,6 @@ import kotlinx.coroutines.launch
 class DiscordSoundboardWatcher : Extension() {
     override val name: String = "soundboard-watcher"
 
-    @OptIn(KordExperimental::class, KordUnsafe::class)
     override suspend fun setup() {
         event<GuildSoundboardSoundCreateEvent> {
             action {
