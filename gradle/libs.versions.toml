@@ -71,7 +71,7 @@ mdc-android = { group = "com.google.android.material", name = "material", versio
 google-play = { group = "com.google.android.play", name = "app-update", version.ref = "google-play" }
 google-play-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "google-play" }
 
-google-artifactregistry = { group = "com.google.cloud.artifactregistry.gradle-plugin", name = "com.google.cloud.artifactregistry.gradle-plugin.gradle.plugin", version = "2.2.5" }
+google-artifactregistry = { group = "com.google.cloud.artifactregistry.gradle-plugin", name = "com.google.cloud.artifactregistry.gradle-plugin.gradle.plugin", version = "2.2.0" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
 
 protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
