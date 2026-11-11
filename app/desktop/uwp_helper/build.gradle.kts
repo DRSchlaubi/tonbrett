@@ -16,14 +16,14 @@ sourceSets {
 }
 
 tasks {
-    val compileRust by registering(Exec::class) {
+    val compileRust = register<Exec>("compileRust") {
         inputs.dir("src")
         outputs.dir("target")
 
         commandLine("cargo", "build", "--release")
     }
 
-    val generateBindingsWithJextract by registering(Exec::class) {
+    val generateBindingsWithJextract = register<Exec>("generateBindingsWithJextract") {
         dependsOn(compileRust)
         val header = "target/uwp_helper.h"
         inputs.file(header)

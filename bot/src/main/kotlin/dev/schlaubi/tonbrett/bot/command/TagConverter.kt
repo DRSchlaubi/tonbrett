@@ -3,7 +3,7 @@ package dev.schlaubi.tonbrett.bot.command
 import dev.kord.core.behavior.interaction.suggestString
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.converters.impl.optionalString
-import dev.kordex.core.i18n.types.Key
+import dev.kordex.i18n.Key
 import dev.schlaubi.mikbot.plugin.api.util.safeInput
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase
 import dev.schlaubi.tonbrett.bot.io.findAllTags

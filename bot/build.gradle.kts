@@ -10,6 +10,7 @@ plugins {
 
 repositories {
     maven("https://maven.topi.wtf/releases")
+    maven("https://maven.lavalink.dev/releases")
 }
 
 dependencies {
@@ -21,18 +22,19 @@ dependencies {
     implementation(libs.kmongo.id.serialization)
     plugin(mikbot(libs.mikbot.ktor))
     plugin(libs.mikbot.music)
+    ksp(libs.kordex.processor)
 }
 
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xdont-warn-on-error-suppression")
         optIn.add("kotlin.time.ExperimentalTime")
-        jvmTarget = JvmTarget.JVM_25
+        jvmTarget = JvmTarget.JVM_26
     }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_25
+    sourceCompatibility = JavaVersion.VERSION_26
 }
 
 fun DependencyHandlerScope.ktorDependency(dependency: ProviderConvertible<*>) = ktorDependency(dependency.asProvider())

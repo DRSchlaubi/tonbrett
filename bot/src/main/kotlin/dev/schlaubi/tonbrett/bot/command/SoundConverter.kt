@@ -15,8 +15,8 @@ import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
-import dev.kordex.core.i18n.EMPTY_KEY
-import dev.kordex.core.i18n.types.Key
+import dev.kordex.i18n.EMPTY_KEY
+import dev.kordex.i18n.Key
 import dev.kordex.parser.StringParser
 import dev.schlaubi.mikbot.plugin.api.util.safeInput
 import dev.schlaubi.tonbrett.bot.io.SoundBoardDatabase

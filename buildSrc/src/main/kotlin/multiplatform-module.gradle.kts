@@ -1,3 +1,4 @@
+import dev.schlaubi.tonbrett.gradle.javaVersion
 import dev.schlaubi.tonbrett.gradle.sdkInt
 import dev.schlaubi.tonbrett.gradle.withAndroidMP
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -26,7 +27,7 @@ kotlin {
         }
     }
 
-    androidLibrary {
+    android {
         compileSdk = sdkInt
         namespace = "dev.schlaubi.tonbrett.${project.name}"
 
@@ -65,5 +66,5 @@ kotlin {
 }
 
 java {
-    targetCompatibility = JavaVersion.VERSION_23
+    targetCompatibility = javaVersion
 }

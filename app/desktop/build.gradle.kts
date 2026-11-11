@@ -1,6 +1,5 @@
 import dev.schlaubi.tonbrett.gradle.javaVersion
 import org.apache.tools.ant.taskdefs.condition.Os
-import org.gradle.internal.impldep.org.apache.sshd.common.util.OsUtils
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.konan.target.HostManager
 

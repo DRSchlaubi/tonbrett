@@ -10,6 +10,8 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        maven("https://oss.sonatype.org/content/repositories/snapshots")
+        maven("https://releases-repo.kordex.dev")
+        maven("https://snapshots-repo.kordex.dev")
+        maven("https://mirror-repo.kordex.dev")
     }
 }

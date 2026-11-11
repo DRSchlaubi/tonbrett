@@ -28,10 +28,13 @@ import io.ktor.server.resources.post
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+import io.ktor.util.Attributes
+import io.ktor.util.reflect.TypeInfo
 import kotlin.time.Clock
 import kotlin.time.toJavaInstant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import dev.kord.common.entity.Snowflake as snowflake
@@ -122,7 +125,7 @@ fun Application.installAuth() {
         @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
         post<Route.Auth.Token> { (code, state) ->
             val accessToken =
-                io.ktor.server.auth.oauth2RequestAccessToken(
+                DummyCall.oauth2RequestAccessToken(
                     httpClient,
                     oauthSettings,
                     "",
@@ -201,3 +204,30 @@ fun newServiceKey() = JWT.create()
     .withIssuer(KtorConfig.WEB_SERVER_URL.toString())
     .withAudience("lavalink")
     .sign(Algorithm.HMAC256(Config.JWT_SECRET))
+
+private object DummyCall : ApplicationCall {
+    @Deprecated(
+        "Use 'receive<T>(typeInfo)' with nullable T instead",
+        replaceWith = ReplaceWith("receive<T?>(typeInfo)")
+    )
+    override suspend fun <T> receiveNullable(typeInfo: TypeInfo): T? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun respond(message: Any?, typeInfo: TypeInfo?) {
+        TODO("Not yet implemented")
+    }
+
+    override val application: Application
+        get() = TODO("Not yet implemented")
+    override val attributes: Attributes
+        get() = TODO("Not yet implemented")
+    override val parameters: Parameters
+        get() = TODO("Not yet implemented")
+    override val request: ApplicationRequest
+        get() = TODO("Not yet implemented")
+    override val response: ApplicationResponse
+        get() = TODO("Not yet implemented")
+    override val coroutineContext: CoroutineContext
+        get() = TODO("Not yet implemented")
+}

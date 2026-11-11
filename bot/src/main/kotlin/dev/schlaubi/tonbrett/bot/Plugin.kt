@@ -1,16 +1,10 @@
-@file:OptIn(UnsafeAPI::class)
-
 package dev.schlaubi.tonbrett.bot
 
 import dev.kord.cache.api.putAll
-import dev.kord.common.entity.PrimaryEntryPointCommandHandlerType
 import dev.kord.gateway.Intent
 import dev.kordex.core.builders.ExtensionsBuilder
 import dev.kordex.core.extensions.event
-import dev.kordex.core.extensions.primaryEntryPointCommand
-import dev.kordex.core.i18n.toKey
-import dev.kordex.core.i18n.types.Key
-import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.i18n.Key
 import dev.schlaubi.mikbot.plugin.api.Plugin
 import dev.schlaubi.mikbot.plugin.api.PluginContext
 import dev.schlaubi.mikbot.plugin.api.PluginMain
@@ -58,13 +52,6 @@ private class Module(context: PluginContext) : SubCommandModule(context) {
         updateCommand()
         joinCommand()
         playCommand()
-
-        primaryEntryPointCommand {
-            name = "Tonbrett".toKey()
-            description = SoundboardTranslations.Commands.EntryPoint.description
-
-            handler = PrimaryEntryPointCommandHandlerType.DiscordLaunchActivity
-        }
 
         // Request Discord sounds and commit them to the cache
         event<AllShardsReadyEvent> {

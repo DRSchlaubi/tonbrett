@@ -12,8 +12,8 @@ import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.commands.converters.builders.OptionalCoalescingConverterBuilder
 import dev.kordex.core.commands.converters.impl.emoji
 import dev.kordex.core.commands.converters.impl.string
-import dev.kordex.core.i18n.EMPTY_KEY
-import dev.kordex.core.i18n.types.Key
+import dev.kordex.i18n.EMPTY_KEY
+import dev.kordex.i18n.Key
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.converters.union
 import dev.schlaubi.tonbrett.bot.translations.SoundboardTranslations
@@ -25,6 +25,7 @@ fun Arguments.emoji(name: Key, description: Key): OptionalCoalescingConverter<An
         this.name = name
         this.description = description
     }
+
     val emoji = emoji {
         applyName()
     }

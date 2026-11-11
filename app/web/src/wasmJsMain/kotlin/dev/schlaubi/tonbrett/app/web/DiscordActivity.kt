@@ -76,7 +76,7 @@ fun discordActivity() {
 }
 
 private suspend fun requestToken(): AuthRefreshResponse {
-    val state = generateNonce()
+    val state = generateNonceSuspend()
 
     val response = discordSdk.authorize(appId, state).await<AuthorizeResponse>()
     return apiClient.exchangeToken(response.code.toString(), state)

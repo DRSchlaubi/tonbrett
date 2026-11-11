@@ -6,10 +6,10 @@ import org.gradle.api.JavaVersion
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyBuilder
 
-const val sdkInt = 36
+const val sdkInt = 37
 const val androidSdk = "android-$sdkInt"
 
-val jvmTarget = JvmTarget.JVM_23
+val jvmTarget = JvmTarget.JVM_26
 val javaVersion = JavaVersion.toVersion(jvmTarget.target)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)

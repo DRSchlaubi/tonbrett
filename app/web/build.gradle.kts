@@ -59,7 +59,7 @@ kotlin {
 }
 
 tasks {
-     val copyIcon by registering(Copy::class) {
+    val copyIcon = register<Copy>("copyIcon") {
         from(rootProject.file("icons/logo.ico"))
         into(layout.buildDirectory.dir("dist/wasmJs/productionExecutable"))
         rename { "favicon.ico" }

@@ -3,7 +3,7 @@ package dev.schlaubi.tonbrett.bot.core
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.event.guild.GuildSoundboardSoundCreateEvent
-import dev.kord.core.event.guild.GuildSoundboardSoundDeletEvent
+import dev.kord.core.event.guild.GuildSoundboardSoundDeleteEvent
 import dev.kord.core.event.guild.GuildSoundboardSoundUpdateEvent
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.event
@@ -13,8 +13,8 @@ import dev.schlaubi.tonbrett.common.SoundCreatedEvent
 import dev.schlaubi.tonbrett.common.SoundDeletedEvent
 import dev.schlaubi.tonbrett.common.SoundUpdatedEvent
 import dev.schlaubi.tonbrett.common.toId
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class DiscordSoundboardWatcher : Extension() {
     override val name: String = "soundboard-watcher"
@@ -41,7 +41,7 @@ class DiscordSoundboardWatcher : Extension() {
             }
         }
 
-        event<GuildSoundboardSoundDeletEvent> {
+        event<GuildSoundboardSoundDeleteEvent> {
             action {
                 val id = event.soundId
                 coroutineScope {
