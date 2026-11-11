@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import dev.schlaubi.tonbrett.gradle.javaVersion
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -148,7 +150,8 @@ fun TaskContainerScope.registerMsixTasks(prefix: String = "", msStore: Boolean =
     val targetDir = layout.buildDirectory.dir(dirName)
 
     val prepareUwpWorkspace = register<Copy>("prepare${prefix}UwpWorkspace") {
-        dependsOn("uwp_helper:compileRust")
+        val appImageTasks = tasks.filter { it.name == "packageReleaseAppImage" }
+        dependsOn("uwp_helper:compileRust", appImageTasks)
         from(named("createReleaseDistributable")) {
             eachFile {
                 path = path.substringAfter("Tonbrett")
