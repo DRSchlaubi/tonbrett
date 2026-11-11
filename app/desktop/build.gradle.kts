@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import dev.schlaubi.tonbrett.gradle.javaVersion
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -61,10 +63,10 @@ compose.desktop {
                 "java.net.http" // Http client
             )
             when {
-                HostManager.hostIsMingw -> targetFormats(TargetFormat.AppImage)
                 HostManager.hostIsMac -> targetFormats(TargetFormat.Pkg)
                 else -> targetFormats(TargetFormat.Deb, TargetFormat.Rpm)
             }
+            targetFormats += TargetFormat.AppImage
 
             licenseFile = rootProject.file("LICENSE")
             vendor = "Schlaubi"
@@ -133,7 +135,7 @@ tasks {
         registerMsixTasks()
         registerMsixTasks("MSStore", msStore = true)
     }
-
+    
     withType<JavaCompile> {
         options.compilerArgs.add("--enable-preview")
     }
@@ -149,7 +151,7 @@ fun TaskContainerScope.registerMsixTasks(prefix: String = "", msStore: Boolean =
 
     val prepareUwpWorkspace = register<Copy>("prepare${prefix}UwpWorkspace") {
         dependsOn("uwp_helper:compileRust")
-        from(named("createReleaseDistributable")) {
+        from(named("packageReleaseAppImage")) {
             eachFile {
                 path = path.substringAfter("Tonbrett")
             }
