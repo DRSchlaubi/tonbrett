@@ -149,7 +149,7 @@ fun TaskContainerScope.registerMsixTasks(prefix: String = "", msStore: Boolean =
 
     val prepareUwpWorkspace = register<Copy>("prepare${prefix}UwpWorkspace") {
         dependsOn("uwp_helper:compileRust")
-        from(named("packageReleaseAppImage")) {
+        from(named("createReleaseDistributable")) {
             eachFile {
                 path = path.substringAfter("Tonbrett")
             }
