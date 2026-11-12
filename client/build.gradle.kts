@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
+import dev.schlaubi.tonbrett.gradle.minimalJvmTarget
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
@@ -16,7 +17,7 @@ repositories {
 kotlin {
     targets.named<KotlinJvmTarget>("desktop") {
         compilerOptions {
-            jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
+            jvmTarget = minimalJvmTarget
         }
     }
     macosArm64()

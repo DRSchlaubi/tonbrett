@@ -1,7 +1,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
+import dev.schlaubi.tonbrett.gradle.minimalJvmTarget
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 plugins {
@@ -13,7 +13,7 @@ plugins {
 kotlin {
     targets.named<KotlinJvmTarget>("desktop") {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
+            jvmTarget = minimalJvmTarget
         }
     }
     explicitApi()

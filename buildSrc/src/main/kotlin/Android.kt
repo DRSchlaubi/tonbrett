@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyBuilder
 const val sdkInt = 37
 const val androidSdk = "android-$sdkInt"
 
+val minimalJvmTarget = JvmTarget.JVM_17
 val jvmTarget = JvmTarget.JVM_26
 val javaVersion = JavaVersion.toVersion(jvmTarget.target)
 

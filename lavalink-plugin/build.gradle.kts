@@ -1,13 +1,20 @@
+import dev.schlaubi.tonbrett.gradle.minimalJvmTarget
+
 plugins {
     kotlin("jvm")
     alias(libs.plugins.lavalink)
     `published-module`
 }
 
+repositories {
+    maven("https://europe-west3-maven.pkg.dev/mik-music/mikbot")
+}
+
 dependencies {
-    implementation(projects.client)
-    implementation(libs.kmongo.id.serialization)
-    implementation(libs.kord.common)
+    // Lavalink cannot use modern kx.ser, so we have to downgrade to older versions
+    implementation("dev.schlaubi.tonbrett:client:2.1.3")
+    implementation("dev.kord:kord-common:0.15.0")
+    implementation("org.litote.kmongo:kmongo-id-serialization:5.1.0")
 }
 
 java {
@@ -16,7 +23,7 @@ java {
 
 kotlin {
     compilerOptions {
-        jvmTarget = dev.schlaubi.tonbrett.gradle.jvmTarget
+        jvmTarget = minimalJvmTarget
     }
 }
 
