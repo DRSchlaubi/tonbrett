@@ -81,7 +81,7 @@ private suspend fun RestNode.request(
         }
 
         header(HttpHeaders.Authorization, authenticationHeader)
-        accept(ContentType.Application.Json)
+        accept(Application.Json)
         builder()
     }.body()
 }
